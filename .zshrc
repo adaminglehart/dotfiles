@@ -14,8 +14,6 @@ export POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(dir vcs)
 export POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator history time)
 # export POWERLEVEL9K_PROMPT_ON_NEWLINE=true
 
-ZSH_THEME="powerlevel9k/powerlevel9k"
-
 # Uncomment the following line to use hyphen-insensitive completion.
 # Case-sensitive completion must be off. _ and - will be interchangeable.
 # HYPHEN_INSENSITIVE="true"
