@@ -2,13 +2,13 @@
   "entries": {
     "tap": {
       "homebrew/cask": {
-        "revision": "edef97f6ed16e08383c656b786d0070c6b4cc31e"
+        "revision": "2d848e0e18c7b10c5b86d4a6dd16347ece5910d9"
       },
       "homebrew/bundle": {
         "revision": "20e7cee19a59595d72a1b1886bd57fc69d97506e"
       },
       "homebrew/cask-fonts": {
-        "revision": "0f19e6f54a7a08df0db2787b11b45d57dc63fd50"
+        "revision": "4115308dec3853f8a135e820f40b64104e7ac7b3"
       },
       "sambadevi/powerlevel9k": {
         "revision": "5d606c1f420f867efe02478c205672b931521edc"
@@ -85,6 +85,27 @@
       "powerlevel9k": {
         "version": "0.6.7",
         "bottle": false
+      },
+      "mackup": {
+        "version": "0.8.28_1",
+        "bottle": {
+          "cellar": ":any_skip_relocation",
+          "prefix": "/usr/local",
+          "files": {
+            "catalina": {
+              "url": "https://homebrew.bintray.com/bottles/mackup-0.8.28_1.catalina.bottle.tar.gz",
+              "sha256": "dbc5ac8b84c362ff421aff6b75819145c9033b72cb1f819dc182964e59b8221e"
+            },
+            "mojave": {
+              "url": "https://homebrew.bintray.com/bottles/mackup-0.8.28_1.mojave.bottle.tar.gz",
+              "sha256": "dcd2364073468374ed2d60f921546db1948ca14efc5e7f0751873b7d89b5c8ba"
+            },
+            "high_sierra": {
+              "url": "https://homebrew.bintray.com/bottles/mackup-0.8.28_1.high_sierra.bottle.tar.gz",
+              "sha256": "3af5af899b13058a5887831beffbeada93ceb76a0c2598cbd9675cf11162d8c1"
+            }
+          }
+        }
       }
     },
     "cask": {
@@ -129,6 +150,30 @@
         "options": {
           "full_name": "font-source-serif-pro"
         }
+      },
+      "google-chrome": {
+        "version": "80.0.3987.149",
+        "options": {
+          "full_name": "google-chrome"
+        }
+      },
+      "dropbox": {
+        "version": "latest",
+        "options": {
+          "full_name": "dropbox"
+        }
+      },
+      "slack": {
+        "version": "4.4.1",
+        "options": {
+          "full_name": "slack"
+        }
+      },
+      "iterm2": {
+        "version": "3.3.9",
+        "options": {
+          "full_name": "iterm2"
+        }
       }
     }
   },
@@ -137,7 +182,7 @@
       "catalina": {
         "HOMEBREW_VERSION": "2.2.11",
         "HOMEBREW_PREFIX": "/usr/local",
-        "Homebrew/homebrew-core": "8e239bd3203d692c0cb4425566964a9d5c01cfd9",
+        "Homebrew/homebrew-core": "a4f6f410f106de646ee16912584a8dc9fa381062",
         "CLT": "1103.0.32.29",
         "Xcode": "11.3",
         "macOS": "10.15.4"

@@ -8,18 +8,21 @@ tap 'sambadevi/powerlevel9k'
 brew 'git'
 brew 'tree' # List directories in a tree structure
 brew 'powerlevel9k'
+brew 'mackup'
 # brew 'mas' # Mac App Store manager
-# brew 'mackup'
 # brew 'trash' # Manage the Trash bin
 
 # Development
 # brew 'node'
 
 # Apps
-# cask 'google-chrome'
-# cask 'slack'
+cask 'dropbox'
+cask 'google-chrome'
+cask 'iterm2'
+cask 'slack'
 # cask 'gpg-suite'
-# cask 'iterm2'
+# cask 'spotify'
+# cask 'visual-studio-code'
 
 # Fonts
 cask 'font-source-code-pro-for-powerline'
