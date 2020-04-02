@@ -12,14 +12,13 @@ brew 'mackup'
 # brew 'mas' # Mac App Store manager
 # brew 'trash' # Manage the Trash bin
 
-# Development
-# brew 'node'
-
 # Apps
 cask 'dropbox'
 cask 'google-chrome'
 cask 'iterm2'
 cask 'slack'
+cask 'sourcetree'
+cask 'postman'
 # cask 'gpg-suite'
 # cask 'spotify'
 # cask 'visual-studio-code'
@@ -29,3 +28,9 @@ cask 'font-source-code-pro-for-powerline'
 
 # Mac App Store
 # mas 'Keynote', id: 409183694
+
+# Dave-specific
+brew 'n'
+brew 'yarn'
+brew 'graphviz'
+cask 'mysqlworkbench'
