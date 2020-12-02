@@ -1,0 +1,9 @@
+instance_eval(File.read("Brewfile.core"))
+
+# Dave-specific
+brew 'n'
+brew 'yarn'
+brew 'graphviz'
+brew 'watchman'
+brew 'dos2unix'
+cask 'mysqlworkbench'
