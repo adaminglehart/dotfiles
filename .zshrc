@@ -98,3 +98,10 @@ if [ -f '/Users/adaminglehart/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/a
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/Users/adaminglehart/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/adaminglehart/google-cloud-sdk/completion.zsh.inc'; fi
+
+
+if test $(which rbenv); then
+  echo 'initializing rbenv'
+  export PATH="$HOME/.rbenv/bin:$PATH"
+  eval "$(rbenv init -)"
+fi
