@@ -1,4 +1,12 @@
-source /usr/local/opt/powerlevel9k/powerlevel9k.zsh-theme
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# source /opt/homebrew/opt/powerlevel10k/powerlevel10k.zsh-theme
+source  /opt/homebrew/opt/powerlevel10k/share/powerlevel10k/powerlevel10k.zsh-theme
 
 # Path to your dotfiles.
 export DOTFILES=$HOME/.dotfiles
@@ -63,11 +71,28 @@ ZSH_CUSTOM=$DOTFILES
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=(
+  git
+  zsh-autosuggestions
+  aliases
+  bgnotify
+  common-aliases
+  copyfile
+  # copybuffer
+  copypath
+  encode64
+  extract
+  httpie
+  # nvm
+  safe-paste
+)
+
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#e3e3e3,underline"
 
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
+
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
@@ -93,15 +118,27 @@ export LANG=en_US.UTF-8
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+alias y="yarn"
+alias cpf="copyfile"
+
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# zstyle ':omz:plugins:nvm' autoload yes
+
+autoload -U +X bashcompinit && bashcompinit
+complete -o nospace -C /opt/homebrew/bin/terraform terraform
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+export PATH="$(go env GOPATH)/bin:$PATH"
+export PRISMA_SKIP_POSTINSTALL_GENERATE=true
+
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/adaminglehart/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/adaminglehart/google-cloud-sdk/path.zsh.inc'; fi
+if [ -f '/Users/adam/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/adam/Downloads/google-cloud-sdk/path.zsh.inc'; fi
 
 # The next line enables shell command completion for gcloud.
-if [ -f '/Users/adaminglehart/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/adaminglehart/google-cloud-sdk/completion.zsh.inc'; fi
+if [ -f '/Users/adam/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/adam/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
 
-
-if test $(which rbenv); then
-  echo 'initializing rbenv'
-  export PATH="$HOME/.rbenv/bin:$PATH"
-  eval "$(rbenv init -)"
-fi
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
