@@ -20,6 +20,9 @@ alias lla "ll -A"
 alias g git
 # command -qv nvim && alias vim nvims
 
+set --export FZF_DEFAULT_OPTS '--cycle --layout=reverse --border --height=90% --preview-window=wrap --marker="*"'
+# set -g FZF_DEFAULT_COMMAND '' # use rg or something
+
 set -gx EDITOR vim
 
 set -gx PATH bin $PATH
