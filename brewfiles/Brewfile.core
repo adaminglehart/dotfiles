@@ -26,7 +26,7 @@ brew 'bat'
 
 # Apps
 cask 'dropbox'
-cask 'google-chrome'
+# cask 'google-chrome'
 cask 'iterm2'
 cask 'slack'
 cask 'sourcetree'
@@ -37,6 +37,10 @@ cask 'visual-studio-code'
 cask 'docker'
 cask 'raycast'
 cask 'rectangle-pro'
+
+# brew tap homebrew/cask-fonts &&
+cask 'font-sauce-code-pro-nerd-font'
+
 
 # Fonts
 cask 'font-source-code-pro-for-powerline'

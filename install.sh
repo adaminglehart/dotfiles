@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -x
 echo "Setting up your Mac..."
 
@@ -9,14 +9,12 @@ brew update
 brew tap homebrew/bundle
 brew bundle --file brewfiles/Brewfile.home
 
-# TODO: it doesnt see fisher
+fisher brew install 
 fisher update
-# fisher install jethrokuan/z
-# fisher install PatrickF1/fzf.fish
-
-
 # Symlink the Mackup config file to the home directory
 # ln -s $HOME/.dotfiles/.mackup.cfg $HOME/.mackup.cfg
+
+stow --target=/Users/$(whoami)/.config .config/
 
 # Set macOS preferences
 # We will run this last because this will reload the shell
