@@ -1,0 +1,6 @@
+instance_eval(File.read("brewfiles/Brewfile.core"))
+
+brew 'rbenv'
+brew 'nvm'
+
+cask 'ngrok'

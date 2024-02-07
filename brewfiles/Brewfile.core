@@ -1,5 +1,4 @@
 # Taps
-tap 'homebrew/cask'
 tap 'homebrew/bundle'
 tap 'homebrew/cask-fonts'
 tap 'sambadevi/powerlevel9k'
@@ -7,9 +6,19 @@ tap 'sambadevi/powerlevel9k'
 # Binaries
 # brew 'git'
 brew 'tree' # List directories in a tree structure
-brew 'powerlevel9k'
-brew 'mackup'
+brew 'powerlevel10k'
+# brew 'mackup'
 brew 'svn'
+# brew 'zsh-autosuggestions'
+brew 'fish'
+brew 'fisher'
+brew 'stow'
+brew 'eza'
+brew 'starship'
+brew 'ghq'
+brew 'fzf'
+brew 'ripgrep'
+
 # brew 'mas' # Mac App Store manager
 # brew 'trash' # Manage the Trash bin
 
@@ -24,10 +33,11 @@ cask 'postman'
 cask 'spotify'
 cask 'visual-studio-code'
 cask 'docker'
+cask 'raycast'
+cask 'rectangle-pro'
 
 # Fonts
 cask 'font-source-code-pro-for-powerline'
 
 # Mac App Store
 # mas 'Keynote', id: 409183694
-

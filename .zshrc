@@ -6,7 +6,7 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 # source /opt/homebrew/opt/powerlevel10k/powerlevel10k.zsh-theme
-source  /opt/homebrew/opt/powerlevel10k/share/powerlevel10k/powerlevel10k.zsh-theme
+source  $(brew --prefix)/opt/powerlevel10k/share/powerlevel10k/powerlevel10k.zsh-theme
 
 # Path to your dotfiles.
 export DOTFILES=$HOME/.dotfiles
@@ -131,8 +131,10 @@ export NVM_DIR="$HOME/.nvm"
 autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C /opt/homebrew/bin/terraform terraform
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
-export PATH="$(go env GOPATH)/bin:$PATH"
-export PRISMA_SKIP_POSTINSTALL_GENERATE=true
+# if go command exists, add it to the path
+if test ! $(which go); then
+  export PATH="$(go env GOPATH)/bin:$PATH"
+fi
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/adam/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/adam/Downloads/google-cloud-sdk/path.zsh.inc'; fi
