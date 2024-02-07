@@ -1,7 +1,9 @@
 if type -q eza
-  alias ll "eza -l -g --icons"
-  alias llt "ll --tree --level=3"
-  alias lla "ll -a"
+    alias ll "eza -l -g --icons"
+    alias llt "ll --tree --level=3"
+
+    alias la "eza -l -A -g --icons"
+    alias lat "la --tree --level=3"
 end
 
 # Inkdrop

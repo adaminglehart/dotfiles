@@ -18,6 +18,8 @@ brew 'starship'
 brew 'ghq'
 brew 'fzf'
 brew 'ripgrep'
+brew 'fd'
+brew 'bat'
 
 # brew 'mas' # Mac App Store manager
 # brew 'trash' # Manage the Trash bin
