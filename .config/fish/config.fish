@@ -18,7 +18,9 @@ alias la "ls -A"
 alias ll "ls -l"
 alias lla "ll -A"
 alias g git
-# command -qv nvim && alias vim nvims
+alias y yarn
+alias ccat /bin/cat
+alias cat bat
 
 set --export FZF_DEFAULT_OPTS '--cycle --layout=reverse --border --height=90% --preview-window=wrap --marker="*"'
 # set -g FZF_DEFAULT_COMMAND '' # use rg or something
@@ -29,8 +31,14 @@ set -gx PATH bin $PATH
 set -gx PATH ~/bin $PATH
 set -gx PATH ~/.local/bin $PATH
 
+set -gx PRISMA_SKIP_POSTINSTALL_GENERATE true
+
+# fish_add_path echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /Users/joshalletto/.zprofile
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
 # NodeJS
 set -gx PATH node_modules/.bin $PATH
+set -gx NVM_DIR (brew --prefix nvm)
 
 # Go
 set -g GOPATH $HOME/go
