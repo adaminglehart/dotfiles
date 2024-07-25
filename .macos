@@ -6,7 +6,7 @@ osascript -e 'tell application "System Preferences" to quit'
 sudo -v
 
 # Keep-alive: update existing `sudo` time stamp until `.macos` has finished
-while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+# while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 ###############################################################################
 # Dock, Dashboard, and hot corners                                            #
@@ -40,6 +40,9 @@ defaults write com.apple.dock wvous-tr-modifier -int 0
 
 # Change scrolling behavior
 defaults write -g com.apple.swipescrolldirection -bool false
+
+# tap to click
+defaults write com.apple.mouse.tapBehavior -int 1
 
 ###############################################################################
 # Finder                                                                      #

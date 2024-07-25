@@ -19,8 +19,10 @@ alias ll "ls -l"
 alias lla "ll -A"
 alias g git
 alias y yarn
+alias npr "npm run"
 alias ccat /bin/cat
 alias cat bat
+alias now "gdate +%s%3N"
 
 set --export FZF_DEFAULT_OPTS '--cycle --layout=reverse --border --height=90% --preview-window=wrap --marker="*"'
 # set -g FZF_DEFAULT_COMMAND '' # use rg or something
@@ -30,6 +32,7 @@ set -gx EDITOR vim
 set -gx PATH bin $PATH
 set -gx PATH ~/bin $PATH
 set -gx PATH ~/.local/bin $PATH
+set -gx PATH /usr/local/opt/coreutils/libexec/gnubin $PATH
 
 set -gx PRISMA_SKIP_POSTINSTALL_GENERATE true
 
@@ -45,13 +48,25 @@ set -g GOPATH $HOME/go
 set -gx PATH $GOPATH/bin $PATH
 
 # NVM
-function __check_rvm --on-variable PWD --description 'Do nvm stuff'
+function __check_nvm --on-variable PWD --description 'Check for .nvmrc file and switch to the correct Node version'
     status --is-command-substitution; and return
 
-    if test -f .nvmrc; and test -r .nvmrc
-        nvm use
-    else
+    set start_time (now) # Get the current time in milliseconds
+
+    set max_depth 10
+    set current_path $PWD
+
+    for i in (seq 0 $max_depth)
+        if test -f "$current_path/.nvmrc"; and test -r "$current_path/.nvmrc"
+            nvm use
+            break
+        end
+        set current_path (dirname $current_path)
     end
+
+    set end_time (now) # Get the current time in milliseconds
+    set elapsed_time (math $end_time - $start_time) # Calculate the elapsed time
+    # echo "Time taken to find .nvmrc: $elapsed_time ms"
 end
 
 switch (uname)
@@ -67,7 +82,5 @@ set LOCAL_CONFIG (dirname (status --current-filename))/config-local.fish
 if test -f $LOCAL_CONFIG
     source $LOCAL_CONFIG
 end
-
-
 
 starship init fish | source

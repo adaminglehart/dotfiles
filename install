@@ -8,8 +8,8 @@ brew update
 # Install all our dependencies with bundle (See Brewfile)
 brew tap homebrew/bundle
 brew bundle --file brewfiles/Brewfile.home
-
-fisher brew install 
+``
+# fisher install 
 fisher update
 # Symlink the Mackup config file to the home directory
 # ln -s $HOME/.dotfiles/.mackup.cfg $HOME/.mackup.cfg

@@ -17,4 +17,4 @@ rm -rf $HOME/.p10k.zsh
 ln -s $HOME/.dotfiles/.p10k.zsh $HOME/.p10k.zsh
 
 # install oh-my-zsh
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+# sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
