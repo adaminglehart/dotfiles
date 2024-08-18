@@ -37,7 +37,8 @@ set -gx PATH /usr/local/opt/coreutils/libexec/gnubin $PATH
 set -gx PRISMA_SKIP_POSTINSTALL_GENERATE true
 
 # fish_add_path echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /Users/joshalletto/.zprofile
-eval "$(/opt/homebrew/bin/brew shellenv)"
+set brewpath $(which brew)
+eval "$($brewpath shellenv)"
 
 # NodeJS
 set -gx PATH node_modules/.bin $PATH
