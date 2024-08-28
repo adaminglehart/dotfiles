@@ -1,8 +1,10 @@
-require "plugins.options"
+require "options"
+require "keymaps"
 require "plugins.lazy"
 require "plugins.keymaps"
+require "plugins.options"
 
-require "plugins.autocmd"
+require "autocmd"
 
 require 'kickstart.plugins.indent_line'
 -- require 'kickstart.plugins.lint'

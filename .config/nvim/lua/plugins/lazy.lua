@@ -375,18 +375,11 @@ require('lazy').setup({
       }
     end,
   },
-
   {
     'folke/tokyonight.nvim',
     lazy = false,
     priority = 1000, -- Make sure to load this before all the other start plugins.
-    init = function()
-      vim.o.background = 'light'
-      vim.cmd.colorscheme 'tokyonight'
-
-      -- You can configure highlights by doing something like:
-      vim.cmd.hi 'Comment gui=none'
-    end,
+    opts = {}
   },
 
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
@@ -506,6 +499,16 @@ require('lazy').setup({
       require("oil").setup()
     end,
   },
+  {
+    'akinsho/bufferline.nvim',
+    version = "*",
+    dependencies = 'nvim-tree/nvim-web-devicons',
+    config = function()
+      vim.opt.termguicolors = true
+      require("bufferline").setup()
+    end
+  }
+
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
