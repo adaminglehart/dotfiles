@@ -21,6 +21,7 @@ brew 'ripgrep'
 brew 'fd'
 brew 'bat'
 brew 'neofetch'
+brew 'graphviz'
 
 # brew 'mas' # Mac App Store manager
 # brew 'trash' # Manage the Trash bin
