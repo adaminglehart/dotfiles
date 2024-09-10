@@ -12,7 +12,7 @@ vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
   'tpope/vim-sleuth',
-
+  'ThePrimeagen/vim-be-good',
   {
     'lewis6991/gitsigns.nvim',
     opts = {
@@ -62,7 +62,11 @@ require('lazy').setup({
       },
       { 'nvim-telescope/telescope-ui-select.nvim' },
 
-      { 'nvim-tree/nvim-web-devicons',            enabled = vim.g.have_nerd_font },
+      { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+      {
+        'nvim-telescope/telescope-file-browser.nvim',
+        dependencies = { 'nvim-telescope/telescope.nvim', 'nvim-lua/plenary.nvim' },
+      },
     },
     config = function()
       require('telescope').setup {
@@ -99,7 +103,7 @@ require('lazy').setup({
       },
     },
   },
-  { 'Bilal2453/luvit-meta',     lazy = true },
+  { 'Bilal2453/luvit-meta', lazy = true },
   {
     -- Main LSP Configuration
     'neovim/nvim-lspconfig',
@@ -109,7 +113,7 @@ require('lazy').setup({
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
       -- Useful status updates for LSP.
-      { 'j-hui/fidget.nvim',       opts = {} },
+      { 'j-hui/fidget.nvim', opts = {} },
       'hrsh7th/cmp-nvim-lsp',
     },
     config = function()
@@ -379,7 +383,7 @@ require('lazy').setup({
     'folke/tokyonight.nvim',
     lazy = false,
     priority = 1000, -- Make sure to load this before all the other start plugins.
-    opts = {}
+    opts = {},
   },
 
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
@@ -494,21 +498,20 @@ require('lazy').setup({
   -- },
   {
     'stevearc/oil.nvim',
-    dependencies = { { "echasnovski/mini.icons", opts = {} } },
+    dependencies = { { 'echasnovski/mini.icons', opts = {} } },
     config = function()
-      require("oil").setup()
+      require('oil').setup()
     end,
   },
   {
     'akinsho/bufferline.nvim',
-    version = "*",
+    version = '*',
     dependencies = 'nvim-tree/nvim-web-devicons',
     config = function()
       vim.opt.termguicolors = true
-      require("bufferline").setup()
-    end
-  }
-
+      require('bufferline').setup()
+    end,
+  },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
