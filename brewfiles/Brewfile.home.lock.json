@@ -249,20 +249,6 @@
           }
         }
       },
-      "zsh-autosuggestions": {
-        "version": "0.7.0",
-        "bottle": {
-          "rebuild": 1,
-          "root_url": "https://ghcr.io/v2/homebrew/core",
-          "files": {
-            "all": {
-              "cellar": ":any_skip_relocation",
-              "url": "https://ghcr.io/v2/homebrew/core/zsh-autosuggestions/blobs/sha256:4537653cbf3540a0785481966b36291255839f1be4012a22409ef97c46a1860b",
-              "sha256": "4537653cbf3540a0785481966b36291255839f1be4012a22409ef97c46a1860b"
-            }
-          }
-        }
-      },
       "nvm": {
         "version": "0.40.0",
         "bottle": {
