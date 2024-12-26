@@ -9,7 +9,6 @@ brew 'tree' # List directories in a tree structure
 brew 'powerlevel10k'
 # brew 'mackup'
 brew 'svn'
-# brew 'zsh-autosuggestions'
 brew 'fish'
 brew 'fisher'
 brew 'stow'
