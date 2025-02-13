@@ -33,6 +33,7 @@ set -gx PATH bin $PATH
 set -gx PATH ~/bin $PATH
 set -gx PATH ~/.local/bin $PATH
 set -gx PATH /usr/local/opt/coreutils/libexec/gnubin $PATH
+set -gx PATH ~/.orbstack/bin $PATH
 
 set -gx PRISMA_SKIP_POSTINSTALL_GENERATE true
 

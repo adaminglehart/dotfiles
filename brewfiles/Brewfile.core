@@ -37,7 +37,7 @@ cask 'postman'
 # cask 'gpg-suite'
 cask 'spotify'
 cask 'visual-studio-code'
-cask 'docker'
+cask 'orbstack'
 cask 'raycast'
 cask 'rectangle-pro'
 
