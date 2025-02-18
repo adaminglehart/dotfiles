@@ -123,7 +123,11 @@ require('lazy').setup({
     },
   },
   { 'Bilal2453/luvit-meta',     lazy = true },
-
+  {
+    "pmizio/typescript-tools.nvim",
+    dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+    opts = {},
+  },
   {
     -- Main LSP Configuration
     'neovim/nvim-lspconfig',
@@ -281,7 +285,7 @@ require('lazy').setup({
       local servers = {
         -- pyright = {},
         -- gopls = {},
-        ts_ls = {},
+        -- ts_ls = {},
 
         -- gleam = {},
 
@@ -334,27 +338,7 @@ require('lazy').setup({
     end,
   },
 
-  {
-    'nvim-treesitter/nvim-treesitter',
-    build = ':TSUpdate',
-    config = function()
-      local configs = require 'nvim-treesitter.configs'
-      configs.setup {
-        ensure_installed = {
-          'lua',
-          'vim',
-          'vimdoc',
-          'javascript',
-          'typescript',
-          'gleam',
-          'html',
-        },
-        -- sync_install = false,
-        highlight = { enable = true },
-        indent = { enable = true },
-      }
-    end,
-  },
+
 
   { -- Autoformat
     'stevearc/conform.nvim',
@@ -449,6 +433,7 @@ require('lazy').setup({
           --  This will auto-import if your LSP supports it.
           --  This will expand snippets if the LSP sent a snippet.
           ['<C-y>'] = cmp.mapping.confirm { select = true },
+          ['<C-Enter>'] = cmp.mapping.confirm { select = true },
 
           -- Manually trigger a completion from nvim-cmp.
           ['<C-Space>'] = cmp.mapping.complete {},
@@ -530,6 +515,10 @@ require('lazy').setup({
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup()
 
+      require('mini.comment').setup {}
+      require('mini.splitjoin').setup {}
+      require('mini.bracketed').setup {}
+
       local statusline = require 'mini.statusline'
       statusline.setup { use_icons = vim.g.have_nerd_font }
 
@@ -558,6 +547,8 @@ require('lazy').setup({
         'vim',
         'vimdoc',
         'typescript',
+        'javascript',
+        'gleam',
       },
       auto_install = true,
       highlight = {
@@ -577,28 +568,6 @@ require('lazy').setup({
       --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     end,
-  },
-  {
-    'nvim-neo-tree/neo-tree.nvim',
-    version = 'v3.x',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
-      'MunifTanjim/nui.nvim',
-    },
-    cmd = 'Neotree',
-    keys = {
-      { '\\', ':Neotree reveal<CR>', desc = 'NeoTree reveal' },
-    },
-    opts = {
-      filesystem = {
-        window = {
-          mappings = {
-            ['\\'] = 'close_window',
-          },
-        },
-      },
-    },
   },
 
   {
