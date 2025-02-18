@@ -1,4 +1,11 @@
 theme = "light:flexoki-light,dark:rose-pine-moon"
 theme = ""
 theme = "rose-pine-moon"
-# theme = "flexoki-dark"
+# theme = "flexoki-light"
+cursor-color = "#ffffff"
+
+keybind = global:cmd+ctrl+grave_accent=toggle_quick_terminal
+
+macos-option-as-alt = true
+
+unfocused-split-opacity = .4
