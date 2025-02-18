@@ -11,6 +11,11 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
+vim.keymap.set("n", '<C-d>', '<C-d>zz', { desc = "Remap <C-d> to scroll down and center the cursor" })
+vim.keymap.set("n", '<C-u>', '<C-u>zz', { desc = "Remap <C-u> to scroll up and center the cursor" })
+vim.keymap.set("n", '<C-f>', '<C-f>zz', { desc = "Remap <C-f> to scroll down and center the cursor" })
+vim.keymap.set("n", '<C-b>', '<C-B>zz', { desc = "Remap <C-b> to scroll up and center the cursor" })
+
 -- [[ Telescope Keymaps ]]
 
 
