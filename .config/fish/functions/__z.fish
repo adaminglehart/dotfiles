@@ -20,6 +20,7 @@ function __z -d "Jump to a recent directory."
             end
             printf '%s' $c
         end
+
     end
 
     set -l options h/help c/clean e/echo l/list p/purge r/rank t/recent d/directory x/delete

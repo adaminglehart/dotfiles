@@ -17,17 +17,25 @@ alias ls "ls -p -G"
 alias la "ls -A"
 alias ll "ls -l"
 alias lla "ll -A"
+
+## git
 alias g git
+# alias ga "git add"
+alias gs "git status"
+alias gts "gt modify && gt submit --stack --update-only"
+
 alias y yarn
 alias npr "npm run"
 alias ccat /bin/cat
 alias cat bat
 alias now "gdate +%s%3N"
 
+alias t tmux
+
 set --export FZF_DEFAULT_OPTS '--cycle --layout=reverse --border --height=90% --preview-window=wrap --marker="*"'
 # set -g FZF_DEFAULT_COMMAND '' # use rg or something
 
-set -gx EDITOR vim
+set -gx EDITOR nvim
 
 set -gx PATH bin $PATH
 set -gx PATH ~/bin $PATH
@@ -37,15 +45,22 @@ set -gx PATH ~/.orbstack/bin $PATH
 
 set -gx PATH /usr/local/opt/libpq/bin $PATH
 
+set -gx PATH ~/.orbstack/bin $PATH
+
+source "$HOME/.cargo/env.fish"
+
 set -gx PRISMA_SKIP_POSTINSTALL_GENERATE true
 
 # fish_add_path echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /Users/joshalletto/.zprofile
-set brewpath $(which brew)
+# set brewpath $(which brew)
+set brewpath /opt/homebrew/bin/brew
 eval "$($brewpath shellenv)"
 
 # NodeJS
 set -gx PATH node_modules/.bin $PATH
 set -gx NVM_DIR (brew --prefix nvm)
+
+set --universal nvm_default_version latest
 
 # Go
 set -g GOPATH $HOME/go
