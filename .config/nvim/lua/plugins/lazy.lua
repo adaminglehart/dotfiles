@@ -127,7 +127,25 @@ require('lazy').setup({
   {
     'pmizio/typescript-tools.nvim',
     dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
-    opts = {},
+
+    config = function()
+      require('typescript-tools').setup({
+        settings = {
+          tsserver_file_preferences = function(ft)
+            return {
+              includeInlayParameterNameHints = "literals",
+              includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+              includeInlayFunctionParameterTypeHints = true,
+              includeInlayVariableTypeHints = true,
+              includeInlayVariableTypeHintsWhenTypeMatchesName = true,
+              includeInlayPropertyDeclarationTypeHints = true,
+              includeInlayFunctionLikeReturnTypeHints = false,
+              includeInlayEnumMemberValueHints = true,
+            }
+          end
+        }
+      })
+    end,
   },
   {
     -- Main LSP Configuration
@@ -141,6 +159,7 @@ require('lazy').setup({
       { 'j-hui/fidget.nvim',       opts = {} },
       'hrsh7th/cmp-nvim-lsp',
     },
+    options = { inlay_hints = { enabled = true } },
     config = function()
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities = vim.tbl_deep_extend(
@@ -160,9 +179,6 @@ require('lazy').setup({
         eslint = {},
 
         lua_ls = {
-          -- cmd = {...},
-          -- filetypes = { ...},
-          -- capabilities = {},
           settings = {
             Lua = {
               completion = {
