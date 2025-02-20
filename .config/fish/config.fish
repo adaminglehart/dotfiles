@@ -48,13 +48,15 @@ set -gx PATH /usr/local/opt/libpq/bin $PATH
 
 set -gx PATH ~/.orbstack/bin $PATH
 
-source "$HOME/.cargo/env.fish"
+if test -f "$HOME/.cargo/env.fish"
+    source "$HOME/.cargo/env.fish"
+end
 
 set -gx PRISMA_SKIP_POSTINSTALL_GENERATE true
 
 # fish_add_path echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /Users/joshalletto/.zprofile
-# set brewpath $(which brew)
-set brewpath /opt/homebrew/bin/brew
+set brewpath $(which brew)
+# set brewpath /opt/homebrew/bin/brew
 eval "$($brewpath shellenv)"
 
 # NodeJS

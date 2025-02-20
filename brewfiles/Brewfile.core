@@ -18,6 +18,7 @@ brew 'fd'
 brew 'bat'
 brew 'neofetch'
 brew 'graphviz'
+brew '1password-cli'
 
 brew 'neovim'
 

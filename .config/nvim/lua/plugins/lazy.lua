@@ -48,7 +48,8 @@ require('lazy').setup({
         { '<leader>w', group = '[W]orkspace' },
         { '<leader>t', group = '[T]oggle' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
-        { 'g',         group = "Go" }
+        { 'g', group = 'Go' },
+        { 's', group = 'Surround' },
       })
     end,
   },
@@ -123,7 +124,7 @@ require('lazy').setup({
       },
     },
   },
-  { 'Bilal2453/luvit-meta',     lazy = true },
+  { 'Bilal2453/luvit-meta', lazy = true },
   {
     'pmizio/typescript-tools.nvim',
     dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
@@ -133,7 +134,7 @@ require('lazy').setup({
         settings = {
           tsserver_file_preferences = function(ft)
             return {
-              includeInlayParameterNameHints = "literals",
+              includeInlayParameterNameHints = 'literals',
               includeInlayParameterNameHintsWhenArgumentMatchesName = false,
               includeInlayFunctionParameterTypeHints = true,
               includeInlayVariableTypeHints = true,
@@ -142,8 +143,8 @@ require('lazy').setup({
               includeInlayFunctionLikeReturnTypeHints = false,
               includeInlayEnumMemberValueHints = true,
             }
-          end
-        }
+          end,
+        },
       })
     end,
   },
@@ -156,7 +157,7 @@ require('lazy').setup({
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
       -- Useful status updates for LSP.
-      { 'j-hui/fidget.nvim',       opts = {} },
+      { 'j-hui/fidget.nvim', opts = {} },
       'hrsh7th/cmp-nvim-lsp',
     },
     options = { inlay_hints = { enabled = true } },
@@ -264,7 +265,7 @@ require('lazy').setup({
     'mfussenegger/nvim-lint',
     event = { 'BufReadPre', 'BufNewFile' },
     config = function()
-      local lint = require 'lint'
+      local lint = require('lint')
 
       -- To allow other plugins to add linters to require('lint').linters_by_ft,
       -- instead set linters_by_ft like this:
@@ -272,7 +273,7 @@ require('lazy').setup({
       -- lint.linters_by_ft['markdown'] = { 'markdownlint' }
 
       lint.linters_by_ft = {
-        markdown = { 'markdownlint' },
+        -- markdown = { 'markdownlint' },
         typescript = { 'eslint' },
         javascript = { 'eslint' },
         typescriptreact = { 'eslint' },
@@ -309,12 +310,15 @@ require('lazy').setup({
       -- Create autocommand which carries out the actual linting
       -- on the specified events.
       local lint_augroup = vim.api.nvim_create_augroup('lint', { clear = true })
-      vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost', 'InsertLeave' }, {
-        group = lint_augroup,
-        callback = function()
-          lint.try_lint()
-        end,
-      })
+      vim.api.nvim_create_autocmd(
+        { 'BufEnter', 'BufWritePost', 'InsertLeave' },
+        {
+          group = lint_augroup,
+          callback = function()
+            lint.try_lint()
+          end,
+        }
+      )
     end,
   },
 
@@ -513,6 +517,25 @@ require('lazy').setup({
       --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
       --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+    end,
+  },
+
+  {
+    'robitx/gp.nvim',
+    config = function()
+      local conf = {
+        openai_api_key = {
+          'op',
+          'item',
+          'get',
+          'OPENAI_API_KEY',
+          '--fields=password',
+          '--reveal',
+        },
+      }
+      require('gp').setup(conf)
+
+      -- Setup shortcuts here (see Usage > Shortcuts in the Documentation/Readme)
     end,
   },
 
