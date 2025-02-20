@@ -28,18 +28,20 @@ vim.keymap.set(
   builtin.builtin,
   { desc = '[S]earch [S]elect Telescope' }
 )
-vim.keymap.set(
-  'n',
-  '<leader>sw',
-  builtin.grep_string,
-  { desc = '[S]earch current [W]ord' }
-)
-vim.keymap.set(
-  'n',
-  '<leader>sg',
-  builtin.live_grep,
-  { desc = '[S]earch by [G]rep' }
-)
+
+-- vim.keymap.set(
+--   'n',
+--   '<leader>sw',
+--   builtin.grep_string,
+--   { desc = '[S]earch current [W]ord' }
+-- )
+
+-- vim.keymap.set(
+--   'n',
+--   '<leader>sg',
+--   builtin.live_grep,
+--   { desc = '[S]earch by [G]rep' }
+-- )
 vim.keymap.set(
   'n',
   '<leader>sd',
@@ -62,8 +64,15 @@ vim.keymap.set(
   'n',
   '<leader><leader>',
   builtin.buffers,
-  { desc = '[ ] Find existing buffers' }
+  { desc = '[S]earch Existing Buffers' }
 )
+
+-- vim.keymap.set(
+--   'n',
+--   '<leader>sq',
+--   builtin.quickfix,
+--   { desc = '[S]earch [Q]uickfixes' }
+-- )
 
 vim.keymap.set('n', '<leader>/', function()
   builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown({
@@ -71,6 +80,7 @@ vim.keymap.set('n', '<leader>/', function()
   }))
 end, { desc = '[/] Fuzzily search in current buffer' })
 
+-- TODO make this recursive, currently only searches in CWD
 vim.keymap.set('n', '<leader>s/', function()
   builtin.live_grep({
     -- grep_open_files = true,
