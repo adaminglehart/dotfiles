@@ -520,6 +520,8 @@ require('lazy').setup({
     end,
   },
 
+  { 'github/copilot.vim' },
+
   {
     'robitx/gp.nvim',
     config = function()
