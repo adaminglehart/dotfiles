@@ -1,0 +1,82 @@
+// Zed settings
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run the `open default settings` command
+// from the command palette or from `Zed` application menu.
+{
+  "assistant": {
+    "default_model": {
+      "provider": "copilot_chat",
+      "model": "claude-3-7-sonnet"
+    },
+    "dock": "left",
+    "version": "2"
+  },
+  "base_keymap": "VSCode",
+  "ui_font_size": 16,
+  "buffer_font_size": 14,
+  "buffer_font_family": "JetBrains Mono",
+  "buffer_line_height": "standard",
+  "theme": {
+    "mode": "system",
+    "light": "One Light",
+    "dark": "Flexoki Dark"
+  },
+  "features": {
+    "edit_prediction_provider": "zed"
+  },
+  "auto_signature_help": true,
+  "gutter": {
+    "folds": false
+  },
+  "indent_guides": {
+    "coloring": "indent_aware"
+  },
+  "vertical_scroll_margin": 5,
+  // "relative_line_numbers": true,
+  "inlay_hints": {
+    "enabled": true,
+    "show_type_hints": true,
+    "show_parameter_hints": true
+  },
+  "project_panel": {
+    "dock": "right",
+    "entry_spacing": "standard"
+  },
+  "slash_commands": {
+    "docs": {
+      "enabled": true
+    },
+    "project": {
+      "enabled": true
+    }
+  },
+  "preview_tabs": {
+    "enabled": false
+  },
+  "diagnostics": {
+    "inline": {
+      "enabled": true,
+      "update_debounce_ms": 150,
+      "padding": 8,
+      "min_column": 80,
+      "max_severity": null
+    }
+  },
+  "edit_predictions": {
+    "mode": "eager_preview"
+  },
+  "terminal": {
+    "line_height": "standard",
+    "toolbar": { "breadcrumbs": false }
+  },
+  "vim": {
+    "toggle_relative_line_numbers": true
+    // "use_system_clipboard": "always",
+    // "use_multiline_find": false,
+    // "use_smartcase_find": false,
+  },
+  "vim_mode": false,
+  "command_aliases": {},
+  "show_user_picture": false
+}
