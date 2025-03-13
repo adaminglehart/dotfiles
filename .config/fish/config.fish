@@ -32,6 +32,7 @@ alias now "gdate +%s%3N"
 
 alias t tmux
 alias n nvim
+alias z zed
 
 set --export FZF_DEFAULT_OPTS '--cycle --layout=reverse --border --height=90% --preview-window=wrap --marker="*"'
 # set -g FZF_DEFAULT_COMMAND '' # use rg or something

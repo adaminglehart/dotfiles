@@ -1,7 +1,6 @@
 theme = "light:flexoki-light,dark:rose-pine-moon"
 theme = ""
 theme = "rose-pine-moon"
-# theme = "flexoki-light"
 cursor-color = "#ffffff"
 
 keybind = global:cmd+ctrl+grave_accent=toggle_quick_terminal

@@ -4,14 +4,23 @@
 // custom settings, run the `open default settings` command
 // from the command palette or from `Zed` application menu.
 {
+  "auto_install_extensions": {
+    "html": true,
+    "flexoki-themes": true,
+    "prisma": true,
+    "sql": true,
+    "rose-pine-theme": true,
+    "fish": true
+  },
   "assistant": {
     "default_model": {
-      "provider": "copilot_chat",
-      "model": "claude-3-7-sonnet"
+      "provider": "anthropic",
+      "model": "claude-3-7-sonnet-latest"
     },
-    "dock": "left",
+    "dock": "right",
     "version": "2"
   },
+  // Styling
   "base_keymap": "VSCode",
   "ui_font_size": 16,
   "buffer_font_size": 14,
@@ -19,28 +28,31 @@
   "buffer_line_height": "standard",
   "theme": {
     "mode": "system",
-    "light": "One Light",
+    "light": "Flexoki Light",
     "dark": "Flexoki Dark"
   },
+  "vertical_scroll_margin": 5,
   "features": {
     "edit_prediction_provider": "zed"
   },
-  "auto_signature_help": true,
   "gutter": {
     "folds": false
   },
   "indent_guides": {
     "coloring": "indent_aware"
   },
-  "vertical_scroll_margin": 5,
+  "active_pane_modifiers": {
+    "inactive_opacity": 0.7
+  },
   // "relative_line_numbers": true,
   "inlay_hints": {
-    "enabled": true,
+    "enabled": false,
     "show_type_hints": true,
-    "show_parameter_hints": true
+    "show_parameter_hints": false,
+    "show_other_hints": true
   },
   "project_panel": {
-    "dock": "right",
+    "dock": "left",
     "entry_spacing": "standard"
   },
   "slash_commands": {
@@ -63,9 +75,6 @@
       "max_severity": null
     }
   },
-  "edit_predictions": {
-    "mode": "eager_preview"
-  },
   "terminal": {
     "line_height": "standard",
     "toolbar": { "breadcrumbs": false }
@@ -76,7 +85,11 @@
     // "use_multiline_find": false,
     // "use_smartcase_find": false,
   },
-  "vim_mode": false,
+  "vim_mode": true,
   "command_aliases": {},
-  "show_user_picture": false
+  "show_user_picture": false,
+  "use_smartcase_search": true,
+  "experimental.theme_overrides": {
+    "predictive": "#908caa"
+  }
 }
