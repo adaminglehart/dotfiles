@@ -106,4 +106,10 @@ if test -f $LOCAL_CONFIG
     source $LOCAL_CONFIG
 end
 
+if test $SIMPLE_MODE
+    export STARSHIP_CONFIG="$HOME/.config/starship-simple.toml"
+else
+    export STARSHIP_CONFIG="$HOME/.config/starship.toml"
+end
+
 starship init fish | source

@@ -77,7 +77,13 @@
   },
   "terminal": {
     "line_height": "standard",
-    "toolbar": { "breadcrumbs": false }
+    "toolbar": { "breadcrumbs": false },
+    "env": {
+      "SIMPLE_MODE": "true"
+    },
+    "shell": {
+      "program": "fish"
+    }
   },
   "vim": {
     "toggle_relative_line_numbers": true
