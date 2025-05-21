@@ -53,16 +53,22 @@ if test -f "$HOME/.cargo/env.fish"
     source "$HOME/.cargo/env.fish"
 end
 
+# if test -f "$HOME/.sdkman/bin/sdkman-init.sh"
+#     source "$HOME/.sdkman/bin/sdkman-init.sh"
+#     set SDKMAN_PLATFORM "$(cat "${SDKMAN_DIR/var/platform")"
+# end
+
 set -gx PRISMA_SKIP_POSTINSTALL_GENERATE true
 
-# fish_add_path echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /Users/joshalletto/.zprofile
-set brewpath $(which brew)
-# set brewpath /opt/homebrew/bin/brew
+# set brewpath $(which brew)
+set brewpath /opt/homebrew/bin/brew
 eval "$($brewpath shellenv)"
 
 # NodeJS
 set -gx PATH node_modules/.bin $PATH
 set -gx NVM_DIR (brew --prefix nvm)
+
+set -gx PATH ~/.bun/bin $PATH
 
 set --universal nvm_default_version latest
 
@@ -71,26 +77,27 @@ set -g GOPATH $HOME/go
 set -gx PATH $GOPATH/bin $PATH
 
 # NVM
-function __check_nvm --on-variable PWD --description 'Check for .nvmrc file and switch to the correct Node version'
-    status --is-command-substitution; and return
+# function __check_nvm --on-variable PWD --description 'Check for .nvmrc file and switch to the correct Node version'
+#     status --is-command-substitution; and return
 
-    set start_time (now) # Get the current time in milliseconds
+#     set start_time (now) # Get the current time in milliseconds
 
-    set max_depth 10
-    set current_path $PWD
+#     set max_depth 10
+#     set current_path $PWD
 
-    for i in (seq 0 $max_depth)
-        if test -f "$current_path/.nvmrc"; and test -r "$current_path/.nvmrc"
-            nvm use
-            break
-        end
-        set current_path (dirname $current_path)
-    end
+#     for i in (seq 0 $max_depth)
+#         if test -f "$current_path/.nvmrc"; and test -r "$current_path/.nvmrc"
+#             echo "using nvmrc from $current_path/.nvmrc"
+#             nvm use
+#             break
+#         end
+#         set current_path (dirname $current_path)
+#     end
 
-    set end_time (now) # Get the current time in milliseconds
-    set elapsed_time (math $end_time - $start_time) # Calculate the elapsed time
-    # echo "Time taken to find .nvmrc: $elapsed_time ms"
-end
+#     set end_time (now) # Get the current time in milliseconds
+#     set elapsed_time (math $end_time - $start_time) # Calculate the elapsed time
+#     # echo "Time taken to find .nvmrc: $elapsed_time ms"
+# end
 
 switch (uname)
     case Darwin
@@ -113,3 +120,7 @@ else
 end
 
 starship init fish | source
+
+# bun
+set --export BUN_INSTALL "$HOME/.bun"
+set --export PATH $BUN_INSTALL/bin $PATH
