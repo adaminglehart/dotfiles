@@ -21,6 +21,7 @@ brew 'graphviz'
 brew '1password-cli'
 brew 'gh'
 brew 'jq'
+brew 'zed'
 
 brew 'neovim'
 
