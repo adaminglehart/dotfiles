@@ -49,6 +49,8 @@ set -gx PATH /usr/local/opt/libpq/bin $PATH
 
 set -gx PATH ~/.orbstack/bin $PATH
 
+set -gx SSH_AUTH_SOCK ~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
+
 if test -f "$HOME/.cargo/env.fish"
     source "$HOME/.cargo/env.fish"
 end
