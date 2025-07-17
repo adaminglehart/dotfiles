@@ -5,12 +5,14 @@ echo "Setting up your Mac..."
 ./brew_install
 
 ``
-# fisher install 
+# fisher install
 fisher update
 # Symlink the Mackup config file to the home directory
 # ln -s $HOME/.dotfiles/.mackup.cfg $HOME/.mackup.cfg
 
 stow --target=/Users/$(whoami)/.config .config/
+
+stow --target=/Users/$(whoami)/.claude .claude/
 
 stow --target=/Users/$(whoami)/ .home/
 

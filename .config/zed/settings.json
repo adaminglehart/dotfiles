@@ -22,6 +22,10 @@
     "fish": true
   },
   "agent": {
+    "inline_assistant_model": {
+      "provider": "zed.dev",
+      "model": "claude-sonnet-4-latest"
+    },
     "profiles": {
       "write": {
         "name": "Write",
@@ -50,7 +54,7 @@
     "default_profile": "write",
     "default_model": {
       "provider": "zed.dev",
-      "model": "claude-3-7-sonnet-latest"
+      "model": "claude-sonnet-4"
     },
     "dock": "right",
     "version": "2"

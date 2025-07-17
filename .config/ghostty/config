@@ -8,3 +8,5 @@ keybind = global:cmd+ctrl+grave_accent=toggle_quick_terminal
 macos-option-as-alt = true
 
 unfocused-split-opacity = .4
+
+keybind = shift+enter=text:\n
