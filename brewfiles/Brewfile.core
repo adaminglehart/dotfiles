@@ -1,5 +1,4 @@
 # Taps
-tap 'homebrew/bundle'
 tap 'withgraphite/tap'
 
 
@@ -18,10 +17,10 @@ brew 'fd'
 brew 'bat'
 brew 'neofetch'
 brew 'graphviz'
-brew '1password-cli'
 brew 'gh'
 brew 'jq'
-brew 'zed'
+brew 'git-delta'
+brew 'zellij'
 
 brew 'neovim'
 
@@ -44,6 +43,8 @@ cask 'visual-studio-code'
 cask 'orbstack'
 cask 'raycast'
 cask 'rectangle-pro'
+cask 'zed'
+cask '1password-cli'
 
 # Mac App Store
 # mas 'Keynote', id: 409183694
