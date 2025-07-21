@@ -1,16 +1,15 @@
 # Taps
 tap 'withgraphite/tap'
 
-
 # Binaries
 # brew 'git'
 brew 'tree' # List directories in a tree structure
 brew 'fish'
-brew 'fisher'
+
 brew 'stow'
 brew 'eza'
 brew 'starship'
-brew 'ghq'
+
 brew 'fzf'
 brew 'ripgrep'
 brew 'fd'
@@ -30,9 +29,7 @@ brew 'withgraphite/tap/graphite'
 # brew 'trash' # Manage the Trash bin
 
 # Apps
-cask 'ghostty'
 
-cask 'dropbox'
 # cask 'google-chrome'
 cask 'slack'
 cask 'sourcetree'
@@ -40,10 +37,9 @@ cask 'postman'
 # cask 'gpg-suite'
 cask 'spotify'
 cask 'visual-studio-code'
-cask 'orbstack'
+
 cask 'raycast'
-cask 'rectangle-pro'
-cask 'zed'
+
 cask '1password-cli'
 
 # Mac App Store

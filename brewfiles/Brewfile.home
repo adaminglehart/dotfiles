@@ -4,4 +4,18 @@ brew 'rbenv'
 brew 'nvm'
 brew 'cloudflared'
 
+# TODO might not be needed
+brew 'ghq'
+
+brew 'fisher'
+
+# Apps
+cask 'ghostty'
+cask 'dropbox'
+cask 'orbstack'
+
+cask 'rectangle-pro'
+
 cask 'ngrok'
+
+cask 'zed'

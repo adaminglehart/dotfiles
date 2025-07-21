@@ -1,0 +1,20 @@
+[general]
+import = [
+    "~/.config/alacritty/themes/rose-pine-moon.toml"
+]
+
+[terminal]
+shell = "/opt/homebrew/bin/fish"
+
+[window]
+option_as_alt = "Both"
+
+[font]
+normal.family = "JetBrainsMono Nerd Font"
+
+[cursor]
+style.blinking = "On"
+style.shape = "Block"
+
+[colors]
+cursor = { cursor = "#ffffff"}

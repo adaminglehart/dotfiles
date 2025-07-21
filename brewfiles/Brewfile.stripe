@@ -1,0 +1,5 @@
+instance_eval(File.read("brewfiles/Brewfile.core"))
+
+cask 'font-jetbrains-mono'
+
+cask 'rectangle'
