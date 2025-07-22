@@ -39,7 +39,6 @@ cask 'spotify'
 cask 'visual-studio-code'
 
 cask 'raycast'
-
 cask '1password-cli'
 
 # Mac App Store

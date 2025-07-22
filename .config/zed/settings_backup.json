@@ -12,7 +12,6 @@
     },
     "enabled_in_text_threads": false
   },
-  "icon_theme": "Catppuccin Latte",
   "auto_install_extensions": {
     "html": true,
     "flexoki-themes": true,
@@ -21,40 +20,10 @@
     "rose-pine-theme": true,
     "fish": true
   },
-  "agent": {
-    "inline_assistant_model": {
-      "provider": "zed.dev",
-      "model": "claude-sonnet-4-latest"
-    },
-    "profiles": {
-      "write": {
-        "name": "Write",
-        "tools": {
-          "copy_path": true,
-          "create_directory": true,
-          "create_file": true,
-          "delete_path": true,
-          "diagnostics": true,
-          "edit_file": true,
-          "fetch": true,
-          "list_directory": true,
-          "move_path": true,
-          "now": true,
-          "find_path": true,
-          "read_file": true,
-          "grep": true,
-          "terminal": true,
-          "thinking": true,
-          "web_search": true
-        },
-        "enable_all_context_servers": true,
-        "context_servers": {}
-      }
-    },
-    "default_profile": "write",
+  "assistant": {
     "default_model": {
-      "provider": "zed.dev",
-      "model": "claude-sonnet-4-latest"
+      "provider": "anthropic",
+      "model": "claude-3-7-sonnet-latest"
     },
     "dock": "right",
     "version": "2"
@@ -134,19 +103,7 @@
   "command_aliases": {},
   "show_user_picture": false,
   "use_smartcase_search": true,
-  "seed_search_query_from_cursor": "selection",
   "experimental.theme_overrides": {
     "predictive": "#908caa"
-  },
-  "lsp": {
-    "jdtls": {
-      "initialization_options": {
-        "settings": {
-          "java": {
-            "format": { "enabled": true }
-          }
-        }
-      }
-    }
   }
 }

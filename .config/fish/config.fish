@@ -62,8 +62,8 @@ end
 
 set -gx PRISMA_SKIP_POSTINSTALL_GENERATE true
 
-# set brewpath $(which brew)
-set brewpath /opt/homebrew/bin/brew
+set brewpath $(which brew)
+# set brewpath /opt/homebrew/bin/brew
 eval "$($brewpath shellenv)"
 
 # NodeJS
