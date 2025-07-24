@@ -128,10 +128,10 @@ keybinds clear-defaults=true {
         }
     }
     shared_except "locked" {
-        bind "Super Alt left" { MoveFocusOrTab "left"; }
-        bind "Super Alt down" { MoveFocus "down"; }
-        bind "Super Alt up" { MoveFocus "up"; }
-        bind "Super Alt right" { MoveFocusOrTab "right"; }
+        bind "Alt Shift left" { MoveFocusOrTab "left"; }
+        bind "Alt Shift down" { MoveFocus "down"; }
+        bind "Alt Shift up" { MoveFocus "up"; }
+        bind "Alt Shift right" { MoveFocusOrTab "right"; }
 
         // bind "Alt left" { MoveFocusOrTab "left"; }
         // bind "Alt down" { MoveFocus "down"; }
