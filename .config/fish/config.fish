@@ -122,10 +122,12 @@ else
     export STARSHIP_CONFIG="$HOME/.config/starship.toml"
 end
 
-starship init fish | source
-
 # bun
 set --export BUN_INSTALL "$HOME/.bun"
 set --export PATH $BUN_INSTALL/bin $PATH
 
 alias claude="/Users/adam/.claude/local/claude"
+
+starship init fish | source
+
+zoxide init fish --cmd cd | source

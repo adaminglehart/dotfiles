@@ -11,6 +11,8 @@ brew 'fisher'
 
 brew 'rustup'
 
+brew 'television'
+
 # Apps
 cask 'ghostty'
 cask 'dropbox'

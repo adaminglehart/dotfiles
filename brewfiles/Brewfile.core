@@ -21,6 +21,8 @@ brew 'jq'
 brew 'git-delta'
 brew 'zellij'
 
+brew 'zoxide'
+
 brew 'neovim'
 
 brew 'withgraphite/tap/graphite'
