@@ -9,6 +9,8 @@ brew 'ghq'
 
 brew 'fisher'
 
+brew 'rustup'
+
 # Apps
 cask 'ghostty'
 cask 'dropbox'
