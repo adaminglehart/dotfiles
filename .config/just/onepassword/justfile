@@ -1,0 +1,7 @@
+set working-directory := x"$HOME/.config/just/onepassword"
+
+op:
+set name value:
+    pwd
+    echo "setting {{name}}"
+    op item create --template=dotenv_template.json --title={{name}} - value={{value}}
