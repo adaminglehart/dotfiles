@@ -4,6 +4,15 @@
 // custom settings, run the `open default settings` command
 // from the command palette or from `Zed` application menu.
 {
+  "context_servers": {
+    "mcp-server-brave-search": {
+      "source": "extension",
+      "enabled": true,
+      "settings": {
+        "brave_api_key": "BSADMhz57T3F1zVkQPo1WAYs4cvxxuh"
+      }
+    }
+  },
   "edit_predictions": {
     "mode": "subtle",
     "copilot": {
@@ -51,9 +60,9 @@
         "context_servers": {}
       }
     },
-    "default_profile": "write",
+    "default_profile": "ask",
     "default_model": {
-      "provider": "zed.dev",
+      "provider": "anthropic",
       "model": "claude-sonnet-4-latest"
     },
     "dock": "right",
