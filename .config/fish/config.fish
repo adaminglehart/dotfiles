@@ -1,3 +1,11 @@
+if test $(which brew)
+    set brewpath $(which brew)
+    eval "$($brewpath shellenv)"
+else
+    set brewpath /opt/homebrew/bin/brew
+    eval "$($brewpath shellenv)"
+end
+
 set fish_greeting ""
 
 set -gx TERM xterm-256color
@@ -68,9 +76,7 @@ end
 
 set -gx PRISMA_SKIP_POSTINSTALL_GENERATE true
 
-set brewpath $(which brew)
-# set brewpath /opt/homebrew/bin/brew
-eval "$($brewpath shellenv)"
+
 
 # NodeJS
 set -gx PATH node_modules/.bin $PATH
@@ -136,8 +142,14 @@ alias claude="/Users/adam/.claude/local/claude"
 starship init fish | source
 
 zoxide init fish --cmd cd | source
-kubectl completion fish | source
-talosctl completion fish | source
+
+if test $(which kubectl)
+    kubectl completion fish | source
+end
+
+if test $(which talosctl)
+    talosctl completion fish | source
+end
 
 if test $(which direnv)
     direnv hook fish | source
