@@ -65,8 +65,7 @@
       "provider": "anthropic",
       "model": "claude-sonnet-4-latest"
     },
-    "dock": "right",
-    "version": "2"
+    "dock": "right"
   },
   // Styling
   "base_keymap": "VSCode",
