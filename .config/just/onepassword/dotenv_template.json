@@ -3,10 +3,10 @@
   "category": "API_CREDENTIAL",
   "fields": [
     {
-      "id": "value",
+      "id": "credential",
       "type": "CONCEALED",
       "label": "Value",
-      "value": ""
+      "credential": ""
     }
   ],
   "vault": {

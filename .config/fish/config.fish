@@ -30,9 +30,14 @@ alias ccat /bin/cat
 alias cat bat
 alias now "gdate +%s%3N"
 
+alias tar gtar
+
 alias t tmux
 alias n nvim
 alias z zed
+
+alias kub kubectl
+alias tf terraform
 
 set --export FZF_DEFAULT_OPTS '--cycle --layout=reverse --border --height=90% --preview-window=wrap --marker="*"'
 # set -g FZF_DEFAULT_COMMAND '' # use rg or something
@@ -131,3 +136,9 @@ alias claude="/Users/adam/.claude/local/claude"
 starship init fish | source
 
 zoxide init fish --cmd cd | source
+kubectl completion fish | source
+talosctl completion fish | source
+
+if test $(which direnv)
+    direnv hook fish | source
+end

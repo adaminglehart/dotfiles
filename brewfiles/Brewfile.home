@@ -13,6 +13,11 @@ brew 'rustup'
 
 brew 'television'
 
+brew 'direnv'
+
+brew 'siderolabs/tap/talosctl'
+brew 'helm'
+
 # Apps
 cask 'ghostty'
 cask 'dropbox'
