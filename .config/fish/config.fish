@@ -1,3 +1,29 @@
+set debug_mode false
+
+function debug -a msg --inherit-variable debug_mode;
+    if $debug_mode
+        echo $msg
+    end
+end
+
+debug "starting"
+
+### Path
+
+fish_add_path bin
+fish_add_path ~/bin
+fish_add_path ~/.local/bin
+fish_add_path /usr/local/opt/coreutils/libexec/gnubin
+fish_add_path ~/.orbstack/bin
+fish_add_path /usr/local/opt/libpq/bin
+fish_add_path ~/.orbstack/bin
+
+# NodeJS
+fish_add_path node_modules/.bin
+fish_add_path ~/.bun/bin
+
+
+
 if test $(which brew)
     set brewpath $(which brew)
     eval "$($brewpath shellenv)"
@@ -5,6 +31,8 @@ else
     set brewpath /opt/homebrew/bin/brew
     eval "$($brewpath shellenv)"
 end
+
+debug "configuring fish"
 
 set fish_greeting ""
 
@@ -19,6 +47,8 @@ set -g theme_hostname always
 
 set -g fish_escape_delay_ms 1000
 set -g fish_sequence_key_delay_ms 1000
+
+debug "setting aliases"
 
 # aliases
 alias ls "ls -p -G"
@@ -46,22 +76,20 @@ alias z zed
 
 alias kub kubectl
 alias tf terraform
+alias tg terragrunt
+
+alias claude="/Users/adam/.claude/local/claude"
+
+debug "setting up homebrew"
+
+fish_add_path $(brew --prefix rustup)/bin
+
+debug "setting env vars"
 
 set --export FZF_DEFAULT_OPTS '--cycle --layout=reverse --border --height=90% --preview-window=wrap --marker="*"'
 # set -g FZF_DEFAULT_COMMAND '' # use rg or something
 
 set -gx EDITOR nvim
-
-set -gx PATH bin $PATH
-set -gx PATH ~/bin $PATH
-set -gx PATH ~/.local/bin $PATH
-set -gx PATH /usr/local/opt/coreutils/libexec/gnubin $PATH
-set -gx PATH ~/.orbstack/bin $PATH
-set -gx PATH $(brew --prefix rustup)/bin $PATH
-
-set -gx PATH /usr/local/opt/libpq/bin $PATH
-
-set -gx PATH ~/.orbstack/bin $PATH
 
 set -gx SSH_AUTH_SOCK ~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
 
@@ -69,26 +97,64 @@ if test -f "$HOME/.cargo/env.fish"
     source "$HOME/.cargo/env.fish"
 end
 
-# if test -f "$HOME/.sdkman/bin/sdkman-init.sh"
-#     source "$HOME/.sdkman/bin/sdkman-init.sh"
-#     set SDKMAN_PLATFORM "$(cat "${SDKMAN_DIR/var/platform")"
-# end
-
 set -gx PRISMA_SKIP_POSTINSTALL_GENERATE true
 
-
-
-# NodeJS
-set -gx PATH node_modules/.bin $PATH
 set -gx NVM_DIR (brew --prefix nvm)
 
-set -gx PATH ~/.bun/bin $PATH
 
 set --universal nvm_default_version latest
 
 # Go
 set -g GOPATH $HOME/go
-set -gx PATH $GOPATH/bin $PATH
+fish_add_path $GOPATH/bin
+
+#
+debug "OS-specific settings"
+
+switch (uname)
+    case Darwin
+        source (dirname (status --current-filename))/config-osx.fish
+    case Linux
+        source (dirname (status --current-filename))/config-linux.fish
+    case '*'
+        source (dirname (status --current-filename))/config-windows.fish
+end
+
+set LOCAL_CONFIG (dirname (status --current-filename))/config-local.fish
+if test -f $LOCAL_CONFIG
+    source $LOCAL_CONFIG
+end
+
+
+# bun
+set --export BUN_INSTALL "$HOME/.bun"
+set --export PATH $BUN_INSTALL/bin $PATH
+
+if test $SIMPLE_MODE
+    export STARSHIP_CONFIG="$HOME/.config/starship-simple.toml"
+else
+    export STARSHIP_CONFIG="$HOME/.config/starship.toml"
+end
+
+starship init fish | source
+
+debug "setting completions"
+
+zoxide init fish --cmd cd | source
+
+if test $(which kubectl)
+    kubectl completion fish | source
+end
+
+if test $(which talosctl)
+    talosctl completion fish | source
+end
+
+if test $(which direnv)
+    direnv hook fish | source
+end
+
+debug "done"
 
 # NVM
 # function __check_nvm --on-variable PWD --description 'Check for .nvmrc file and switch to the correct Node version'
@@ -112,45 +178,3 @@ set -gx PATH $GOPATH/bin $PATH
 #     set elapsed_time (math $end_time - $start_time) # Calculate the elapsed time
 #     # echo "Time taken to find .nvmrc: $elapsed_time ms"
 # end
-
-switch (uname)
-    case Darwin
-        source (dirname (status --current-filename))/config-osx.fish
-    case Linux
-        source (dirname (status --current-filename))/config-linux.fish
-    case '*'
-        source (dirname (status --current-filename))/config-windows.fish
-end
-
-set LOCAL_CONFIG (dirname (status --current-filename))/config-local.fish
-if test -f $LOCAL_CONFIG
-    source $LOCAL_CONFIG
-end
-
-if test $SIMPLE_MODE
-    export STARSHIP_CONFIG="$HOME/.config/starship-simple.toml"
-else
-    export STARSHIP_CONFIG="$HOME/.config/starship.toml"
-end
-
-# bun
-set --export BUN_INSTALL "$HOME/.bun"
-set --export PATH $BUN_INSTALL/bin $PATH
-
-alias claude="/Users/adam/.claude/local/claude"
-
-starship init fish | source
-
-zoxide init fish --cmd cd | source
-
-if test $(which kubectl)
-    kubectl completion fish | source
-end
-
-if test $(which talosctl)
-    talosctl completion fish | source
-end
-
-if test $(which direnv)
-    direnv hook fish | source
-end
