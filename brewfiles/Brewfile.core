@@ -27,6 +27,8 @@ brew 'zoxide'
 
 brew 'neovim'
 
+brew 'gitui'
+
 brew 'withgraphite/tap/graphite'
 
 # brew 'mas' # Mac App Store manager
