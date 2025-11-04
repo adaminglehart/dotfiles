@@ -5,11 +5,11 @@ foreground = '#e0def4'
 
 [colors.cursor]
 text = '#e0def4'
-cursor = '#56526e'
+cursor = "#ffffff"
 
 [colors.vi_mode_cursor]
 text = '#e0def4'
-cursor = '#56526e'
+cursor = "#ffffff"
 
 [colors.selection]
 text = '#e0def4'

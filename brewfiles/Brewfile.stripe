@@ -3,3 +3,11 @@ instance_eval(File.read("brewfiles/Brewfile.core"))
 cask 'font-jetbrains-mono'
 
 cask 'rectangle'
+
+# fisher
+# ghq
+# ghostty
+# dropbox
+# orbstack
+# rectangle-pro (??)
+# cloudflared

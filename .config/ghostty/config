@@ -1,6 +1,6 @@
-theme = "light:flexoki-light,dark:rose-pine-moon"
+theme = "light:Flexoki Light,dark:Rose Pine Moon"
 theme = ""
-theme = "rose-pine-moon"
+theme = "Rose Pine Moon"
 cursor-color = "#ffffff"
 
 keybind = global:cmd+ctrl+grave_accent=toggle_quick_terminal
@@ -10,3 +10,6 @@ macos-option-as-alt = true
 unfocused-split-opacity = .4
 
 keybind = shift+enter=text:\n
+
+shell-integration = fish
+command = /opt/homebrew/bin/fish
