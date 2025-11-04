@@ -1,7 +1,7 @@
 [general]
-import = [
-    "~/.config/alacritty/themes/rose-pine-moon.toml"
-]
+live_config_reload = true
+import = ["~/.config/alacritty/themes/rose-pine-moon.toml"]
+# import = ["~/.config/alacritty/themes/flexoki-dark.toml"]
 
 [terminal]
 shell = "/opt/homebrew/bin/fish"
@@ -11,10 +11,19 @@ option_as_alt = "Both"
 
 [font]
 normal.family = "JetBrainsMono Nerd Font"
+size = 13
 
 [cursor]
-style.blinking = "On"
+# style.blinking = "On"
 style.shape = "Block"
 
-[colors]
-cursor = { cursor = "#ffffff"}
+
+[[keyboard.bindings]]
+key = "Left"
+mods = "Command"
+chars = "\u001bOH"
+
+[[keyboard.bindings]]
+key = "Right"
+mods = "Command"
+chars = "\u001bOF"
