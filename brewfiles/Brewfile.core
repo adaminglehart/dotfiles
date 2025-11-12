@@ -23,6 +23,10 @@ brew 'zellij'
 
 brew 'just'
 
+brew 'mise'
+
+brew 'chezmoi'
+
 brew 'zoxide'
 
 brew 'neovim'

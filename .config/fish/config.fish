@@ -222,3 +222,5 @@ end
 if test $(which direnv)
     direnv hook fish | source
 end
+
+mise activate fish | source
