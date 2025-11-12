@@ -1,2 +1,5 @@
 [tools]
 age = "latest"
+
+[env]
+IS_STRIPE = $(~/stripe/space-commander/bin)
