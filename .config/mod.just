@@ -1,5 +1,8 @@
 init:
   chezmoi init adaminglehart/dotfiles --branch=chezmoi --ssh
 
+update:
+  chezmoi update
+
 sync:
-  chezmoi --config ./chezmoi/chezmoi.yaml apply --dry-run --verbose
+  chezmoi apply
