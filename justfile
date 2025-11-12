@@ -1,4 +1,4 @@
-mod config './.config'
+mod config './home'
 
 [private]
 default:
