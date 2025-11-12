@@ -4,5 +4,8 @@ init:
 update:
   chezmoi update
 
+diff:
+  chezmoi apply --dry-run
+
 sync:
   chezmoi apply
