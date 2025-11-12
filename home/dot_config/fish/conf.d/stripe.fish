@@ -1,4 +1,4 @@
-if test -f "~/stripe/space-commander/bin"
+if test -d "~/stripe/space-commander/bin"
     echo "loading stripe config"
     # Added by `nodenv init` on Thu Sep  4 10:41:35 EDT 2025
     status --is-interactive; and nodenv init - --no-rehash fish | source
