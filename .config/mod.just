@@ -1,5 +1,5 @@
 init:
-  chezmoi init adaminglehart/homelab --branch=chezmoi
+  chezmoi init adaminglehart/dotfiles --branch=chezmoi --ssh
 
 sync:
   chezmoi --config ./chezmoi/chezmoi.yaml apply --dry-run --verbose
