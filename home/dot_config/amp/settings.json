@@ -1,0 +1,14 @@
+{
+  "amp.permissions": [
+    {
+      "tool": "Bash",
+      "matches": {"cmd": "npx turbo run build"},
+      "action": "allow"
+   },
+       {
+      "tool": "Bash",
+      "matches": {"cmd": "npm run check-types"},
+      "action": "allow"
+   }
+  ]
+}
