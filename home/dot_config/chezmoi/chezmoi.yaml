@@ -1,6 +1,7 @@
 sourceDir: ~/dev/dotfiles/
 # destDir: ~/.config
-# mode: symlink
+diff:
+  pager: "delta"
 merge:
   command: "bash"
   args:

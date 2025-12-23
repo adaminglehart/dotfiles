@@ -1,5 +1,6 @@
 # Taps
 tap 'withgraphite/tap'
+tap 'siderolabs/tap'
 
 # Binaries
 # brew 'git'
