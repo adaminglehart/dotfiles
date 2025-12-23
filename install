@@ -13,9 +13,6 @@ fi
 
 stow --target=/Users/$(whoami)/.config .config/
 
-mkdir /Users/$(whoami)/.claude
-stow --target=/Users/$(whoami)/.claude .claude/
-
 stow --target=/Users/$(whoami)/ .home/
 
 # Set macOS preferences
