@@ -81,8 +81,6 @@ alias kub kubectl
 alias tf terraform
 alias tg terragrunt
 
-alias claude="/Users/adam/.claude/local/claude"
-
 debug "setting up homebrew"
 
 fish_add_path $(brew --prefix rustup)/bin
@@ -205,8 +203,6 @@ end
 set --export BUN_INSTALL "$HOME/.bun"
 set --export PATH $BUN_INSTALL/bin $PATH
 
-alias claude="/Users/adam/.claude/local/claude"
-
 starship init fish | source
 
 zoxide init fish --cmd cd | source
@@ -222,3 +218,5 @@ end
 if test $(which direnv)
     direnv hook fish | source
 end
+
+mise activate fish | source

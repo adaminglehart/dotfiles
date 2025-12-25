@@ -1,5 +1,6 @@
 # Taps
 tap 'withgraphite/tap'
+tap 'siderolabs/tap'
 
 # Binaries
 # brew 'git'
@@ -22,6 +23,10 @@ brew 'git-delta'
 brew 'zellij'
 
 brew 'just'
+
+brew 'mise'
+
+brew 'chezmoi'
 
 brew 'zoxide'
 

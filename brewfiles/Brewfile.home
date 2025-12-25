@@ -1,6 +1,6 @@
 instance_eval(File.read("brewfiles/Brewfile.core"))
 
-brew 'rbenv'
+# brew 'rbenv'
 brew 'nvm'
 brew 'cloudflared'
 
@@ -18,6 +18,8 @@ brew 'direnv'
 brew 'siderolabs/tap/talosctl'
 brew 'helm'
 
+brew 'jj'
+
 # Apps
 cask 'ghostty'
 cask 'dropbox'
@@ -28,3 +30,5 @@ cask 'rectangle-pro'
 cask 'ngrok'
 
 cask 'zed'
+
+cask 'obsidian'

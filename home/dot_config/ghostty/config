@@ -9,7 +9,7 @@ macos-option-as-alt = true
 
 unfocused-split-opacity = .4
 
-keybind = shift+enter=text:\n
+#keybind = shift+enter=text:\n
 
 shell-integration = fish
 command = /opt/homebrew/bin/fish
