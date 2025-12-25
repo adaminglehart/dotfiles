@@ -3,3 +3,7 @@
 [user]
 name = "Adam Inglehart"
 email = "adam.inglehart@gmail.com"
+
+[ui]
+pager = "delta"
+diff-formatter = ":git"
