@@ -7,3 +7,8 @@ email = "adam.inglehart@gmail.com"
 [ui]
 pager = "delta"
 diff-formatter = ":git"
+
+[signing]
+key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPGZVgPGf192WQkW1J5Nqftu7CsnNo/0TcJbRKv1vlTd"
+backend = "ssh"
+backends.ssh.program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
