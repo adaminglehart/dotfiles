@@ -18,7 +18,11 @@ brew 'direnv'
 brew 'siderolabs/tap/talosctl'
 brew 'helm'
 
+brew 'hashicorp/tap/nomad'
+
 brew 'jj'
+
+brew 'ansible'
 
 # Apps
 cask 'ghostty'
