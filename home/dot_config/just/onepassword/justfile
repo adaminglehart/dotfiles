@@ -5,6 +5,9 @@ default:
     just -l
 
 set name value:
-    pwd
     echo "setting {{name}}"
     op item create --template=dotenv_template.json --title={{name}} - credential={{value}}
+
+get name:
+    echo "getting {{name}}"
+    op item get --format=json {{name}} | jq -r '.fields[] | select(.name == "value") | .value'
