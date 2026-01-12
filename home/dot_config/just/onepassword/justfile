@@ -1,6 +1,9 @@
 set working-directory := x"$HOME/.config/just/onepassword"
 
-op:
+[private]
+default:
+    just -l
+
 set name value:
     pwd
     echo "setting {{name}}"

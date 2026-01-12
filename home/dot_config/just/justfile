@@ -1,1 +1,7 @@
-import 'onepassword/justfile'
+mod config './home'
+
+mod op './onepassword'
+
+[private]
+default:
+    just -g -l --list-submodules

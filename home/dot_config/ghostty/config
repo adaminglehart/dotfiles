@@ -3,6 +3,8 @@ theme = ""
 theme = "Rose Pine Moon"
 cursor-color = "#ffffff"
 
+font-family = "Berkeley Mono"
+
 keybind = global:cmd+ctrl+grave_accent=toggle_quick_terminal
 
 macos-option-as-alt = true
