@@ -3,4 +3,20 @@
   "model": "anthropic/claude-sonnet-4-5",
   "small_model": "anthropic/claude-haiku-4-5",
   "theme": "flexoki",
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "http://10.0.10.35:11434/v1",
+      },
+      "models": {
+        "qwen3:8b": {
+          "tools": true,
+        },
+        "gemma3": {
+          "tools": true,
+        },
+      },
+    },
+  },
 }
