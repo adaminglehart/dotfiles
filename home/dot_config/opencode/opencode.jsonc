@@ -13,8 +13,11 @@
         "qwen3:8b": {
           "tools": true,
         },
-        "gemma3": {
-          "tools": true,
+        "gemma3:4b": {
+          "limit": {
+            "context": 32768,
+            "output": 65536,
+          },
         },
       },
     },
