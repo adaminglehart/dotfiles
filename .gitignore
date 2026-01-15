@@ -13,3 +13,7 @@ home/dot_claude/shell-snapshots
 home/dot_claude/session-env
 home/dot_claude/telemetry
 home/dot_claude/private_todos
+home/dot_claude/cache
+private_history.jsonl
+private_stats-cache.json
+home/dot_claude/downloads
