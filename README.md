@@ -2,6 +2,20 @@
 
 Personal dotfiles managed with [chezmoi](https://www.chezmoi.io/).
 
+## Environment-Based Configuration
+
+This repo uses chezmoi's templating to manage different configurations for `home` vs `work` environments. Templates (`.tmpl` files) conditionally include settings based on the `.environment` variable:
+
+```
+{{- if eq .environment "home" }}
+# Home-specific config
+{{- else }}
+# Work-specific config
+{{- end }}
+```
+
+The environment is set in `~/.config/chezmoi/chezmoi.yaml` or prompted during `chezmoi init`.
+
 ## Quick Start
 
 ```bash
@@ -24,7 +38,7 @@ chezmoi init --apply $GITHUB_USERNAME
 ├── home/                    # Chezmoi source (maps to ~)
 │   ├── dot_config/          # → ~/.config/
 │   │   ├── fish/            # Shell config
-│   │   ├── nvim/            # Neovim (kickstart-based)
+│   │   ├── zed/             # Zed editor
 │   │   ├── ghostty/         # Terminal
 │   │   ├── zellij/          # Multiplexer
 │   │   ├── starship.toml    # Prompt
@@ -36,7 +50,7 @@ chezmoi init --apply $GITHUB_USERNAME
 
 ## Stack
 
-| Category | Tool |
+| **Category** | **Tool** |
 |----------|------|
 | Shell | Fish |
 | Prompt | Starship |
@@ -53,27 +67,13 @@ chezmoi init --apply $GITHUB_USERNAME
 chezmoi apply              # Apply changes to home directory
 chezmoi diff               # Preview pending changes
 chezmoi add <file>         # Track a new file
+chezmoi manage <file>      # Add an existing file to chezmoi-managed files
 
 # Packages (uses templated ~/.Brewfile)
 brew bundle --global       # Install from ~/.Brewfile
 ```
 
-## Brewfile Templating
-
-The main Brewfile (`dot_Brewfile.tmpl`) uses chezmoi templating to include environment-specific packages based on the `.environment` variable set during `chezmoi init`:
-
-```
-{{- if eq .environment "home" }}
-# Home-specific packages
-{{- else }}
-# Work-specific packages
-{{- end }}
-```
-
-Set your environment in `~/.config/chezmoi/chezmoi.yaml` or during init.
-
 ## Notes
 
 - SSH authentication and commit signing use 1Password
-- Starship has two modes: full (default) and simple (`SIMPLE_MODE=1`)
 - See `AGENTS.md` for AI assistant guidance
