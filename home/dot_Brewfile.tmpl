@@ -1,0 +1,63 @@
+# Core packages
+tap 'withgraphite/tap'
+tap 'siderolabs/tap'
+
+brew 'tree'
+brew 'fish'
+brew 'stow'
+brew 'eza'
+brew 'starship'
+brew 'fzf'
+brew 'ripgrep'
+brew 'fd'
+brew 'bat'
+brew 'neofetch'
+brew 'graphviz'
+brew 'gh'
+brew 'jq'
+brew 'git-delta'
+brew 'zellij'
+brew 'just'
+brew 'mise'
+brew 'chezmoi'
+brew 'zoxide'
+brew 'neovim'
+brew 'gitui'
+brew 'withgraphite/tap/graphite'
+
+cask 'slack'
+cask 'sourcetree'
+cask 'postman'
+cask 'spotify'
+cask 'visual-studio-code'
+cask 'raycast'
+cask '1password-cli'
+{{- if eq .environment "home" }}
+
+# Home-specific packages
+brew 'nvm'
+brew 'cloudflared'
+brew 'ghq'
+brew 'fisher'
+brew 'rustup'
+brew 'television'
+brew 'direnv'
+brew 'siderolabs/tap/talosctl'
+brew 'helm'
+brew 'hashicorp/tap/nomad'
+brew 'jj'
+brew 'ansible'
+
+cask 'ghostty'
+cask 'dropbox'
+cask 'orbstack'
+cask 'rectangle-pro'
+cask 'ngrok'
+cask 'zed'
+cask 'obsidian'
+{{- else }}
+
+# Work-specific packages
+cask 'font-jetbrains-mono'
+cask 'rectangle'
+{{- end }}

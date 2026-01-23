@@ -1,0 +1,27 @@
+#!/bin/bash
+
+title="Notification"
+sound="default"
+
+usage() {
+    echo "Usage: notify [-t title] [-s sound] message"
+    echo "  -t, --title   Notification title (default: Notification)"
+    echo "  -s, --sound   Sound name (default: default, use \"\" for silent)"
+    exit 0
+}
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -t|--title) title="$2"; shift 2 ;;
+        -s|--sound) sound="$2"; shift 2 ;;
+        -h|--help) usage ;;
+        *) message="$1"; shift ;;
+    esac
+done
+
+if [[ -z "$message" ]]; then
+    echo "Error: message required" >&2
+    usage
+fi
+
+osascript -e "display notification \"$message\" with title \"$title\" sound name \"$sound\""

@@ -1,0 +1,4 @@
+# Skip stripe.fish on home machines (now in user_conf.d)
+{{ if eq .environment "home" }}
+.config/fish/user_conf.d/stripe.fish
+{{ end }}
