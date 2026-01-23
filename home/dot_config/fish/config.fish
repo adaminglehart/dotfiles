@@ -90,7 +90,8 @@ debug "setting env vars"
 set --export FZF_DEFAULT_OPTS '--cycle --layout=reverse --border --height=90% --preview-window=wrap --marker="*"'
 # set -g FZF_DEFAULT_COMMAND '' # use rg or something
 
-set -gx EDITOR nvim
+# set -gx EDITOR nvim
+set -gx EDITOR code
 
 set -gx SSH_AUTH_SOCK ~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
 

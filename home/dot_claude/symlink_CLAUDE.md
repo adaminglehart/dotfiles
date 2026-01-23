@@ -1,1 +1,1 @@
-../dev/dotfiles/.claude/CLAUDE.md
+/Users/adaminglehart/AGENTS.md
