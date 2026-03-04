@@ -4,6 +4,9 @@
 // custom settings, run the `open default settings` command
 // from the command palette or from `Zed` application menu.
 {
+  "search": {
+    "include_ignored": false
+  },
   "agent_servers": {
     "claude": {
       "type": "custom",
@@ -22,6 +25,7 @@
     },
   },
   "edit_predictions": {
+    "provider": "zed",
     "mode": "subtle",
     "copilot": {
       "proxy": null,
@@ -88,9 +92,6 @@
     "dark": "Flexoki Dark",
   },
   "vertical_scroll_margin": 5,
-  "features": {
-    "edit_prediction_provider": "zed",
-  },
   "gutter": {
     "folds": false,
   },
