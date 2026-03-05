@@ -1,0 +1,2 @@
+# Source .bashrc for consistent PATH setup
+[ -f "$HOME/.bashrc" ] && source "$HOME/.bashrc"

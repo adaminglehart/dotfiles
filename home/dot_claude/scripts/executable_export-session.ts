@@ -7,15 +7,18 @@
 // most recently modified JSONL if run manually.
 // Idempotent — re-running overwrites the same output file.
 
-import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync } from "fs";
+import {
+  readFileSync,
+  writeFileSync,
+  mkdirSync,
+  readdirSync,
+  existsSync,
+} from "fs";
 import { execSync } from "child_process";
 import { join, basename } from "path";
 import { homedir } from "os";
 
-const VAULT_SESSIONS = join(
-  homedir(),
-  "Documents/obsidian/agents/agents/sessions"
-);
+const VAULT_SESSIONS = join(homedir(), "Documents/obsidian/agents/sessions");
 const PROJECTS_DIR = join(homedir(), ".claude/projects");
 
 interface Message {
@@ -80,7 +83,7 @@ function getSessionId(): string {
     const projectPath = join(PROJECTS_DIR, projectDir);
     try {
       const files = readdirSync(projectPath).filter((f) =>
-        f.endsWith(".jsonl")
+        f.endsWith(".jsonl"),
       );
       for (const file of files) {
         const filePath = join(projectPath, file);

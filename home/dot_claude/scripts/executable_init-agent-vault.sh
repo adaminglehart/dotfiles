@@ -4,7 +4,7 @@
 
 set -euo pipefail
 
-VAULT_BASE="$HOME/Documents/obsidian/agents/agents"
+VAULT_BASE="$HOME/Documents/obsidian/agents"
 
 # Create vault directories
 for dir in sessions memories projects scratch; do

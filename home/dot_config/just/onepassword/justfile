@@ -4,10 +4,10 @@ set working-directory := x"$HOME/.config/just/onepassword"
 default:
     just -l
 
-set name value:
-    echo "setting {{name}}"
-    op item create --template=dotenv_template.json --title={{name}} - credential={{value}}
+set name value vault:
+    echo "setting {{ name }}"
+    op item create --template=dotenv_template.json --title={{ name }} --vault={{ vault }} - credential={{ value }}
 
 get name:
-    echo "getting {{name}}"
-    op item get --format=json {{name}} | jq -r '.fields[] | select(.name == "value") | .value'
+    echo "getting {{ name }}"
+    op item get --format=json {{ name }} | jq -r '.fields[] | select(.name == "value") | .value'

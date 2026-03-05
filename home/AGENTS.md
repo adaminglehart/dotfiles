@@ -19,10 +19,11 @@
 - preferred languages: typescript, golang
 - minimal comments, only for non-obvious code
 - prioritize clean and maintanable over quick and hacky
+- if you install a dependency to a project, make sure you are installing the latest version, unless you specifically need an older version.
 
 ## Agent Memory
 
 At the start of each session, check if a project context note exists at
-`~/Documents/obsidian/agents/agents/projects/` matching the current working
+`~/Documents/obsidian/agents/projects/` matching the current working
 directory (by last path component). If found, read it silently for context.
 Do not perform deep searches automatically.

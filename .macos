@@ -73,4 +73,27 @@ defaults write com.apple.commerce AutoUpdate -bool true
 # Prevent Photos from opening automatically when devices are plugged in
 defaults -currentHost write com.apple.ImageCapture disableHotPlug -bool true
 
+###############################################################################
+# Menu Bar                                                                    #
+###############################################################################
+
+# Show Bluetooth in menu bar
+defaults write com.apple.controlcenter "NSStatusItem Visible Bluetooth" -bool true
+
+# Hide Siri from menu bar
+defaults write com.apple.Siri StatusMenuVisible -bool false
+
+# Show battery percentage
+defaults write com.apple.controlcenter "NSStatusItem Visible Battery" -bool true
+defaults write ~/Library/Preferences/ByHost/com.apple.controlcenter.plist BatteryShowPercentage -bool true
+
+# Show clock with seconds
+defaults write com.apple.menuextra.clock ShowSeconds -bool true
+
+# Show Weather in menu bar
+defaults write com.apple.controlcenter "NSStatusItem Visible Weather" -bool true
+
+# Hide Text Input from menu bar
+defaults write com.apple.controlcenter "NSStatusItem Visible TextInput" -bool false
+
 echo "Done. Note that some of these changes require a logout/restart to take effect."
