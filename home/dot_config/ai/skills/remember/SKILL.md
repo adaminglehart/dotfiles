@@ -1,3 +1,8 @@
+---
+name: remember
+description: Save facts, project context, and scratch notes to agent memory files in the Obsidian agents vault.
+---
+
 # /remember — Save context to agent memory
 
 Persist facts, project context, and working notes to the Obsidian agents vault.

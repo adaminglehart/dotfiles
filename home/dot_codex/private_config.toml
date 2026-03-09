@@ -1,0 +1,7 @@
+model = "gpt-5.3-codex"
+model_reasoning_effort = "medium"
+[projects."/Users/adaminglehart/dev/agent"]
+trust_level = "trusted"
+
+[projects."/Users/adaminglehart/dev/dotfiles"]
+trust_level = "trusted"

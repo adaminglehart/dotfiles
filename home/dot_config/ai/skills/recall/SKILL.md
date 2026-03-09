@@ -1,3 +1,8 @@
+---
+name: recall
+description: Retrieve context from agent memory, prior sessions, and project notes using light, temporal, or topic-based recall workflows.
+---
+
 # /recall — Retrieve context from agent memory
 
 Recall context from previous sessions, project notes, and saved memories.
