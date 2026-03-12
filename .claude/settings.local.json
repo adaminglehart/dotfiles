@@ -6,7 +6,12 @@
       "Read(//Users/adaminglehart/dev/homelab/.claude/**)",
       "Read(//Users/adaminglehart/dev/agent/**)",
       "Bash(find /Users/adaminglehart/dev/dotfiles/home -type f -name \"symlink_*\" -exec wc -c {} +)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(find /Users/adaminglehart/dev/dotfiles/home/dot_config/fish -type f -name \"*.fish\" | xargs -I {} basename {} | sort | head -20)",
+      "Bash(tree -L 3 /Users/adaminglehart/dev/dotfiles -I '.git|.jj' 2>/dev/null || find /Users/adaminglehart/dev/dotfiles -maxdepth 3 -not -path '*/.git/*' -not -path '*/.jj/*' -type d | sort)",
+      "Bash(scutil --get LocalHostName)",
+      "Bash(which nix:*)",
+      "Bash(chezmoi data:*)"
     ]
   }
 }
