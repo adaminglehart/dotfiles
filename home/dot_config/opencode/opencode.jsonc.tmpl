@@ -3,6 +3,12 @@
   "theme": "flexoki",
   "autoupdate": false,
   "share": "disabled",
+{{- if eq .environment "home" }}
+  "plugin": ["@plannotator/opencode@latest"],
+{{- else if eq .environment "work" }}
+  "plugin": [],
+{{- end }}
+
 {{- if eq .environment "work" }}
   "model": "stripe-anthropic/claude-opus-4.6",
   "enabled_providers": ["stripe-anthropic", "stripe-openai", "stripe-google"],
