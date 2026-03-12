@@ -1,0 +1,8 @@
+[tools]
+age = "latest"
+fnox = "latest"
+
+[env]
+
+[settings]
+experimental = true

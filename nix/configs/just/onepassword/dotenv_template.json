@@ -1,0 +1,15 @@
+{
+  "title": "",
+  "category": "API_CREDENTIAL",
+  "fields": [
+    {
+      "id": "credential",
+      "type": "CONCEALED",
+      "label": "Value",
+      "credential": ""
+    }
+  ],
+  "vault": {
+    "id": "dotenv"
+  }
+}

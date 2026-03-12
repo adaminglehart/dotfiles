@@ -1,0 +1,58 @@
+layout {
+    default_tab_template name="default-tab" {
+        pane size=1 borderless=true {
+          plugin location="zellij:tab-bar"
+        }
+
+        children
+
+        pane size=1 borderless=true {
+          plugin location="zellij:status-bar"
+        }
+    }
+
+    tab name="claude" cwd="~/dev/privy" {
+      pane command="claude"
+    }
+
+    tab name="privy" cwd="~/dev/privy" hide_floating_panes=true {
+      pane split_direction="horizontal" {
+        pane
+        pane
+      }
+
+      floating_panes {
+          pane {
+              x "10%"
+              y "10%"
+              width "80%"
+              height "80%"
+          }
+      }
+    }
+
+    tab name="terraform" cwd="~/dev/terraform" hide_floating_panes=true {
+      pane
+      floating_panes {
+          pane {
+              x "10%"
+              y "10%"
+              width "80%"
+              height "80%"
+          }
+      }
+    }
+
+    tab name="dotfiles" cwd="~/dev/dotfiles" hide_floating_panes=true {
+      pane
+      floating_panes {
+          pane {
+              x "10%"
+              y "10%"
+              width "80%"
+              height "80%"
+          }
+      }
+    }
+
+}

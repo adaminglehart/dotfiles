@@ -1,0 +1,170 @@
+// Zed settings
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run the `open default settings` command
+// from the command palette or from `Zed` application menu.
+{
+  "search": {
+    "include_ignored": false
+  },
+  "agent_servers": {
+    "claude": {
+      "type": "custom",
+      "command": "/usr/local/bin/claude",
+      "args": [],
+      "env": {},
+      "favorite_models": [],
+    },
+  },
+  "context_servers": {
+    "mcp-server-brave-search": {
+      "enabled": true,
+      "settings": {
+        "brave_api_key": "BSADMhz57T3F1zVkQPo1WAYs4cvxxuh",
+      },
+    },
+  },
+  "edit_predictions": {
+    "provider": "zed",
+    "mode": "subtle",
+    "copilot": {
+      "proxy": null,
+      "proxy_no_verify": null,
+    },
+    "enabled_in_text_threads": false,
+  },
+  "icon_theme": "Catppuccin Latte",
+  "auto_install_extensions": {
+    "html": true,
+    "flexoki-themes": true,
+    "prisma": true,
+    "sql": true,
+    "rose-pine-theme": true,
+    "fish": true,
+  },
+  "agent": {
+    "inline_assistant_model": {
+      "provider": "zed.dev",
+      "model": "claude-sonnet-4-latest",
+    },
+    "profiles": {
+      "write": {
+        "name": "Write",
+        "tools": {
+          "copy_path": true,
+          "create_directory": true,
+          "create_file": true,
+          "delete_path": true,
+          "diagnostics": true,
+          "edit_file": true,
+          "fetch": true,
+          "list_directory": true,
+          "move_path": true,
+          "now": true,
+          "find_path": true,
+          "read_file": true,
+          "grep": true,
+          "terminal": true,
+          "thinking": true,
+          "web_search": true,
+        },
+        "enable_all_context_servers": true,
+        "context_servers": {},
+      },
+    },
+    "default_profile": "ask",
+    "default_model": {
+      "provider": "zed.dev",
+      "model": "claude-sonnet-4",
+    },
+    "dock": "right",
+  },
+  // Styling
+  "base_keymap": "VSCode",
+  "ui_font_size": 16,
+  "buffer_font_size": 14,
+  "buffer_font_family": "Berkeley Mono",
+  "buffer_line_height": "standard",
+  "tab_size": 2,
+  "theme": {
+    "mode": "system",
+    "light": "Flexoki Light",
+    "dark": "Flexoki Dark",
+  },
+  "vertical_scroll_margin": 5,
+  "gutter": {
+    "folds": false,
+  },
+  "indent_guides": {
+    "coloring": "indent_aware",
+  },
+  "active_pane_modifiers": {
+    "inactive_opacity": 0.7,
+  },
+  // "relative_line_numbers": true,
+  "inlay_hints": {
+    "enabled": false,
+    "show_type_hints": true,
+    "show_parameter_hints": false,
+    "show_other_hints": true,
+  },
+  "project_panel": {
+    "dock": "left",
+    "entry_spacing": "standard",
+  },
+  "slash_commands": {
+    "docs": {
+      "enabled": true,
+    },
+    "project": {
+      "enabled": true,
+    },
+  },
+  "preview_tabs": {
+    "enabled": false,
+  },
+  "diagnostics": {
+    "inline": {
+      "enabled": true,
+      "update_debounce_ms": 150,
+      "padding": 8,
+      "min_column": 80,
+      "max_severity": null,
+    },
+  },
+  "terminal": {
+    "line_height": "standard",
+    "toolbar": { "breadcrumbs": false },
+    "env": {
+      "SIMPLE_MODE": "true",
+    },
+    "shell": {
+      "program": "fish",
+    },
+  },
+  "vim": {
+    "toggle_relative_line_numbers": true,
+    // "use_system_clipboard": "always",
+    // "use_multiline_find": false,
+    // "use_smartcase_find": false,
+  },
+  "vim_mode": true,
+  "command_aliases": {},
+  "show_user_picture": false,
+  "use_smartcase_search": true,
+  "seed_search_query_from_cursor": "selection",
+  "experimental.theme_overrides": {
+    "predictive": "#908caa",
+  },
+  "lsp": {
+    "jdtls": {
+      "initialization_options": {
+        "settings": {
+          "java": {
+            "format": { "enabled": true },
+          },
+        },
+      },
+    },
+  },
+}
