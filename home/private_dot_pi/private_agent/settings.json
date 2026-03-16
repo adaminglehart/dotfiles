@@ -1,9 +1,35 @@
 {
-  "lastChangelogVersion": "0.57.1",
-  "defaultProvider": "anthropic",
-  "defaultModel": "claude-sonnet-4-6",
-  "packages": [
-    "npm:@plannotator/pi-extension",
-    "npm:pi-self-learning"
-  ]
+  "lastChangelogVersion": "0.58.3",
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.4",
+  "packages": ["npm:@plannotator/pi-extension", "npm:pi-self-learning"],
+  "selfLearning": {
+    "enabled": true,
+    "autoAfterTask": true,
+    "injectLastN": 5,
+    "maxMessagesForReflection": 8,
+    "maxLearnings": 8,
+    "maxCoreItems": 20,
+    "storage": {
+      "mode": "project",
+      "projectPath": ".pi/self-learning-memory",
+      "globalPath": "~/.pi/agent/self-learning-memory"
+    },
+    "git": {
+      "enabled": false,
+      "autoCommit": false
+    },
+    "context": {
+      "enabled": true,
+      "includeCore": true,
+      "includeLatestMonthly": false,
+      "includeLastNDaily": 0,
+      "maxChars": 12000,
+      "instructionMode": "strict"
+    },
+    "model": {
+      "provider": "openai-codex",
+      "id": "gpt-5.1-codex-mini"
+    }
+  }
 }
