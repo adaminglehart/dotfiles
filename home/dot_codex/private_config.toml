@@ -5,3 +5,6 @@ trust_level = "trusted"
 
 [projects."/Users/adaminglehart/dev/dotfiles"]
 trust_level = "trusted"
+
+[projects."/Users/adaminglehart/stripe/dev/dotfiles"]
+trust_level = "trusted"

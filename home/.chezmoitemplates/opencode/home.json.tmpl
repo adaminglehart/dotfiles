@@ -1,0 +1,23 @@
+{
+  "plugin": ["@plannotator/opencode@latest"],
+  "model": "anthropic/claude-opus-4.6",
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "http://10.0.10.35:11434/v1"
+      },
+      "models": {
+        "qwen3:8b": {
+          "tools": true
+        },
+        "gemma3:4b": {
+          "limit": {
+            "context": 32768,
+            "output": 65536
+          }
+        }
+      }
+    }
+  }
+}

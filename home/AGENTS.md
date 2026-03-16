@@ -34,10 +34,12 @@ ALWAYS use subagents where possible, prefer to parallelize work when it does not
 - minimal comments, only for non-obvious code
 - prioritize clean and maintanable over quick and hacky
 - if you install a dependency to a project, make sure you are installing the latest version, unless you specifically need an older version.
+- for typed languages, always prefer strong typing, never use any or unknown unless there's no other option.
+- When asked to implement something, start writing code immediately. Do not spend more than 2-3 minutes exploring the codebase before making changes. If you need more context, ask the user rather than exploring endlessly.
+- Keep implementations simple and concrete. Do not introduce unnecessary abstractions, generic types, callback patterns, or over-engineered options objects. If a value is directly available (e.g., a timestamp on a record), use it directly rather than creating indirection layers.
 
 ## Agent Memory
 
-At the start of each session, check if a project context note exists at
-`~/Documents/obsidian/agents/projects/` matching the current working
-directory (by last path component). If found, read it silently for context.
+At the start of each session, use the `recall project <project name>` skill to check if a project context note exists at
+for the current working directory (by last path component). If found, read it silently for context.
 Do not perform deep searches automatically.
