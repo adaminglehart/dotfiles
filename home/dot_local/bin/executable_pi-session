@@ -260,6 +260,7 @@ new_session() {
       -v "$learnings_dir:/home/dev/.pi/agent/self-learning-memory" \
       -v "$HOME/.cache/qmd:/home/dev/.cache/qmd" \
       -v "$HOME/.gitconfig:/home/dev/.gitconfig:ro" \
+      -v "$HOME/AGENTS.md:/home/dev/AGENTS.md:ro" \
       "${RESOLVED_ENV_ARGS[@]}" \
       -w /workspace \
       "$image_name" \

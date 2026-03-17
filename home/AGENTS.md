@@ -28,6 +28,7 @@ ALWAYS use subagents where possible, prefer to parallelize work when it does not
 - NEVER use `find` or `ls` for file searches — use the Glob tool
 - These dedicated tools provide better UX and review experience
 - when you're waiting for some action to complete or state to change, use a polling approach rather than a long sleep, as long as it's safe to do so
+- If you ever need to do some work in another panel, use tmux rather than zellij, even though I use zellij for my main workflow. 
 
 ## Coding best practices
 

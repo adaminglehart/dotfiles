@@ -37,7 +37,7 @@ export function heuristicClassify(text: string): RouteTier {
   return "standard";
 }
 
-export async function llmClassify(text: string, model: Model<Api>): Promise<RouteTier> {
+export async function llmClassify(text: string, model: Model<Api>, apiKey: string): Promise<RouteTier> {
   const result = await completeSimple(
     model,
     {
@@ -53,6 +53,7 @@ export async function llmClassify(text: string, model: Model<Api>): Promise<Rout
     {
       temperature: 0,
       maxTokens: 8,
+      apiKey,
     },
   );
 

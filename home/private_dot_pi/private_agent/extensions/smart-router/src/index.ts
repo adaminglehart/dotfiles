@@ -82,7 +82,12 @@ export default function smartRouter(pi: ExtensionAPI) {
         return heuristicClassify(text);
       }
       try {
-        return await llmClassify(text, classifierModel);
+        const apiKey = await ctx.modelRegistry.getApiKey(classifierModel);
+        if (!apiKey) {
+          ctx.ui.notify(`Smart-router: no API key for ${CLASSIFIER_PROVIDER}/${CLASSIFIER_MODEL_ID}, falling back to heuristic`, "warning");
+          return heuristicClassify(text);
+        }
+        return await llmClassify(text, classifierModel, apiKey);
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
         ctx.ui.notify(`Smart-router: LLM classify failed (${msg}), falling back to heuristic`, "warning");

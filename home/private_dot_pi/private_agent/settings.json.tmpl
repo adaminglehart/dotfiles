@@ -18,7 +18,7 @@
     "maxCoreItems": 20,
     "storage": {
       "mode": "global",
-      "globalPath": "~/Documents/obsidian/agents/learnings"
+      "globalPath": {{ if eq .chezmoi.os "darwin" }}"~/Documents/obsidian/agents/learnings"{{ else }}"~/.pi/agent/self-learning-memory"{{ end }}
     },
     "git": {
       "enabled": false

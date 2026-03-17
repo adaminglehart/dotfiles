@@ -16,4 +16,4 @@ Plans live in the `plans/` directory in the project root, named by feature:
 - `plans/auth-refactor.md`
 - `plans/api-pagination.md`
 
-Commit plans to git alongside the code.
+don't auto-commit changes to git, let me take care of that

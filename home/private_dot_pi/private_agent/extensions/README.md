@@ -26,17 +26,6 @@ This directory contains custom Pi extensions that enhance the agent's capabiliti
 - Getting project overview without reading every file
 - Identifying build systems and entry points
 
-### zellij.ts
-**Purpose**: Terminal multiplexer integration
-
-**Tools provided**:
-- `zellij_run` - Run commands in new panes
-- `zellij_read_pane` - Read content from panes  
-- `zellij_send_keys` - Send keystrokes to panes
-- `zellij_manage` - Manage panes and tabs
-
-**Requirements**: Must be running inside a zellij session
-
 ## Usage
 
 Extensions in this directory are auto-loaded when pi runs from the project root. To manually load:
