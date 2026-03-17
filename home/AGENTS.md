@@ -22,11 +22,7 @@ ALWAYS use subagents where possible, prefer to parallelize work when it does not
 - When requesting permanent tool permissions, scope them tightly (e.g. `kubectl get pods *` not `kubectl *`)
 
 ## Tool Usage
-
-- NEVER use `grep` or `rg` via Bash — always use the built-in Grep tool instead
-- NEVER use `cat`, `head`, `tail` via Bash — use the Read tool
-- NEVER use `find` or `ls` for file searches — use the Glob tool
-- These dedicated tools provide better UX and review experience
+- prefer ripgrep (rg) over regular grep
 - when you're waiting for some action to complete or state to change, use a polling approach rather than a long sleep, as long as it's safe to do so
 - If you ever need to do some work in another panel, use tmux rather than zellij, even though I use zellij for my main workflow. 
 

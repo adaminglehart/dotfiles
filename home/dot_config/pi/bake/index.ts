@@ -109,7 +109,7 @@ async function cmdNew(argv: string[]): Promise<void> {
   }
 
   const { workdir, command } = await prepareSession({ name, model, dir, sandbox, worktreeBranch });
-  await newWindow(name, workdir, command.join(" "));
+  await newWindow(name, workdir, command);
   console.log(`Started ${name} in ${workdir}`);
   await cmdAttach();
 }
@@ -376,7 +376,7 @@ function stripAnsi(str: string): string {
 async function prepareAndLaunch(name: string): Promise<void> {
   try {
     const { workdir, command } = await prepareSession({ name });
-    await newWindow(name, workdir, command.join(" "));
+    await newWindow(name, workdir, command);
     console.log(`Started ${name} in ${workdir}`);
     await attachSession();
   } catch (e: unknown) {
