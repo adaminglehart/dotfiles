@@ -1,0 +1,9 @@
+{
+  "name": "smart-router",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "pi": {
+    "extensions": ["./src/index.ts"]
+  }
+}

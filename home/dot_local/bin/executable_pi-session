@@ -1,0 +1,278 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+tmux_socket="pi-agents"
+tmux_session="agents"
+default_model="anthropic/claude-sonnet-4-6"
+image_name="pi-sandbox:latest"
+build_script="${HOME}/.pi/sandbox/build.sh"
+secrets_file="${HOME}/.pi/agent-secrets.env"
+sessions_dir="${HOME}/.pi/agent/sessions"
+learnings_dir="${HOME}/Documents/obsidian/agents/self-learning"
+
+usage() {
+  cat <<'EOF'
+Usage:
+  pi-session new <name> [--model <provider/model>] [--dir <path>] [--no-sandbox] [--worktree <branch>]
+  pi-session ls
+  pi-session attach
+  pi-session kill <name>
+EOF
+}
+
+tmux_cmd() {
+  tmux -L "$tmux_socket" "$@"
+}
+
+require_name() {
+  if [[ -z "${1:-}" ]]; then
+    usage >&2
+    exit 1
+  fi
+
+  if [[ ! "$1" =~ ^[A-Za-z0-9._-]+$ ]]; then
+    printf 'Session names may only contain letters, numbers, dot, underscore, and dash.\n' >&2
+    exit 1
+  fi
+}
+
+resolve_dir() {
+  local path="$1"
+
+  if [[ ! -d "$path" ]]; then
+    printf 'Directory does not exist: %s\n' "$path" >&2
+    exit 1
+  fi
+
+  (
+    cd "$path"
+    pwd -P
+  )
+}
+
+window_exists() {
+  local name="$1"
+  local window_name
+
+  while IFS= read -r window_name; do
+    if [[ "$window_name" == "$name" ]]; then
+      return 0
+    fi
+  done < <(tmux_cmd list-windows -t "$tmux_session" -F '#{window_name}' 2>/dev/null || true)
+
+  return 1
+}
+
+command_string() {
+  local quoted
+  printf -v quoted '%q ' "$@"
+  printf '%s' "${quoted% }"
+}
+
+ensure_tmux_window() {
+  local name="$1"
+  local dir="$2"
+  local command="$3"
+
+  if tmux_cmd has-session -t "$tmux_session" 2>/dev/null; then
+    tmux_cmd new-window -d -t "$tmux_session" -n "$name" -c "$dir" "$command"
+  else
+    tmux_cmd new-session -d -s "$tmux_session" -n "$name" -c "$dir" "$command"
+  fi
+}
+
+ensure_sandbox_prereqs() {
+  mkdir -p "$sessions_dir" "$learnings_dir"
+
+  if [[ ! -f "$secrets_file" ]]; then
+    printf 'Missing secrets file: %s\n' "$secrets_file" >&2
+    exit 1
+  fi
+
+  if ! docker image inspect "$image_name" >/dev/null 2>&1; then
+    if [[ ! -f "$build_script" ]]; then
+      printf 'Missing Docker image %s and build script %s was not found.\n' "$image_name" "$build_script" >&2
+      exit 1
+    fi
+
+    printf 'Docker image %s is missing. Building it now...\n' "$image_name" >&2
+    bash "$build_script" "$image_name"
+  fi
+}
+
+create_worktree() {
+  local start_dir="$1"
+  local branch="$2"
+  local name="$3"
+  local repo_root
+  local worktree_dir
+
+  repo_root="$(git -C "$start_dir" rev-parse --show-toplevel 2>/dev/null || true)"
+  if [[ -z "$repo_root" ]]; then
+    printf 'Cannot create a worktree outside of a git repository.\n' >&2
+    exit 1
+  fi
+
+  mkdir -p "$repo_root/.worktrees"
+  worktree_dir="$repo_root/.worktrees/$name"
+
+  if [[ -e "$worktree_dir" ]]; then
+    printf 'Worktree path already exists: %s\n' "$worktree_dir" >&2
+    exit 1
+  fi
+
+  if git -C "$repo_root" rev-parse --verify "$branch" >/dev/null 2>&1; then
+    git -C "$repo_root" worktree add "$worktree_dir" "$branch"
+  else
+    git -C "$repo_root" worktree add -b "$branch" "$worktree_dir"
+  fi
+
+  printf '%s\n' "$worktree_dir"
+}
+
+start_qmd_refresh() {
+  if command -v qmd >/dev/null 2>&1; then
+    qmd update --collection agent-learnings >/dev/null 2>&1 &
+  fi
+}
+
+new_session() {
+  local name="$1"
+  shift
+
+  local model="$default_model"
+  local workdir
+  local sandbox=1
+  local worktree_branch=""
+  local container_name="pi-$name"
+  workdir="$(pwd -P)"
+
+  require_name "$name"
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --model)
+        model="$2"
+        shift 2
+        ;;
+      --dir)
+        workdir="$(resolve_dir "$2")"
+        shift 2
+        ;;
+      --no-sandbox)
+        sandbox=0
+        shift
+        ;;
+      --worktree)
+        worktree_branch="$2"
+        shift 2
+        ;;
+      *)
+        printf 'Unknown flag: %s\n' "$1" >&2
+        usage >&2
+        exit 1
+        ;;
+    esac
+  done
+
+  if tmux_cmd has-session -t "$tmux_session" 2>/dev/null && window_exists "$name"; then
+    printf 'A Pi session named %s already exists.\n' "$name" >&2
+    exit 1
+  fi
+
+  if [[ -n "$worktree_branch" ]]; then
+    workdir="$(create_worktree "$workdir" "$worktree_branch" "$name")"
+  fi
+
+  if [[ "$sandbox" -eq 1 ]]; then
+    ensure_sandbox_prereqs
+    start_qmd_refresh
+
+    local command
+    command="$(command_string \
+      op run --env-file="$secrets_file" -- \
+      docker run --rm -it --name "$container_name" \
+      -v "$workdir:/workspace" \
+      -v "$sessions_dir:/home/dev/.pi/agent/sessions" \
+      -v "$learnings_dir:/home/dev/.pi/agent/self-learning-memory" \
+      -v "$HOME/.gitconfig:/home/dev/.gitconfig:ro" \
+      -e ANTHROPIC_API_KEY \
+      -e OPENAI_API_KEY \
+      -e GEMINI_API_KEY \
+      -w /workspace \
+      "$image_name" \
+      --model "$model")"
+
+    ensure_tmux_window "$name" "$workdir" "$command"
+  else
+    local command
+    command="$(command_string pi --model "$model")"
+    ensure_tmux_window "$name" "$workdir" "$command"
+  fi
+
+  printf 'Started %s in %s\n' "$name" "$workdir"
+}
+
+list_sessions() {
+  if ! tmux_cmd has-session -t "$tmux_session" 2>/dev/null; then
+    printf 'No active Pi sessions.\n'
+    return
+  fi
+
+  tmux_cmd list-windows -t "$tmux_session" -F '#{window_index}  #{window_name}'
+}
+
+attach_sessions() {
+  if ! tmux_cmd has-session -t "$tmux_session" 2>/dev/null; then
+    printf 'No active Pi sessions.\n' >&2
+    exit 1
+  fi
+
+  exec tmux -L "$tmux_socket" attach -t "$tmux_session"
+}
+
+kill_session() {
+  local name="$1"
+
+  require_name "$name"
+
+  if tmux_cmd has-session -t "$tmux_session" 2>/dev/null && window_exists "$name"; then
+    tmux_cmd kill-window -t "$tmux_session:$name"
+  fi
+
+  docker rm -f "pi-$name" >/dev/null 2>&1 || true
+}
+
+main() {
+  local command="${1:-}"
+  shift || true
+
+  case "$command" in
+    new)
+      if [[ $# -lt 1 ]]; then
+        usage >&2
+        exit 1
+      fi
+      new_session "$@"
+      ;;
+    ls)
+      list_sessions
+      ;;
+    attach)
+      attach_sessions
+      ;;
+    kill)
+      if [[ $# -ne 1 ]]; then
+        usage >&2
+        exit 1
+      fi
+      kill_session "$1"
+      ;;
+    *)
+      usage >&2
+      exit 1
+      ;;
+  esac
+}
+
+main "$@"

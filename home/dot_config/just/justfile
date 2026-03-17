@@ -2,6 +2,9 @@ mod config './home'
 
 mod op './onepassword'
 
+pi-tools:
+    just config::pi-tools
+
 [private]
 default:
     just -g -l --list-submodules

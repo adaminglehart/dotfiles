@@ -1,35 +1,38 @@
 {
-  "lastChangelogVersion": "0.58.3",
-  "defaultProvider": "openai-codex",
+  "lastChangelogVersion": "0.58.4",
+  "defaultProvider": "openai",
   "defaultModel": "gpt-5.4",
   "packages": ["npm:@plannotator/pi-extension", "npm:pi-self-learning"],
+  "enabledModels": [
+    "anthropic/claude-sonnet-4-6",
+    "anthropic/claude-opus-4-6",
+    "google/gemini-2.5-flash",
+    "anthropic/claude-haiku-4-5",
+    "openai/gpt-5.4",
+    "openai/gpt-5.4-pro"
+  ],
   "selfLearning": {
     "enabled": true,
     "autoAfterTask": true,
     "injectLastN": 5,
-    "maxMessagesForReflection": 8,
-    "maxLearnings": 8,
     "maxCoreItems": 20,
     "storage": {
-      "mode": "project",
-      "projectPath": ".pi/self-learning-memory",
-      "globalPath": "~/.pi/agent/self-learning-memory"
+      "mode": "global",
+      "globalPath": "~/Documents/obsidian/agents/learnings"
     },
     "git": {
-      "enabled": false,
-      "autoCommit": false
+      "enabled": false
     },
     "context": {
       "enabled": true,
       "includeCore": true,
-      "includeLatestMonthly": false,
-      "includeLastNDaily": 0,
+      "includeLastNDaily": 2,
       "maxChars": 12000,
       "instructionMode": "strict"
     },
     "model": {
-      "provider": "openai-codex",
-      "id": "gpt-5.1-codex-mini"
+      "provider": "google",
+      "id": "gemini-2.5-flash"
     }
   }
 }

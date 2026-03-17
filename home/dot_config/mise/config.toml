@@ -1,6 +1,8 @@
 [tools]
 age = "latest"
+bun = "latest"
 fnox = "latest"
+node = "latest"
 
 [env]
 
