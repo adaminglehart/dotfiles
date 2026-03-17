@@ -2,6 +2,7 @@ import { completeSimple } from "@mariozechner/pi-ai";
 import { ExtensionContext } from "@mariozechner/pi-coding-agent";
 import type { Api, Model } from "@mariozechner/pi-ai";
 import type { RouteTier } from "./tiers";
+import { CLASSIFIER_MODEL_ID, CLASSIFIER_PROVIDER } from "./environment-config";
 
 const FAST_PATTERNS = [
   /\b(show|list|find|grep|cat|read|search)\b/i,
@@ -23,12 +24,7 @@ const CLASSIFIER_PROMPT = [
   "power = planning, architecture, complex debugging, redesigns, large refactors.",
 ].join("\n");
 
-// const classifierModels = [
-//   {provider: "openrouter", model: "google/gemini-2.5-flash"}
-// ]
-
-export const CLASSIFIER_PROVIDER = "openrouter";
-export const CLASSIFIER_MODEL_ID = "google/gemini-2.5-flash";
+export { CLASSIFIER_MODEL_ID, CLASSIFIER_PROVIDER };
 
 export function heuristicClassify(text: string): RouteTier {
   if (POWER_PATTERNS.some((pattern) => pattern.test(text))) {

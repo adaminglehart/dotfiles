@@ -1,0 +1,81 @@
+{
+  "providers": {
+    "stripe-anthropic": {
+      "baseUrl": "http://litellm.qa.corp.stripe.com.certproxy.localhost:7891/v1",
+      "api": "openai-completions",
+      "apiKey": "use_case=development&team=privy-eng-access-team",
+      "compat": { "supportsStore": false },
+      "models": [
+        {
+          "id": "claude-opus-4.6",
+          "name": "Claude Opus 4.6",
+          "reasoning": true,
+          "input": ["text", "image"]
+        },
+        {
+          "id": "claude-opus-4.6-1m",
+          "name": "Claude Opus 4.6 1M",
+          "reasoning": true,
+          "input": ["text", "image"],
+          "contextWindow": 1000000
+        },
+        {
+          "id": "claude-sonnet-4.5",
+          "name": "Claude Sonnet 4.5",
+          "reasoning": true,
+          "input": ["text", "image"]
+        },
+        {
+          "id": "claude-4.5-haiku",
+          "name": "Claude Haiku 4.5",
+          "input": ["text", "image"]
+        }
+      ]
+    },
+    "stripe-openai": {
+      "baseUrl": "http://litellm.qa.corp.stripe.com.certproxy.localhost:7891/v1",
+      "api": "openai-responses",
+      "apiKey": "use_case=development&team=privy-eng-access-team",
+      "models": [
+        {
+          "id": "gpt-5.4",
+          "name": "GPT-5.4",
+          "reasoning": true,
+          "input": ["text", "image"]
+        },
+        {
+          "id": "gpt-5.3-codex",
+          "name": "GPT-5.3 Codex",
+          "reasoning": true,
+          "input": ["text", "image"]
+        }
+      ]
+    },
+    "stripe-google": {
+      "baseUrl": "http://litellm.qa.corp.stripe.com.certproxy.localhost:7891/v1",
+      "api": "openai-completions",
+      "apiKey": "use_case=development&team=privy-a",
+      "compat": { "supportsStore": false },
+      "models": [
+        {
+          "id": "gemini-3-pro",
+          "name": "Gemini 3 Pro",
+          "reasoning": true,
+          "input": ["text", "image"]
+        },
+        {
+          "id": "gemini-2.5-pro",
+          "name": "Gemini 2.5 Pro",
+          "reasoning": true,
+          "input": ["text", "image"]
+        },
+        {
+          "id": "gemini-2.5-flash",
+          "name": "Gemini 2.5 Flash",
+          "reasoning": true,
+          "input": ["text", "image"]
+        }
+      ]
+    }
+  }
+}

@@ -1,6 +1,7 @@
 import { $ } from "bun";
 import { existsSync } from "node:fs";
 import { mkdir } from "node:fs/promises";
+import { DEFAULT_MODEL } from "./environment-config.ts";
 
 const IMAGE_NAME = "pi-sandbox:latest";
 const BUILD_SCRIPT = `${process.env.HOME}/.pi/sandbox/build.sh`;
@@ -10,7 +11,7 @@ const LEARNINGS_DIR = `${process.env.HOME}/Documents/obsidian/agents/learnings`;
 const OP_CACHE_DIR = `${process.env.HOME}/.cache/op_env`;
 const OP_CACHE_TTL_HOURS = parseInt(process.env.OP_CACHE_TTL_HOURS ?? "24", 10);
 
-export const DEFAULT_MODEL = "anthropic/claude-sonnet-4-6";
+export { DEFAULT_MODEL };
 
 export interface NewSessionOptions {
   name: string;

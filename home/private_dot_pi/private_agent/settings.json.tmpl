@@ -1,44 +1,4 @@
-{
-  "lastChangelogVersion": "0.58.4",
-  "defaultProvider": "anthropic",
-  "defaultModel": "claude-sonnet-4-6",
-  "packages": ["npm:@plannotator/pi-extension", "npm:pi-self-learning"],
-  "extensions": [
-    "~/.config/pi/bake/pi-extension/status-writer.ts"
-  ],
-  "enabledModels": [
-    "anthropic/claude-sonnet-4-6",
-    "anthropic/claude-opus-4-6",
-    "anthropic/claude-haiku-4-5",
-    "anthropic/claude-sonnet-4.6",
-    "anthropic/claude-opus-4.6",
-    "anthropic/claude-haiku-4.5",
-    "google/gemini-2.5-flash",
-    "openai/gpt-5.4",
-    "openai/gpt-5.4-pro"
-  ],
-  "selfLearning": {
-    "enabled": true,
-    "autoAfterTask": true,
-    "injectLastN": 5,
-    "maxCoreItems": 20,
-    "storage": {
-      "mode": "global",
-      "globalPath": {{ if eq .chezmoi.os "darwin" }}"~/Documents/obsidian/agents/learnings"{{ else }}"~/.pi/agent/self-learning-memory"{{ end }}
-    },
-    "git": {
-      "enabled": false
-    },
-    "context": {
-      "enabled": true,
-      "includeCore": true,
-      "includeLastNDaily": 2,
-      "maxChars": 12000,
-      "instructionMode": "strict"
-    },
-    "model": {
-      "provider": "openrouter",
-      "id": "gemini-2.5-flash"
-    }
-  }
-}
+{{- $baseConfig := includeTemplate ".chezmoitemplates/pi/settings.base.json.tmpl" | fromJson -}}
+{{- $environmentConfigPath := ternary ".chezmoitemplates/pi/settings.work.json.tmpl" ".chezmoitemplates/pi/settings.home.json.tmpl" (eq .environment "work") -}}
+{{- $environmentConfig := includeTemplate $environmentConfigPath | fromJson -}}
+{{- mergeOverwrite $baseConfig $environmentConfig | toPrettyJson -}}

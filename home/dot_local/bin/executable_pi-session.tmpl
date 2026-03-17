@@ -4,7 +4,7 @@ set -euo pipefail
 tmux_socket="pi-agents"
 tmux_session="agents"
 tmux_conf="${HOME}/.config/pi/tmux.conf"
-default_model="anthropic/claude-sonnet-4-6"
+default_model="{{ if eq .environment "work" }}stripe-anthropic/claude-sonnet-4.5{{ else }}anthropic/claude-sonnet-4.6{{ end }}"
 image_name="pi-sandbox:latest"
 build_script="${HOME}/.pi/sandbox/build.sh"
 secrets_file="${HOME}/.pi/agent-secrets.env"
@@ -231,68 +231,63 @@ new_session() {
         shift 2
         ;;
       *)
-        printf 'Unknown flag: %s\n' "$1" >&2
+        printf 'Unknown option: %s\n' "$1" >&2
         usage >&2
         exit 1
         ;;
     esac
   done
 
-  if tmux_cmd has-session -t "$tmux_session" 2>/dev/null && window_exists "$name"; then
-    printf 'A Pi session named %s already exists.\n' "$name" >&2
+  if window_exists "$name"; then
+    printf 'Session already exists: %s\n' "$name" >&2
     exit 1
   fi
 
-  if [[ -n "$worktree_branch" ]]; then
-    workdir="$(create_worktree "$workdir" "$worktree_branch" "$name")"
-  fi
+  local command
 
-  if [[ "$sandbox" -eq 1 ]]; then
+  if (( sandbox == 1 )); then
     ensure_sandbox_prereqs
     start_qmd_refresh
+
+    if [[ -n "$worktree_branch" ]]; then
+      workdir="$(create_worktree "$workdir" "$worktree_branch" "$name")"
+    fi
+
     resolve_secrets_to_env_args
-
-    local command
-    command="$(command_string \
-      docker run --rm -it --name "$container_name" \
-      -v "$workdir:/workspace" \
-      -v "$sessions_dir:/home/dev/.pi/agent/sessions" \
-      -v "$learnings_dir:/home/dev/.pi/agent/self-learning-memory" \
-      -v "$HOME/.cache/qmd:/home/dev/.cache/qmd" \
-      -v "$HOME/.gitconfig:/home/dev/.gitconfig:ro" \
-      -v "$HOME/AGENTS.md:/home/dev/AGENTS.md:ro" \
-      "${RESOLVED_ENV_ARGS[@]}" \
-      -w /workspace \
-      "$image_name" \
-      --model "$model")"
-
-    ensure_tmux_window "$name" "$workdir" "$command"
+    command=(
+      docker run --rm -it --name "$container_name"
+      -v "$workdir:/workspace"
+      -v "$sessions_dir:/home/dev/.pi/agent/sessions"
+      -v "$learnings_dir:/home/dev/.pi/agent/self-learning-memory"
+      -v "$HOME/.cache/qmd:/home/dev/.cache/qmd"
+      -v "$HOME/.gitconfig:/home/dev/.gitconfig:ro"
+      -v "$HOME/AGENTS.md:/home/dev/AGENTS.md:ro"
+      "${RESOLVED_ENV_ARGS[@]}"
+      -w /workspace
+      "$image_name"
+      --model "$model"
+    )
   else
-    local command
-    command="$(command_string pi --model "$model")"
-    ensure_tmux_window "$name" "$workdir" "$command"
+    if [[ -n "$worktree_branch" ]]; then
+      workdir="$(create_worktree "$workdir" "$worktree_branch" "$name")"
+    fi
+    command=(pi --model "$model")
   fi
 
-  printf 'Started %s in %s\n' "$name" "$workdir"
-  attach_sessions
+  ensure_tmux_window "$name" "$workdir" "$(command_string "${command[@]}")"
 }
 
 list_sessions() {
-  if ! tmux_cmd has-session -t "$tmux_session" 2>/dev/null; then
-    printf 'No active Pi sessions.\n'
-    return
-  fi
-
-  tmux_cmd list-windows -t "$tmux_session" -F '#{window_index}  #{window_name}'
+  tmux_cmd list-windows -t "$tmux_session" -F '#{window_name}' 2>/dev/null || true
 }
 
 attach_sessions() {
-  if ! tmux_cmd has-session -t "$tmux_session" 2>/dev/null; then
-    printf 'No active Pi sessions.\n' >&2
+  if tmux_cmd has-session -t "$tmux_session" 2>/dev/null; then
+    exec tmux_cmd attach -t "$tmux_session"
+  else
+    printf 'No pi sessions are running.\n' >&2
     exit 1
   fi
-
-  exec tmux -L "$tmux_socket" attach -t "$tmux_session"
 }
 
 kill_session() {
@@ -300,23 +295,22 @@ kill_session() {
 
   require_name "$name"
 
-  if tmux_cmd has-session -t "$tmux_session" 2>/dev/null && window_exists "$name"; then
-    tmux_cmd kill-window -t "$tmux_session:$name"
+  if ! window_exists "$name"; then
+    printf 'Session not found: %s\n' "$name" >&2
+    exit 1
   fi
 
+  tmux_cmd kill-window -t "$tmux_session:$name"
   docker rm -f "pi-$name" >/dev/null 2>&1 || true
 }
 
 main() {
-  local command="${1:-}"
-  shift || true
+  local cmd="${1:-}"
 
-  case "$command" in
+  case "$cmd" in
     new)
-      if [[ $# -lt 1 ]]; then
-        usage >&2
-        exit 1
-      fi
+      shift
+      require_name "${1:-}"
       new_session "$@"
       ;;
     ls)
@@ -326,11 +320,8 @@ main() {
       attach_sessions
       ;;
     kill)
-      if [[ $# -ne 1 ]]; then
-        usage >&2
-        exit 1
-      fi
-      kill_session "$1"
+      shift
+      kill_session "${1:-}"
       ;;
     *)
       usage >&2

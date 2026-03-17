@@ -1,5 +1,7 @@
+import { TIER_DEFINITIONS } from "./environment-config";
+
 export const ROUTE_TIERS = ["fast", "standard", "power"] as const;
-export const ROUTE_MODES = ["heuristic", "llm"] as const;
+export const ROUTE_MODES = ["off", "heuristic", "llm"] as const;
 export const ROUTE_LOCKS = ["auto", ...ROUTE_TIERS] as const;
 
 export type RouteTier = (typeof ROUTE_TIERS)[number];
@@ -20,30 +22,6 @@ export interface TierDefinition {
   label: string;
   fullModelId: string;
 }
-
-const TIER_DEFINITIONS: Record<RouteTier, TierDefinition> = {
-  fast: {
-    provider: "openrouter",
-    modelId: "anthropic/claude-haiku-4.5",
-    thinking: "off",
-    label: "Fast",
-    fullModelId: "anthropic/claude-haiku-4.5",
-  },
-  standard: {
-    provider: "openrouter",
-    thinking: "off",
-    modelId: "anthropic/claude-sonnet-4.6",
-    label: "Standard",
-    fullModelId: "anthropic/claude-sonnet-4.6",
-  },
-  power: {
-    provider: "openrouter",
-    modelId: "openai/gpt-5.4",
-    thinking: "high",
-    label: "Power",
-    fullModelId: "openai/gpt-5.4",
-  },
-};
 
 export function getTierDefinition(tier: RouteTier): TierDefinition {
   return TIER_DEFINITIONS[tier];

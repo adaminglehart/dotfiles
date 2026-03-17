@@ -12,7 +12,8 @@
 
 import * as readline from "node:readline";
 import { attachSession, hasSession, killWindow, listWindows, newWindow, selectWindow, windowExists } from "./tmux-client.ts";
-import { DEFAULT_MODEL, killContainer, prepareSession } from "./docker-client.ts";
+import { killContainer, prepareSession } from "./docker-client.ts";
+import { DEFAULT_MODEL } from "./environment-config.ts";
 import { SessionStore } from "./session-store.ts";
 import { SessionList } from "./components/session-list.ts";
 import { SessionDetail } from "./components/session-detail.ts";

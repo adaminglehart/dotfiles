@@ -1,0 +1,23 @@
+{
+  "lastChangelogVersion": "0.58.4",
+  "packages": ["npm:@plannotator/pi-extension", "npm:pi-self-learning"],
+  "extensions": [
+    "~/.config/pi/bake/pi-extension/status-writer.ts"
+  ],
+  "selfLearning": {
+    "enabled": true,
+    "autoAfterTask": true,
+    "injectLastN": 5,
+    "maxCoreItems": 20,
+    "git": {
+      "enabled": false
+    },
+    "context": {
+      "enabled": true,
+      "includeCore": true,
+      "includeLastNDaily": 2,
+      "maxChars": 12000,
+      "instructionMode": "strict"
+    }
+  }
+}

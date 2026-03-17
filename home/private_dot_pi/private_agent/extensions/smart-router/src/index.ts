@@ -19,11 +19,19 @@ import {
 
 export default function smartRouter(pi: ExtensionAPI) {
   let routeLock: RouteLock = "auto";
-  let routeMode: RouteMode = "llm";
+  let routeMode: RouteMode = "off";
   let activeTier: RouteTier = "standard";
   let activeModelLabel = getTierDefinition(activeTier).fullModelId;
 
   function updateStatus(ctx: ExtensionContext, classifying = false) {
+    if (routeMode === "off") {
+      ctx.ui.setStatus(
+        "smart-router",
+        `route:disabled lock:${routeLock} model:${activeModelLabel}`,
+      );
+      return;
+    }
+
     const label = classifying
       ? `route:${routeLock} mode:${routeMode} tier:… model:…`
       : `route:${routeLock} mode:${routeMode} tier:${activeTier} model:${activeModelLabel}`;
@@ -176,7 +184,7 @@ export default function smartRouter(pi: ExtensionAPI) {
   });
 
   pi.registerCommand("route-mode", {
-    description: "Switch routing mode between heuristic and llm",
+    description: "Switch routing mode between off, heuristic, and llm",
     handler: async (args, ctx) => {
       const value = (args ?? "").trim().toLowerCase();
       if (!value) {
@@ -186,12 +194,16 @@ export default function smartRouter(pi: ExtensionAPI) {
       }
 
       if (!isRouteMode(value)) {
-        ctx.ui.notify("Usage: /route-mode <heuristic|llm>", "error");
+        ctx.ui.notify("Usage: /route-mode <off|heuristic|llm>", "error");
         return;
       }
 
       routeMode = value;
-      ctx.ui.notify(`Routing mode set to ${routeMode}`, "info");
+      if (routeMode === "off") {
+        ctx.ui.notify("Routing disabled", "info");
+      } else {
+        ctx.ui.notify(`Routing mode set to ${routeMode}`, "info");
+      }
       updateStatus(ctx);
     },
   });
@@ -214,6 +226,11 @@ export default function smartRouter(pi: ExtensionAPI) {
 
   pi.on("input", async (event, ctx) => {
     if (event.source === "extension") {
+      return;
+    }
+
+    if (routeMode === "off") {
+      updateStatus(ctx);
       return;
     }
 
