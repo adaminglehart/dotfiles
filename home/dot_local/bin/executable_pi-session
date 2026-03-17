@@ -3,12 +3,13 @@ set -euo pipefail
 
 tmux_socket="pi-agents"
 tmux_session="agents"
+tmux_conf="${HOME}/.config/pi/tmux.conf"
 default_model="anthropic/claude-sonnet-4-6"
 image_name="pi-sandbox:latest"
 build_script="${HOME}/.pi/sandbox/build.sh"
 secrets_file="${HOME}/.pi/agent-secrets.env"
 sessions_dir="${HOME}/.pi/agent/sessions"
-learnings_dir="${HOME}/Documents/obsidian/agents/self-learning"
+learnings_dir="${HOME}/Documents/obsidian/agents/learnings"
 
 usage() {
   cat <<'EOF'
@@ -21,7 +22,7 @@ EOF
 }
 
 tmux_cmd() {
-  tmux -L "$tmux_socket" "$@"
+  tmux -L "$tmux_socket" -f "$tmux_conf" "$@"
 }
 
 require_name() {
@@ -98,6 +99,68 @@ ensure_sandbox_prereqs() {
     printf 'Docker image %s is missing. Building it now...\n' "$image_name" >&2
     bash "$build_script" "$image_name"
   fi
+}
+
+# Resolve a single op:// reference with local disk caching.
+# Cache lives in ~/.cache/op_env/ and is valid for OP_CACHE_TTL_HOURS (default 24).
+# Only calls `op` on a cache miss or expiry, so re-auth is only needed once per TTL.
+op_cached_resolve() {
+  local ref="$1"
+  local ttl_hours="${OP_CACHE_TTL_HOURS:-24}"
+
+  local cache_dir="${HOME}/.cache/op_env"
+  local cache_file="${cache_dir}/$(printf '%s' "$ref" | tr '/' '_')"
+
+  # Return cached value if it exists and is still fresh
+  if [[ -f "$cache_file" ]]; then
+    local file_mod now age_hours
+    file_mod="$(stat -f %m "$cache_file" 2>/dev/null || stat -c %Y "$cache_file")"
+    now="$(date +%s)"
+    age_hours=$(( (now - file_mod) / 3600 ))
+    if (( age_hours < ttl_hours )); then
+      cat "$cache_file"
+      return 0
+    fi
+  fi
+
+  # Cache miss or stale — fetch from 1Password
+  mkdir -p "$cache_dir"
+  local value
+  if value="$(printf '%s' "$ref" | op inject 2>/dev/null)"; then
+    printf '%s' "$value" > "$cache_file"
+    chmod 600 "$cache_file"
+    printf '%s' "$value"
+  elif [[ -f "$cache_file" ]]; then
+    # 1Password unavailable but we have a stale cache — use it rather than failing
+    printf 'Warning: 1Password unavailable, using stale cached secret for %s\n' "$ref" >&2
+    cat "$cache_file"
+  else
+    printf 'Error: Failed to fetch secret from 1Password: %s\n' "$ref" >&2
+    return 1
+  fi
+}
+
+# Read $secrets_file (KEY=op://... lines) and emit resolved "-e KEY=value" docker args.
+# Sets the global array RESOLVED_ENV_ARGS.
+resolve_secrets_to_env_args() {
+  RESOLVED_ENV_ARGS=()
+  local key ref value
+
+  while IFS='=' read -r key ref || [[ -n "$key" ]]; do
+    # Skip blank lines and comments
+    [[ -z "$key" || "$key" == \#* ]] && continue
+    # Strip surrounding whitespace
+    key="${key// /}"
+    ref="${ref// /}"
+
+    if [[ "$ref" == op://* ]]; then
+      value="$(op_cached_resolve "$ref")"
+    else
+      value="$ref"
+    fi
+
+    RESOLVED_ENV_ARGS+=("-e" "${key}=${value}")
+  done < "$secrets_file"
 }
 
 create_worktree() {
@@ -187,18 +250,17 @@ new_session() {
   if [[ "$sandbox" -eq 1 ]]; then
     ensure_sandbox_prereqs
     start_qmd_refresh
+    resolve_secrets_to_env_args
 
     local command
     command="$(command_string \
-      op run --env-file="$secrets_file" -- \
       docker run --rm -it --name "$container_name" \
       -v "$workdir:/workspace" \
       -v "$sessions_dir:/home/dev/.pi/agent/sessions" \
       -v "$learnings_dir:/home/dev/.pi/agent/self-learning-memory" \
+      -v "$HOME/.cache/qmd:/home/dev/.cache/qmd" \
       -v "$HOME/.gitconfig:/home/dev/.gitconfig:ro" \
-      -e ANTHROPIC_API_KEY \
-      -e OPENAI_API_KEY \
-      -e GEMINI_API_KEY \
+      "${RESOLVED_ENV_ARGS[@]}" \
       -w /workspace \
       "$image_name" \
       --model "$model")"
@@ -211,6 +273,7 @@ new_session() {
   fi
 
   printf 'Started %s in %s\n' "$name" "$workdir"
+  attach_sessions
 }
 
 list_sessions() {

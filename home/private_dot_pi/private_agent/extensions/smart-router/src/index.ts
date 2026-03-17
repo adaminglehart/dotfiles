@@ -23,11 +23,11 @@ export default function smartRouter(pi: ExtensionAPI) {
   let activeTier: RouteTier = "standard";
   let activeModelLabel = getTierDefinition(activeTier).fullModelId;
 
-  function updateStatus(ctx: ExtensionContext) {
-    ctx.ui.setStatus(
-      "smart-router",
-      `route:${routeLock} mode:${routeMode} tier:${activeTier} model:${activeModelLabel}`,
-    );
+  function updateStatus(ctx: ExtensionContext, classifying = false) {
+    const label = classifying
+      ? `route:${routeLock} mode:${routeMode} tier:… model:…`
+      : `route:${routeLock} mode:${routeMode} tier:${activeTier} model:${activeModelLabel}`;
+    ctx.ui.setStatus("smart-router", label);
   }
 
   async function applyTier(
@@ -78,43 +78,42 @@ export default function smartRouter(pi: ExtensionAPI) {
     if (routeMode === "llm") {
       const classifierModel = ctx.modelRegistry.find(CLASSIFIER_PROVIDER, CLASSIFIER_MODEL_ID);
       if (!classifierModel) {
+        ctx.ui.notify(`Smart-router: classifier model ${CLASSIFIER_PROVIDER}/${CLASSIFIER_MODEL_ID} not found, falling back to heuristic`, "warning");
         return heuristicClassify(text);
       }
-      return llmClassify(text, classifierModel);
+      try {
+        return await llmClassify(text, classifierModel);
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        ctx.ui.notify(`Smart-router: LLM classify failed (${msg}), falling back to heuristic`, "warning");
+        return heuristicClassify(text);
+      }
     }
 
     return heuristicClassify(text);
   }
 
   async function showTierSelector(ctx: ExtensionContext): Promise<void> {
-    const selection = await ctx.ui.select("Routing tier", [
-      {
-        value: "auto",
-        label: routeLock === "auto" ? "Auto (current)" : "Auto",
-        description: "Classify each prompt automatically",
-      },
-      {
-        value: "fast",
-        label: routeLock === "fast" ? "Fast (current)" : "Fast",
-        description: "Haiku for reads, search, and quick questions",
-      },
-      {
-        value: "standard",
-        label: routeLock === "standard" ? "Standard (current)" : "Standard",
-        description: "Sonnet for typical implementation work",
-      },
-      {
-        value: "power",
-        label: routeLock === "power" ? "Power (current)" : "Power",
-        description: "Opus with high thinking for complex work",
-      },
-    ]);
+    const options = [
+      `auto${routeLock === "auto" ? " (current)" : ""} — classify each prompt automatically`,
+      `fast${routeLock === "fast" ? " (current)" : ""} — Haiku for reads, search, quick questions`,
+      `standard${routeLock === "standard" ? " (current)" : ""} — Sonnet for typical implementation work`,
+      `power${routeLock === "power" ? " (current)" : ""} — Opus with high thinking for complex work`,
+    ];
 
-    if (!selection || !isRouteLock(selection)) {
+    const selection = await ctx.ui.select("Routing tier", options);
+
+    if (!selection) {
       return;
     }
 
-    routeLock = selection;
+    // Extract the tier keyword from the start of the selected string
+    const value = selection.split(" ")[0];
+    if (!isRouteLock(value)) {
+      return;
+    }
+
+    routeLock = value;
     if (routeLock === "auto") {
       ctx.ui.notify(`Routing returned to auto (${routeMode})`, "info");
       updateStatus(ctx);
@@ -194,6 +193,7 @@ export default function smartRouter(pi: ExtensionAPI) {
       return;
     }
 
+    updateStatus(ctx, true);
     const tier = await resolveTier(event.text, ctx);
     await applyTier(tier, ctx);
   });

@@ -1,4 +1,4 @@
-import { streamSimple } from "@mariozechner/pi-ai";
+import { completeSimple } from "@mariozechner/pi-ai";
 import type { Api, Model } from "@mariozechner/pi-ai";
 import type { RouteTier } from "./tiers";
 
@@ -38,38 +38,34 @@ export function heuristicClassify(text: string): RouteTier {
 }
 
 export async function llmClassify(text: string, model: Model<Api>): Promise<RouteTier> {
-  try {
-    const result = await streamSimple(
-      model,
-      {
-        systemPrompt: CLASSIFIER_PROMPT,
-        messages: [
-          {
-            role: "user",
-            content: text,
-            timestamp: Date.now(),
-          },
-        ],
-      },
-      {
-        temperature: 0,
-        maxTokens: 8,
-      },
-    ).result();
+  const result = await completeSimple(
+    model,
+    {
+      systemPrompt: CLASSIFIER_PROMPT,
+      messages: [
+        {
+          role: "user",
+          content: text,
+          timestamp: Date.now(),
+        },
+      ],
+    },
+    {
+      temperature: 0,
+      maxTokens: 8,
+    },
+  );
 
-    const response = result.content
-      .map((block) => (block.type === "text" ? block.text : ""))
-      .join(" ")
-      .trim()
-      .toLowerCase();
+  const response = result.content
+    .map((block) => (block.type === "text" ? block.text : ""))
+    .join(" ")
+    .trim()
+    .toLowerCase();
 
-    const match = response.match(/\b(fast|standard|power)\b/);
-    if (!match) {
-      return "standard";
-    }
-
-    return match[1] as RouteTier;
-  } catch {
+  const match = response.match(/\b(fast|standard|power)\b/);
+  if (!match) {
     return "standard";
   }
+
+  return match[1] as RouteTier;
 }

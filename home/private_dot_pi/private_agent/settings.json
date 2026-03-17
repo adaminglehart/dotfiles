@@ -1,7 +1,7 @@
 {
   "lastChangelogVersion": "0.58.4",
-  "defaultProvider": "openai",
-  "defaultModel": "gpt-5.4",
+  "defaultProvider": "anthropic",
+  "defaultModel": "claude-sonnet-4-6",
   "packages": ["npm:@plannotator/pi-extension", "npm:pi-self-learning"],
   "enabledModels": [
     "anthropic/claude-sonnet-4-6",
