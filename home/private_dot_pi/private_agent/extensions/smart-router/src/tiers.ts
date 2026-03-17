@@ -23,25 +23,25 @@ export interface TierDefinition {
 
 const TIER_DEFINITIONS: Record<RouteTier, TierDefinition> = {
   fast: {
-    provider: "anthropic",
-    modelId: "claude-haiku-4-5",
+    provider: "openrouter",
+    modelId: "anthropic/claude-haiku-4.5",
     thinking: "off",
     label: "Fast",
-    fullModelId: "anthropic/claude-haiku-4-5",
+    fullModelId: "anthropic/claude-haiku-4.5",
   },
   standard: {
-    provider: "anthropic",
-    modelId: "claude-sonnet-4-6",
+    provider: "openrouter",
     thinking: "off",
+    modelId: "anthropic/claude-sonnet-4.6",
     label: "Standard",
-    fullModelId: "anthropic/claude-sonnet-4-6",
+    fullModelId: "anthropic/claude-sonnet-4.6",
   },
   power: {
-    provider: "openai-codex",
-    modelId: "gpt-5.4",
+    provider: "openrouter",
+    modelId: "openai/gpt-5.4",
     thinking: "high",
     label: "Power",
-    fullModelId: "openai-codex/gpt-5.4",
+    fullModelId: "openai/gpt-5.4",
   },
 };
 

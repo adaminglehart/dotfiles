@@ -1,4 +1,5 @@
 import { completeSimple } from "@mariozechner/pi-ai";
+import { ExtensionContext } from "@mariozechner/pi-coding-agent";
 import type { Api, Model } from "@mariozechner/pi-ai";
 import type { RouteTier } from "./tiers";
 
@@ -22,8 +23,12 @@ const CLASSIFIER_PROMPT = [
   "power = planning, architecture, complex debugging, redesigns, large refactors.",
 ].join("\n");
 
-export const CLASSIFIER_PROVIDER = "google";
-export const CLASSIFIER_MODEL_ID = "gemini-2.5-flash";
+// const classifierModels = [
+//   {provider: "openrouter", model: "google/gemini-2.5-flash"}
+// ]
+
+export const CLASSIFIER_PROVIDER = "openrouter";
+export const CLASSIFIER_MODEL_ID = "google/gemini-2.5-flash";
 
 export function heuristicClassify(text: string): RouteTier {
   if (POWER_PATTERNS.some((pattern) => pattern.test(text))) {
@@ -37,7 +42,12 @@ export function heuristicClassify(text: string): RouteTier {
   return "standard";
 }
 
-export async function llmClassify(text: string, model: Model<Api>, apiKey: string): Promise<RouteTier> {
+export async function llmClassify(
+  text: string,
+  model: Model<Api>,
+  apiKey: string,
+  ctx: ExtensionContext,
+): Promise<RouteTier | null> {
   const result = await completeSimple(
     model,
     {
@@ -52,10 +62,18 @@ export async function llmClassify(text: string, model: Model<Api>, apiKey: strin
     },
     {
       temperature: 0,
-      maxTokens: 8,
+      maxTokens: 64,
       apiKey,
     },
   );
+
+  if (result.errorMessage) {
+    ctx.ui.notify(
+      `Smart-router: LLM classify failed (${result.errorMessage}), falling back to heuristic`,
+      "warning",
+    );
+    return null;
+  }
 
   const response = result.content
     .map((block) => (block.type === "text" ? block.text : ""))
@@ -63,9 +81,15 @@ export async function llmClassify(text: string, model: Model<Api>, apiKey: strin
     .trim()
     .toLowerCase();
 
+  ctx.ui.notify(`Smart-router: LLM response (response: ${response}) `, "info");
+
   const match = response.match(/\b(fast|standard|power)\b/);
   if (!match) {
-    return "standard";
+    ctx.ui.notify(
+      `Smart-router: LLM classify failed (no match), falling back to heuristic (response: ${response}) `,
+      "warning",
+    );
+    return null;
   }
 
   return match[1] as RouteTier;

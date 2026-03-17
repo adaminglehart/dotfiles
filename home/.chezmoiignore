@@ -2,3 +2,11 @@
 {{ if eq .environment "home" }}
 .config/fish/user_conf.d/stripe.fish
 {{ end }}
+
+# Don't copy node_modules from pi extension source dirs
+.pi/agent/extensions/*/node_modules
+.pi/agent/extensions/*/bun.lock
+
+# Don't copy bake's generated deps
+.config/pi/bake/node_modules
+.config/pi/bake/bun.lock

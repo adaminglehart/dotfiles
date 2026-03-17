@@ -4,7 +4,7 @@ set working-directory := x"$HOME/.config/just/onepassword"
 default:
     just -l
 
-set name value vault:
+set name value vault="dotenv":
     echo "setting {{ name }}"
     op item create --template=dotenv_template.json --title={{ name }} --vault={{ vault }} - credential={{ value }}
 

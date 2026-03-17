@@ -70,27 +70,46 @@ export default function smartRouter(pi: ExtensionAPI) {
     updateStatus(ctx);
   }
 
-  async function resolveTier(text: string, ctx: ExtensionContext): Promise<RouteTier> {
+  async function resolveTier(
+    text: string,
+    ctx: ExtensionContext,
+  ): Promise<RouteTier> {
     if (routeLock !== "auto") {
       return routeLock;
     }
 
     if (routeMode === "llm") {
-      const classifierModel = ctx.modelRegistry.find(CLASSIFIER_PROVIDER, CLASSIFIER_MODEL_ID);
+      const classifierModel = ctx.modelRegistry.find(
+        CLASSIFIER_PROVIDER,
+        CLASSIFIER_MODEL_ID,
+      );
       if (!classifierModel) {
-        ctx.ui.notify(`Smart-router: classifier model ${CLASSIFIER_PROVIDER}/${CLASSIFIER_MODEL_ID} not found, falling back to heuristic`, "warning");
+        ctx.ui.notify(
+          `Smart-router: classifier model ${CLASSIFIER_PROVIDER}/${CLASSIFIER_MODEL_ID} not found, falling back to heuristic`,
+          "warning",
+        );
         return heuristicClassify(text);
       }
       try {
         const apiKey = await ctx.modelRegistry.getApiKey(classifierModel);
         if (!apiKey) {
-          ctx.ui.notify(`Smart-router: no API key for ${CLASSIFIER_PROVIDER}/${CLASSIFIER_MODEL_ID}, falling back to heuristic`, "warning");
+          ctx.ui.notify(
+            `Smart-router: no API key for ${CLASSIFIER_PROVIDER}/${CLASSIFIER_MODEL_ID}, falling back to heuristic`,
+            "warning",
+          );
           return heuristicClassify(text);
         }
-        return await llmClassify(text, classifierModel, apiKey);
+        const result = await llmClassify(text, classifierModel, apiKey, ctx);
+        if (result === null) {
+          return heuristicClassify(text);
+        }
+        return result;
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
-        ctx.ui.notify(`Smart-router: LLM classify failed (${msg}), falling back to heuristic`, "warning");
+        ctx.ui.notify(
+          `Smart-router: LLM classify failed (${msg}), falling back to heuristic`,
+          "warning",
+        );
         return heuristicClassify(text);
       }
     }

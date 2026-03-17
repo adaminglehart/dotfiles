@@ -1,15 +1,13 @@
 {
-  "name": "smart-router",
+  "name": "bake",
   "private": true,
   "type": "module",
   "version": "0.1.0",
-  "pi": {
-    "extensions": [
-      "./src/index.ts"
-    ]
+  "scripts": {
+    "start": "bun run index.ts"
   },
   "devDependencies": {
     "@mariozechner/pi-coding-agent": "^",
-    "@mariozechner/pi-ai": "^"
+    "@types/bun": "latest"
   }
 }

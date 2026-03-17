@@ -20,3 +20,6 @@ home/dot_codex/skills/*
 !home/dot_codex/skills/symlink_custom
 !home/dot_codex/symlink_tools
 .DS_Store
+home/private_dot_pi/private_agent/extensions/smart-router/node_modules
+home/dot_config/pi/bake/node_modules
+bun.lock
