@@ -12,13 +12,63 @@
       },
       "models": {
         "claude-opus-4.6": {
-          "name": "Claude Opus 4.6"
+          "name": "Claude Opus 4.6",
+          "variants": {
+            "low": {
+              "thinking": { "type": "adaptive" },
+              "effort": "low"
+            },
+            "medium": {
+              "thinking": { "type": "adaptive" },
+              "effort": "medium"
+            },
+            "high": {
+              "thinking": { "type": "adaptive" },
+              "effort": "high"
+            },
+            "max": {
+              "thinking": { "type": "adaptive" },
+              "effort": "max"
+            }
+          }
         },
         "claude-opus-4.6-1m": {
-          "name": "Claude Opus 4.6 1M"
+          "name": "Claude Opus 4.6 1M",
+          "variants": {
+            "low": {
+              "thinking": { "type": "adaptive" },
+              "effort": "low"
+            },
+            "medium": {
+              "thinking": { "type": "adaptive" },
+              "effort": "medium"
+            },
+            "high": {
+              "thinking": { "type": "adaptive" },
+              "effort": "high"
+            },
+            "max": {
+              "thinking": { "type": "adaptive" },
+              "effort": "max"
+            }
+          }
         },
         "claude-sonnet-4.5": {
-          "name": "Claude Sonnet 4.5"
+          "name": "Claude Sonnet 4.5",
+          "variants": {
+            "low": {
+              "thinking": { "type": "enabled", "budgetTokens": 5000 }
+            },
+            "medium": {
+              "thinking": { "type": "enabled", "budgetTokens": 10000 }
+            },
+            "high": {
+              "thinking": { "type": "enabled", "budgetTokens": 16000 }
+            },
+            "max": {
+              "thinking": { "type": "enabled", "budgetTokens": 32000 }
+            }
+          }
         },
         "claude-4.5-haiku": {
           "name": "Claude Haiku 4.5"
@@ -34,10 +84,22 @@
       },
       "models": {
         "gpt-5.4": {
-          "name": "GPT-5.4"
+          "name": "GPT-5.4",
+          "variants": {
+            "low": { "reasoningEffort": "low" },
+            "medium": { "reasoningEffort": "medium" },
+            "high": { "reasoningEffort": "high" },
+            "max": { "reasoningEffort": "high", "reasoningSummary": "auto" }
+          }
         },
         "gpt-5.3-codex": {
-          "name": "GPT-5.3 Codex"
+          "name": "GPT-5.3 Codex",
+          "variants": {
+            "low": { "reasoningEffort": "low" },
+            "medium": { "reasoningEffort": "medium" },
+            "high": { "reasoningEffort": "high" },
+            "max": { "reasoningEffort": "high", "reasoningSummary": "auto" }
+          }
         }
       }
     },
