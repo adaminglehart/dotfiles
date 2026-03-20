@@ -25,10 +25,7 @@ export default function smartRouter(pi: ExtensionAPI) {
 
   function updateStatus(ctx: ExtensionContext, classifying = false) {
     if (routeMode === "off") {
-      ctx.ui.setStatus(
-        "smart-router",
-        `route:disabled lock:${routeLock} model:${activeModelLabel}`,
-      );
+      ctx.ui.setStatus("smart-router", `smart-routing:disabled`);
       return;
     }
 

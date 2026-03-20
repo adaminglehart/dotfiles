@@ -40,3 +40,7 @@ ALWAYS use subagents where possible, prefer to parallelize work when it does not
 
 - When adding `mise` tool versions, prefer the latest stable version unless the repo explicitly requires a pinned older release.
 - When adding Pi shortcuts, check for conflicts with built-in bindings before choosing keys.
+
+## Agents
+
+- if asked to create a pi extension, put it in the dotfiles repo in the appropriate pi configuration location under home/private_dot_pi (which corresponds to ~/.pi)
