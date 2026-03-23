@@ -130,7 +130,6 @@ function renderModelSegment(ctx: FooterContext): string {
   // Shorten model name
   let shortName = modelName.trim();
   if (shortName.startsWith("Claude ")) shortName = shortName.slice(7);
-  if (shortName.startsWith("GPT-")) shortName = shortName.slice(4);
   if (shortName.startsWith("Google: ")) shortName = shortName.slice(8);
   if (shortName.startsWith("MoonshotAI: ")) shortName = shortName.slice(11);
   if (shortName.startsWith("Anthropic: ")) shortName = shortName.slice(10);
@@ -191,14 +190,17 @@ function renderBranchSegment(ctx: FooterContext): string {
 }
 
 function renderTokensSegment(ctx: FooterContext): string {
-  if (!ctx.contextTokens && ctx.contextPercent === null) return "";
+  if (ctx.contextWindow <= 0) return "";
 
   const color = ansi.fg(colors.input);
   const textColor = ansi.fg(colors.text);
+  const dimColor = ansi.fg(colors.sep);
 
   let display = "";
   if (ctx.contextPercent !== null) {
     display = `${Math.round(ctx.contextPercent * 10) / 10}%`;
+  } else {
+    display = `${dimColor}?${ansi.reset}${color}`;
   }
   display += `/${formatTokens(ctx.contextWindow)}`;
 

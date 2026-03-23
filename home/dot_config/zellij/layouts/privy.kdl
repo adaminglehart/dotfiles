@@ -11,18 +11,21 @@ layout {
         }
     }
 
-    tab name="claude" cwd="~/dev/privy" {
-      pane command="claude"
-    }
-
     tab name="privy" cwd="~/dev/privy" hide_floating_panes=true {
       pane split_direction="horizontal" {
-        pane
+        pane command="pi"
         pane
       }
 
       floating_panes {
           pane {
+              x "25%"
+              y "5%"
+              width "50%"
+              height "50%"
+          }
+          pane {
+              command "gitui"
               x "10%"
               y "10%"
               width "80%"
@@ -32,9 +35,17 @@ layout {
     }
 
     tab name="terraform" cwd="~/dev/terraform" hide_floating_panes=true {
+      pane command="pi"
       pane
       floating_panes {
           pane {
+              x "25%"
+              y "5%"
+              width "50%"
+              height "50%"
+          }
+          pane {
+              command "gitui"
               x "10%"
               y "10%"
               width "80%"
@@ -44,9 +55,17 @@ layout {
     }
 
     tab name="dotfiles" cwd="~/dev/dotfiles" hide_floating_panes=true {
+      pane command="pi"
       pane
       floating_panes {
           pane {
+              x "25%"
+              y "5%"
+              width "50%"
+              height "50%"
+          }
+          pane {
+              command "gitui"
               x "10%"
               y "10%"
               width "80%"

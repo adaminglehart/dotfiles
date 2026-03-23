@@ -1,6 +1,12 @@
 sourceDir: ~/dev/dotfiles/
 diff:
   pager: "delta"
+  command: "diff"
+  args:
+    - "-u"
+    - "--ignore-all-space"
+    - '{{ "{{" }} .Destination {{ "}}" }}'
+    - '{{ "{{" }} .Target {{ "}}" }}'
 merge:
   command: "bash"
   args:

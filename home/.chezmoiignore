@@ -3,7 +3,11 @@
 .config/fish/user_conf.d/stripe.fish
 {{ end }}
 
-# Don't copy node_modules from pi extension source dirs
+# Don't copy node_modules or dev tooling from pi extension source dirs
+.pi/agent/extensions/node_modules
+.pi/agent/extensions/bun.lock
+.pi/agent/extensions/package.json
+.pi/agent/extensions/tsconfig.json
 .pi/agent/extensions/*/node_modules
 .pi/agent/extensions/*/bun.lock
 
