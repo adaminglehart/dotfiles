@@ -12,6 +12,8 @@
 import { Type } from "@sinclair/typebox";
 import { StringEnum } from "@mariozechner/pi-ai";
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import { formatSize } from "@mariozechner/pi-coding-agent";
+import { Text } from "@mariozechner/pi-tui";
 
 const API_CONFIG = {
 	BASE_URL: "https://mcp.exa.ai",
@@ -47,6 +49,14 @@ interface McpSearchResponse {
 			text: string;
 		}>;
 	};
+}
+
+interface WebSearchDetails {
+	query: string;
+	numResults: number;
+	resultCount: number;
+	contentSize: number;
+	noResults?: boolean;
 }
 
 const DESCRIPTION = `- Search the web using Exa AI - performs real-time web searches and can scrape content from specific URLs
@@ -156,12 +166,19 @@ export default function (pi: ExtensionAPI) {
 					if (line.startsWith("data: ")) {
 						const data: McpSearchResponse = JSON.parse(line.substring(6));
 						if (data.result?.content?.length > 0) {
+							const resultText = data.result.content[0].text;
+							// Count actual results by looking for URL patterns in Exa response
+							const urlMatches = resultText.match(/URL:\s*http/gi);
+							const resultCount = urlMatches ? urlMatches.length : 0;
+
 							return {
-								content: [{ type: "text", text: data.result.content[0].text }],
+								content: [{ type: "text", text: resultText }],
 								details: {
 									query: params.query,
 									numResults: params.numResults || API_CONFIG.DEFAULT_NUM_RESULTS,
-								},
+									resultCount,
+									contentSize: new TextEncoder().encode(resultText).byteLength,
+								} as WebSearchDetails,
 							};
 						}
 					}
@@ -169,7 +186,13 @@ export default function (pi: ExtensionAPI) {
 
 				return {
 					content: [{ type: "text", text: "No search results found. Please try a different query." }],
-					details: { query: params.query },
+					details: {
+						query: params.query,
+						numResults: params.numResults || API_CONFIG.DEFAULT_NUM_RESULTS,
+						resultCount: 0,
+						contentSize: 0,
+						noResults: true,
+					} as WebSearchDetails,
 				};
 			} catch (error) {
 				clearTimeout(timeoutId);
@@ -179,6 +202,49 @@ export default function (pi: ExtensionAPI) {
 				}
 				throw error;
 			}
+		},
+
+		renderCall(args, theme) {
+			let text = theme.fg("toolTitle", theme.bold("websearch "));
+			text += theme.fg("accent", `"${args.query}"`);
+			if (args.type && args.type !== "auto") {
+				text += theme.fg("dim", ` --type ${args.type}`);
+			}
+			if (args.numResults) {
+				text += theme.fg("dim", ` --results ${args.numResults}`);
+			}
+			return new Text(text, 0, 0);
+		},
+
+		renderResult(result, { expanded, isPartial }, theme) {
+			const details = result.details as WebSearchDetails | undefined;
+
+			if (isPartial) {
+				return new Text(theme.fg("warning", "Searching..."), 0, 0);
+			}
+
+			if (result.isError) {
+				const errorText = result.content[0]?.type === "text" ? result.content[0].text : "Error";
+				return new Text(theme.fg("error", errorText), 0, 0);
+			}
+
+			let text = "";
+
+			if (details?.noResults) {
+				text = theme.fg("warning", "✗ No results found");
+			} else {
+				const count = details?.resultCount ?? 0;
+				const size = formatSize(details?.contentSize ?? 0);
+				text = theme.fg("success", `✓ ${count} result${count !== 1 ? "s" : ""}`);
+				text += theme.fg("dim", ` (${size})`);
+			}
+
+			if (expanded && details) {
+				text += `\n${theme.fg("dim", `Query: ${details.query}`)}`;
+				text += `\n${theme.fg("dim", `Requested: ${details.numResults} results`)}`;
+			}
+
+			return new Text(text, 0, 0);
 		},
 	});
 }
