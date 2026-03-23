@@ -17,3 +17,7 @@ Plans live in the `plans/` directory in the project root, named by feature:
 - `plans/api-pagination.md`
 
 don't auto-commit changes to git, let me take care of that
+  
+## Extensions
+
+- if asked to create or edit an extension, do it in the dotfiles repo in the correct pi configuration location under home/private_dot_pi (which corresponds to ~/.pi). For example, since an extension needs to end up in ~/.pi/agent/extensions, it should go in dotfiles/private_dot_pi/private_agent/extensions
