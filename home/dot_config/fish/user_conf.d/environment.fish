@@ -1,14 +1,21 @@
-# and FNOX_AGE_KEY not already set
-if test (which op)
-  if test (which fnox) && test -z "$FNOX_AGE_KEY"
-    set -g FNOX_AGE_KEY (op_cached "op://homelab/age key/secretkey")
+# Set FNOX_AGE_KEY from local file (create from 1Password if needed)
+if test (which fnox) && test -z "$FNOX_AGE_KEY"
+  set -l age_file ~/.config/fnox/age.txt
+
+  if not test -f $age_file
+    if test (which op)
+      op read "op://homelab/age key/secretkey" > $age_file
+      chmod 600 $age_file
+    end
   end
 
-  set -g ANTHROPIC_API_KEY (op_cached "op://dotenv/ANTHROPIC_API_KEY/value")
-  set -g GEMINI_API_KEY (op_cached "op://dotenv/GEMINI_API_KEY/value")
-  set -g OPENAI_API_KEY (op_cached "op://dotenv/OPENAI_API_KEY/value")
+  if test -f $age_file
+    set -g FNOX_AGE_KEY (grep "AGE-SECRET-KEY" $age_file)
+  end
 end
 
-# if test (which op)
-#     set -gx HONCHO_API_KEY (op_cached "op://dotenv/HONCHO_API_KEY/value")
-# end
+# Load secrets from fnox global config
+# After first setup, run: fnox sync --provider age --global --force
+if test (which fnox) && test -n "$FNOX_AGE_KEY"
+  fnox export --format env | source
+end

@@ -1,31 +1,35 @@
 /**
- * Model Pricing Footer - Shows model costs in a powerline-style footer
+ * Custom Footer - Shows model info, costs, and status in a powerline-style footer
  *
  * Displays:
  * - Model name with provider
  * - Token pricing (input/output per 1M tokens)
  * - Current thinking level
  * - Session cost (if tracked)
+ * - Git branch and directory
+ * - Context usage
+ * - Animated ASCII wave
  *
- * Usage: pi -e ./model-pricing-footer.ts
+ * Usage: pi -e ./custom-footer/index.ts
  */
 
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import type { Model } from "@mariozechner/pi-ai";
 import { truncateToWidth, visibleWidth } from "@mariozechner/pi-tui";
+import { renderAnimationBox, startAnimation, stopAnimation } from "./animation.js";
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Color helpers
+// Color helpers (exported for animation.ts)
 // ═══════════════════════════════════════════════════════════════════════════
 
-const ansi = {
+export const ansi = {
   reset: "\x1b[0m",
   bold: "\x1b[1m",
   dim: "\x1b[2m",
   fg: (color: string) => `\x1b[38;5;${color}m`,
 };
 
-const colors = {
+export const colors = {
   pi: "213", // Pink
   model: "183", // Light purple
   input: "111", // Light blue
@@ -34,6 +38,8 @@ const colors = {
   thinking: "183", // Light purple
   sep: "240", // Gray
   text: "250", // Light gray
+  accent: "213", // Pink
+  reset: "0",
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -107,6 +113,18 @@ interface FooterContext {
   contextWindow: number;
   cwd: string;
   gitBranch: string | null;
+  acmEnabled: boolean;
+}
+
+function renderAcmSegment(ctx: FooterContext): string {
+  if (ctx.acmEnabled) {
+    const color = ansi.fg(colors.pi);
+    return `${color}ACM${ansi.reset}`;
+  } else {
+    const color = ansi.fg(colors.sep);
+    const textColor = ansi.fg(colors.text);
+    return `${color}ACM:${ansi.reset}${textColor}off${ansi.reset}`;
+  }
 }
 
 function renderModelSegment(ctx: FooterContext): string {
@@ -218,7 +236,7 @@ function renderSessionCostSegment(ctx: FooterContext): string {
 // Main footer builder
 // ═══════════════════════════════════════════════════════════════════════════
 
-function buildFooter(ctx: FooterContext, width: number): [string, string] {
+function buildFooter(ctx: FooterContext, width: number): [string, string, string] {
   const sepColor = ansi.fg(colors.sep);
   const separator = ` ${sepColor}│${ansi.reset} `;
 
@@ -235,10 +253,12 @@ function buildFooter(ctx: FooterContext, width: number): [string, string] {
   const modelSeg = renderModelSegment(ctx);
   const pricingSeg = renderPricingSegment(ctx);
   const thinkingSeg = renderThinkingSegment(ctx);
+  const acmSeg = renderAcmSegment(ctx);
 
   if (modelSeg) line2LeftSegments.push(modelSeg);
   if (pricingSeg) line2LeftSegments.push(pricingSeg);
   if (thinkingSeg) line2LeftSegments.push(thinkingSeg);
+  if (acmSeg) line2LeftSegments.push(acmSeg);
 
   const line2RightSegments: string[] = [];
   const tokensSeg = renderTokensSegment(ctx);
@@ -265,17 +285,25 @@ function buildFooter(ctx: FooterContext, width: number): [string, string] {
     line2 += " ".repeat(padding) + separator + line2RightContent;
   }
 
-  return [line1, line2];
+  const line3 = renderAnimationBox(width);
+  return [line1, line2, line3];
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Extension
 // ═══════════════════════════════════════════════════════════════════════════
 
-export default function modelPricingFooter(pi: ExtensionAPI) {
+export default function customFooter(pi: ExtensionAPI) {
   let enabled = true;
   let tuiRef: any = null;
   let ctxRef: any = null;
+  let acmEnabled = false;
+
+  // Track context-pilot state
+  pi.events.on("context-pilot:enabled", () => {
+    acmEnabled = true;
+    tuiRef?.requestRender();
+  });
 
   // Request re-render on agent activity
   pi.on("agent_end", async () => {
@@ -294,20 +322,23 @@ export default function modelPricingFooter(pi: ExtensionAPI) {
 
   // Request re-render on session switch
   pi.on("session_switch", async () => {
+    acmEnabled = false;
+    pi.events.emit("context-pilot:status_request", {});
     tuiRef?.requestRender();
   });
 
   // Register toggle command
-  pi.registerCommand("pricing-footer", {
-    description: "Toggle model pricing footer",
+  pi.registerCommand("footer", {
+    description: "Toggle custom footer",
     handler: async (_args, ctx) => {
       enabled = !enabled;
       if (enabled) {
         setupFooter(ctx);
-        ctx.ui.notify("Pricing footer enabled", "info");
+        ctx.ui.notify("Custom footer enabled", "info");
       } else {
+        stopAnimation();
         ctx.ui.setFooter(undefined);
-        ctx.ui.notify("Pricing footer disabled", "info");
+        ctx.ui.notify("Custom footer disabled", "info");
       }
     },
   });
@@ -353,19 +384,26 @@ export default function modelPricingFooter(pi: ExtensionAPI) {
             contextWindow: contextUsage?.contextWindow ?? 0,
             cwd: ctxRef.cwd ?? "",
             gitBranch: footerData?.getGitBranch?.() ?? null,
+            acmEnabled: acmEnabled,
           };
 
-          const [line1, line2] = buildFooter(footerContext, width);
-          return [line1, line2];
+          const [line1, line2, line3] = buildFooter(footerContext, width);
+          return [line1, line2, line3];
         },
         invalidate: () => {},
-        dispose: () => {},
+        dispose: () => {
+          stopAnimation();
+        },
       };
     });
+
+    // Start animation loop (outside the render callback)
+    startAnimation(tuiRef, 120);
   }
 
   // Setup on session start
   pi.on("session_start", async (_event, ctx) => {
+    pi.events.emit("context-pilot:status_request", {});
     if (enabled && ctx.hasUI) {
       setupFooter(ctx);
     }

@@ -19,12 +19,20 @@ export default function contextPilot(pi: ExtensionAPI) {
   // Register commands
   registerContextDashboard(pi);
 
+  // Handle status requests from other extensions (e.g. footer)
+  pi.events.on("context-pilot:status_request", () => {
+    if (getCommandCtx()) {
+      pi.events.emit("context-pilot:enabled", true);
+    }
+  });
+
   // /acm — captures ExtensionCommandContext (required for navigateTree).
   // Must be run once per session before context_checkout can work.
   pi.registerCommand("acm", {
     description: "Enable agentic context management for the current session",
     handler: async (args, ctx) => {
       setCommandCtx(ctx);
+      pi.events.emit("context-pilot:enabled", true);
       ctx.ui.notify("Agentic Context Management enabled.", "info");
       pi.sendMessage(
         {

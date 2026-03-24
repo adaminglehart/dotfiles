@@ -25,3 +25,8 @@ don't auto-commit changes to git, let me take care of that
 ## Context Management
 
 Always use the context-pilot skill for proactive context management. Read the skill file at the start of every session and follow its guidelines throughout.
+
+
+## Tool usage
+
+- NEVER run a terraform apply or other possibly destructive command without checking with me first

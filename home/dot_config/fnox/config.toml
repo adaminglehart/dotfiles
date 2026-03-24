@@ -1,0 +1,16 @@
+# Fnox global config
+# Sync to local cache: fnox sync --provider age --global --force
+# This stores encrypted copies of 1Password secrets for offline/fast access
+
+[providers.age]
+type = "age"
+recipients = ["age1q6el4a8vtj0uyzt7447m43mp887z28eqvhmfs3a5nl383wxhpf9szjj9jc"]
+
+[providers.op]
+type = "1password"
+
+[secrets]
+ANTHROPIC_API_KEY = { provider = "op", value = "op://dotenv/ANTHROPIC_API_KEY/value" }
+GEMINI_API_KEY = { provider = "op", value = "op://dotenv/GEMINI_API_KEY/value" }
+OPENAI_API_KEY = { provider = "op", value = "op://dotenv/OPENAI_API_KEY/value" }
+OPENROUTER_API_KEY = { provider = "op", value = "op://dotenv/OPENROUTER_API_KEY/value" }

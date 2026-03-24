@@ -1,5 +1,10 @@
 # AGENTS.md
 
+**Top-level agent guidelines for all coding sessions.**
+
+See also:
+- **Dotfiles Repo:** `~/dev/dotfiles/AGENTS.md` (Chezmoi conventions and dotfile management)
+
 # Instructions
 
 Whenever corrected, after making a mistake or misinterpreting, add a section in here (~/AGENTS.md) to instruct future sessions, avoiding the mistake again. Only do this if it's a generalizable mistake, don't add one-offs.
@@ -20,6 +25,7 @@ ALWAYS use subagents where possible, prefer to parallelize work when it does not
 - Only do what I asked. Don't add features, refactor surrounding code, or "improve" things unprompted. Do call out opportunities for improvements when you see them, just don't make them without discussion.
 - Push back if I'm approaching something wrong — don't just agree
 - When requesting permanent tool permissions, scope them tightly (e.g. `kubectl get pods *` not `kubectl *`)
+- **Destructive Operations** — NEVER run `terraform apply`, `kubectl delete`, etc. without explicit approval
 
 ## Tool Usage
 - prefer ripgrep (rg) over regular grep
@@ -40,4 +46,6 @@ ALWAYS use subagents where possible, prefer to parallelize work when it does not
 ## Corrections
 
 - When adding `mise` tool versions, prefer the latest stable version unless the repo explicitly requires a pinned older release.
+
+### Pi
 - When adding Pi shortcuts, check for conflicts with built-in bindings before choosing keys.
