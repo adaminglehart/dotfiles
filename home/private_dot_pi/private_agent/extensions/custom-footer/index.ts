@@ -18,6 +18,7 @@ import {
 	startAnimation,
 	stopAnimation,
 	cycleAnimation,
+	addManualFish,
 	CONFIG,
 } from "./animation.js";
 
@@ -261,6 +262,15 @@ export default function customFooter(pi: ExtensionAPI) {
 		handler: async (_args, ctx) => {
 			const style = cycleAnimation();
 			ctx.ui.notify(`Style: ${style}`, "info");
+			tuiRef?.requestRender();
+		},
+	});
+
+	pi.registerCommand("fish", {
+		description: "Add a new fish manually",
+		handler: async (_args, ctx) => {
+			addManualFish();
+			ctx.ui.notify("Added a new fish! 🐠", "info");
 			tuiRef?.requestRender();
 		},
 	});

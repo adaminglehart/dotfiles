@@ -79,6 +79,11 @@ interface Fish {
 }
 
 let aquariumFish: Fish[] = [];
+let manualFishCount = 0;
+
+export function addManualFish() {
+	manualFishCount++;
+}
 
 function randomizeFish(fish: Fish, width: number) {
   fish.y = Math.floor(Math.random() * CONFIG.AQUARIUM_ROWS);
@@ -92,7 +97,8 @@ function randomizeFish(fish: Fish, width: number) {
 }
 
 function initAquarium() {
-  aquariumFish = Array.from({ length: CONFIG.MAX_FISH_COUNT }, () => {
+  // Pre-allocate a larger pool for manual fish
+  aquariumFish = Array.from({ length: 100 }, () => {
     const fish = {} as Fish;
     randomizeFish(fish, 100);
     fish.x = Math.random() * 120 - 10;
@@ -110,10 +116,8 @@ export function renderAquarium(
   width: number,
   contextPercent: number,
 ): string[] {
-  const numFish = Math.min(
-    CONFIG.MAX_FISH_COUNT,
-    Math.floor((contextPercent || 0) / CONFIG.CONTEXT_PERCENT_PER_FISH) + 1,
-  );
+  const contextFish = Math.floor((contextPercent || 0) / CONFIG.CONTEXT_PERCENT_PER_FISH) + 1;
+  const numFish = Math.min(100, contextFish + manualFishCount);
 
   const buffer: string[][] = Array.from({ length: CONFIG.AQUARIUM_ROWS }, () =>
     new Array(width).fill(" "),
