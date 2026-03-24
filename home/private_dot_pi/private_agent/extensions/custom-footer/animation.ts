@@ -1,98 +1,82 @@
 import { ansi, colors } from "./index.js";
-import { visibleWidth } from "@mariozechner/pi-tui";
 
 /**
  * ASCII Animation Configuration
  *
- * Each frame set is a string array. To change the active animation,
- * update the 'activeFrames' assignment below.
+ * Each frame set is an array of [line1, line2, line3] tuples (5x3 content).
  */
 
-const animations = {
-  wave: [
-    "▁▂▄▅▆█▆▅▄▂▁",
-    "▂▁▂▄▅▆█▆▅▄▂",
-    "▄▂▁▂▄▅▆█▆▅▄",
-    "▅▄▂▁▂▄▅▆█▆▅",
-    "▆▅▄▂▁▂▄▅▆█▆",
-    "█▆▅▄▂▁▂▄▅▆█",
-    "▆█▆▅▄▂▁▂▄▅▆",
-    "▅▆█▆▅▄▂▁▂▄▅",
-    "▄▅▆█▆▅▄▂▁▂▄",
-    "▂▄▅▆█▆▅▄▂▁▂",
+export const animations: Record<string, string[][]> = {
+  fish: [
+    ["<><  ", "     ", "     "],
+    [" <>< ", "     ", "     "],
+    ["  <><", "     ", "     "],
+    ["   ><", "     ", "     "],
+    ["     ", "  <><", "     "],
+    ["     ", " <>< ", "     "],
+    ["     ", "<><  ", "     "],
+    ["     ", "     ", "<><  "],
+    ["     ", "     ", " <>< "],
+    ["     ", "     ", "  <><"],
   ],
-  pulse: [
-    "  ○  ",
-    "  ◔  ",
-    "  ◑  ",
-    "  ◕  ",
-    "  ●  ",
-    "  ◕  ",
-    "  ◑  ",
-    "  ◔  ",
+  clock: [
+    ["  |  ", "  o  ", "     "],
+    ["     ", "  o--", "     "],
+    ["     ", "  o  ", "  |  "],
+    ["     ", "--o  ", "     "],
   ],
-  spinner: ["◜", "◠", "◝", "◞", "◡", "◟"],
-  arrows: ["←", "↖", "↑", "↗", "→", "↘", "↓", "↙"],
 };
+
+const styleKeys = Object.keys(animations);
+let currentStyleIdx = 0;
 
 /**
  * ACTIVE ANIMATION
- * Change this value to switch styles: 'wave', 'pulse', 'braille', 'spinner', 'arrows'
  */
-export const animation = animations.pulse;
+export let activeFrames = animations[styleKeys[currentStyleIdx]!]!;
+
+/**
+ * Cycle to the next animation style
+ * @returns The name of the new animation style
+ */
+export function cycleAnimation(): string {
+  currentStyleIdx = (currentStyleIdx + 1) % styleKeys.length;
+  const newStyle = styleKeys[currentStyleIdx]!;
+  activeFrames = animations[newStyle]!;
+  animationFrame = 0; // Reset frame to start of new animation
+  return newStyle;
+}
 
 // Animation state
 export let animationFrame = 0;
-export let animationInterval: ReturnType<typeof setInterval> | null = null;
+let animationInterval: ReturnType<typeof setInterval> | null = null;
 
 /**
- * Render the animated wave in a box
- * @param width - total width available for the footer line
- * @returns formatted string with borders and centered animation
+ * Renders a 5x3 animation block (3 lines)
+ * @returns Array of 3 strings
  */
-export function renderAnimationBox(width: number): string {
-  const frame = animation[animationFrame]!;
+export function renderAnimationBlock(): string[] {
+  const frame = activeFrames[animationFrame]!;
   const accentColor = ansi.fg(colors.accent);
   const reset = ansi.reset;
-  const sepColor = ansi.fg(colors.sep);
 
-  // Box characters - uses vertical bar borders
-  const left = `${sepColor}│${reset}`;
-  const right = `${sepColor}│${reset}`;
-
-  const contentWidth = visibleWidth(frame);
-  const padding = Math.max(0, width - 2 - contentWidth);
-  const leftPad = Math.floor(padding / 2);
-  const rightPad = padding - leftPad;
-
-  return (
-    left +
-    " ".repeat(leftPad) +
-    accentColor +
-    frame +
-    reset +
-    " ".repeat(rightPad) +
-    right
-  );
+  return [
+    `${accentColor}${frame[0]}${reset}`,
+    `${accentColor}${frame[1]}${reset}`,
+    `${accentColor}${frame[2]}${reset}`,
+  ];
 }
 
 /**
  * Start the animation loop
  */
-export function startAnimation(
-  tuiRef: any,
-  intervalMs = 120,
-): ReturnType<typeof setInterval> {
-  if (animationInterval) {
-    clearInterval(animationInterval);
-  }
+export function startAnimation(tuiRef: any, intervalMs = 150): void {
+  if (animationInterval) clearInterval(animationInterval);
 
   animationInterval = setInterval(() => {
-    animationFrame = (animationFrame + 1) % animation.length;
+    animationFrame = (animationFrame + 1) % activeFrames.length;
     tuiRef?.requestRender();
   }, intervalMs);
-
-  return animationInterval;
 }
 
 /**

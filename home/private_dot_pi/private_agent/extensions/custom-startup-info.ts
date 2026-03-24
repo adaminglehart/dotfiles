@@ -71,12 +71,6 @@ export default function (pi: ExtensionAPI) {
     lines.push(box.bottom());
     lines.push("");
 
-    // Footer
-    // lines.push("");
-    // lines.push(
-    //   `${t.dim("💡")} ${t.text("Type")} ${t.bold("/hotkeys")} ${t.text("for commands")}`,
-    // );
-
     pi.sendMessage({
       customType: "startup-info",
       content: lines.join("\n"),
