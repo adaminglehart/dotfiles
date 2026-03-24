@@ -10,34 +10,95 @@ export const CONFIG = {
   INTERVAL_MS: 100,
   BOX_WIDTH: 5,
   BOX_CONTENT_WIDTH: 3,
+  SPEEDS: {
+    PAUSED: 500, // Very slow when agent is idle
+    ACTIVE: 60, // Fast when agent is working
+    THINKING: 150, // Moderate when thinking
+  },
 };
+
+/**
+ * Agent State
+ */
+type AgentState = "paused" | "active" | "thinking";
+let agentState: AgentState = "paused";
+
+export function setAgentState(state: AgentState): void {
+  agentState = state;
+  updateAnimationSpeed();
+}
+
+export function getAgentState(): AgentState {
+  return agentState;
+}
 
 /**
  * Loading Box Animation Frames
  */
 export const animations: Record<string, string[][]> = {
-  matrix: [
-    ["⢀  ", "  ⠘"],
-    ["⢠  ", "  ⢰"],
-    ["⢰  ", "  ⠠"],
-    ["⠘  ", "  ⢀"],
+  // matrix: [
+  //   ["⢀  ", "  ⠘"],
+  //   ["⢠  ", "  ⢰"],
+  //   ["⢰  ", "  ⠠"],
+  //   ["⠘  ", "  ⢀"],
+  // ],
+  // pulse: [
+  //   [" . ", " . "],
+  //   [" o ", " o "],
+  //   [" O ", " O "],
+  //   [" # ", " # "],
+  // ],
+  // fish: [
+  //   ["<>< ", "    "],
+  //   [" <><", "    "],
+  //   ["    ", " <><"],
+  //   ["    ", "<>< "],
+  // ],
+  organic: [
+    // Flowing organic pattern that looks alive
+    ["∴∵ ", " ∴∵"],
+    [" ∴∵", "∵∴ "],
+    ["∵∴ ", " ∵∴"],
+    [" ∵∴", "∴∵ "],
+    ["∴∵ ", "∵ ∴"],
+    ["∵ ∴", " ∴∵"],
+    [" ∴∵", "∴ ∵"],
+    ["∴ ∵", "∵∴ "],
   ],
-  pulse: [
-    [" . ", " . "],
-    [" o ", " o "],
-    [" O ", " O "],
-    [" # ", " # "],
+  flow: [
+    // Water-like flowing pattern
+    ["≈≈ ", " ∼∼"],
+    [" ≈≈", "∼∼ "],
+    ["∼∼ ", " ≈≈"],
+    [" ∼∼", "≈≈ "],
+    ["≈∼ ", " ≈∼"],
+    [" ≈∼", "∼≈ "],
+    ["∼≈ ", " ∼≈"],
+    [" ∼≈", "≈∼ "],
   ],
-  fish: [
-    ["<>< ", "    "],
-    [" <><", "    "],
-    ["    ", " <><"],
-    ["    ", "<>< "],
+  bloom: [
+    // Organic growth pattern
+    ["·  ", " · "],
+    ["·· ", " ··"],
+    ["∴  ", " ∴ "],
+    ["∴· ", " ∴·"],
+    ["∵  ", " ∵ "],
+    ["∵∴ ", " ∵∴"],
+    ["✧∵ ", " ✧∵"],
+    ["✧✧ ", " ✧✧"],
+    ["✧∵ ", " ✧∵"],
+    ["∵∴ ", " ∵∴"],
+    ["∵  ", " ∵ "],
+    ["∴· ", " ∴·"],
+    ["∴  ", " ∴ "],
+    ["·· ", " ··"],
+    ["·  ", " · "],
+    ["   ", "   "],
   ],
 };
 
 const styleKeys = Object.keys(animations);
-let currentStyleIdx = 0;
+let currentStyleIdx = 2; // Default to "organic"
 export let activeFrames = animations[styleKeys[currentStyleIdx]!]!;
 
 export function cycleAnimation(): string {
@@ -52,7 +113,7 @@ export function cycleAnimation(): string {
  * SCENE MANAGEMENT
  */
 const scenes: Scene[] = [lifeScene, aquariumScene];
-let currentSceneIdx = 0;
+let currentSceneIdx = 1;
 
 export function getActiveScene(): Scene {
   return scenes[currentSceneIdx]!;
@@ -99,14 +160,33 @@ export function renderAnimationBlock(targetHeight: number): string[] {
   return lines;
 }
 
-export function startAnimation(
-  tuiRef: any,
-  intervalMs = CONFIG.INTERVAL_MS,
-): void {
+let tuiReference: any = null;
+
+export function startAnimation(tuiRef: any): void {
+  tuiReference = tuiRef;
+  updateAnimationSpeed();
+}
+
+function updateAnimationSpeed(): void {
   if (animationInterval) clearInterval(animationInterval);
+
+  // Choose speed based on agent state
+  let intervalMs = CONFIG.INTERVAL_MS;
+  switch (agentState) {
+    case "paused":
+      intervalMs = CONFIG.SPEEDS.PAUSED;
+      break;
+    case "active":
+      intervalMs = CONFIG.SPEEDS.ACTIVE;
+      break;
+    case "thinking":
+      intervalMs = CONFIG.SPEEDS.THINKING;
+      break;
+  }
+
   animationInterval = setInterval(() => {
     animationFrame = (animationFrame + 1) % 1000; // Just a generic counter
-    tuiRef?.requestRender();
+    tuiReference?.requestRender();
   }, intervalMs);
 }
 
@@ -116,4 +196,5 @@ export function stopAnimation(): void {
     animationInterval = null;
   }
   animationFrame = 0;
+  tuiReference = null;
 }
