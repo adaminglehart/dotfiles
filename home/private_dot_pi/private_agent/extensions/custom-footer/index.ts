@@ -4,7 +4,7 @@
  * Displays:
  * - Model info (Line 1 & 2)
  * - Dynamic height Status Box (right)
- * - Dynamic Aquarium (Bottom rows)
+ * - Dynamic Scene (Bottom rows)
  *
  * Usage: pi -e ./custom-footer/index.ts
  */
@@ -14,11 +14,11 @@ import type { Api, Model } from "@mariozechner/pi-ai";
 import { truncateToWidth, visibleWidth, type TUI } from "@mariozechner/pi-tui";
 import {
 	renderAnimationBlock,
-	renderAquarium,
 	startAnimation,
 	stopAnimation,
 	cycleAnimation,
-	addManualFish,
+	cycleScene,
+	getActiveScene,
 	CONFIG,
 } from "./animation.js";
 
@@ -180,9 +180,10 @@ function renderSessionCostSegment(ctx: FooterContext): string {
 function buildFooter(ctx: FooterContext, width: number): string[] {
 	const separator = ` ${ansi.fg(colors.sep)}│${ansi.reset} `;
 
-	// Get animation block based on total height
-	// Total height = 2 info lines + config aquarium rows
-	const totalHeight = 2 + CONFIG.AQUARIUM_ROWS;
+	const scene = getActiveScene();
+	
+	// Total height = 2 info lines + scene height
+	const totalHeight = 2 + scene.height;
 	const animLines = renderAnimationBlock(totalHeight);
 	
 	const animWidth = CONFIG.BOX_WIDTH;
@@ -206,8 +207,8 @@ function buildFooter(ctx: FooterContext, width: number): string[] {
 	if (costSeg) line2Segments.push(costSeg);
 	const line2Content = line2Segments.join(separator);
 
-	// Aquarium: rows 1 to CONFIG.AQUARIUM_ROWS
-	const aquariumLines = renderAquarium(mainWidth, ctx.contextPercent || 0);
+	// Scene content
+	const sceneLines = scene.render(mainWidth, ctx.contextPercent || 0);
 
 	// Padding
 	const line1Pad = Math.max(0, mainWidth - visibleWidth(line1Content));
@@ -222,11 +223,10 @@ function buildFooter(ctx: FooterContext, width: number): string[] {
 	// Combine Line 2
 	resultLines.push(truncateToWidth(line2Content + " ".repeat(line2Pad) + "  " + animLines[1], width));
 
-	// Combine Aquarium rows with the rest of the status box
-	for (let i = 0; i < aquariumLines.length; i++) {
-		// Use aquarium line + remaining box lines
+	// Combine Scene rows with the rest of the status box
+	for (let i = 0; i < sceneLines.length; i++) {
 		const boxLine = animLines[i + 2] || "";
-		resultLines.push(truncateToWidth((aquariumLines[i] || " ".repeat(mainWidth)) + "  " + boxLine, width));
+		resultLines.push(truncateToWidth((sceneLines[i] || " ".repeat(mainWidth)) + "  " + boxLine, width));
 	}
 
 	return resultLines;
@@ -266,11 +266,25 @@ export default function customFooter(pi: ExtensionAPI) {
 		},
 	});
 
-	pi.registerCommand("fish", {
-		description: "Add a new fish manually",
+	pi.registerCommand("footer-scene", {
+		description: "Cycle footer scene",
 		handler: async (_args, ctx) => {
-			addManualFish();
-			ctx.ui.notify("Added a new fish! 🐠", "info");
+			const scene = cycleScene();
+			ctx.ui.notify(`Scene: ${scene}`, "info");
+			tuiRef?.requestRender();
+		},
+	});
+
+	pi.registerCommand("fish", {
+		description: "Interact with the current scene",
+		handler: async (_args, ctx) => {
+			const scene = getActiveScene();
+			if (scene.onCommand) {
+				scene.onCommand(ctx);
+				ctx.ui.notify("Interacted with scene! ✨", "info");
+			} else {
+				ctx.ui.notify("Active scene has no interaction.", "warning");
+			}
 			tuiRef?.requestRender();
 		},
 	});
