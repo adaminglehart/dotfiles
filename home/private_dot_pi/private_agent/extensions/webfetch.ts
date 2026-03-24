@@ -6,14 +6,14 @@
  */
 
 import { mkdtemp, writeFile } from "node:fs/promises";
-import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import type { ExtensionAPI, ExtensionContext, AgentToolResult, ToolRenderResultOptions, Theme } from "@mariozechner/pi-coding-agent";
 import {
 	DEFAULT_MAX_BYTES,
 	DEFAULT_MAX_LINES,
 	formatSize,
 	truncateHead,
 } from "@mariozechner/pi-coding-agent";
-import { Text } from "@mariozechner/pi-tui";
+import { Text, type TUI, type Component } from "@mariozechner/pi-tui";
 import { Type } from "@sinclair/typebox";
 import { tmpdir } from "os";
 import { join } from "path";
@@ -242,11 +242,11 @@ Use this tool when you need to retrieve and analyze web content.`,
 						signal: controller.signal,
 						headers,
 					});
-				} catch (err: any) {
-					if (err.name === "AbortError") {
+				} catch (err: unknown) {
+					if (err instanceof Error && err.name === "AbortError") {
 						throw new Error(`Request timed out after ${timeout / 1000} seconds`);
 					}
-					throw new Error(`Failed to fetch: ${err.message}`);
+					throw new Error(`Failed to fetch: ${err instanceof Error ? err.message : String(err)}`);
 				}
 
 				// Retry with honest UA if blocked by Cloudflare
@@ -256,8 +256,8 @@ Use this tool when you need to retrieve and analyze web content.`,
 							signal: controller.signal,
 							headers: { ...headers, "User-Agent": "pi-agent/1.0" },
 						});
-					} catch (err: any) {
-						if (err.name === "AbortError") {
+					} catch (err: unknown) {
+						if (err instanceof Error && err.name === "AbortError") {
 							throw new Error(`Request timed out after ${timeout / 1000} seconds`);
 						}
 						// Continue with original response if retry fails
@@ -391,8 +391,8 @@ Use this tool when you need to retrieve and analyze web content.`,
 		},
 
 		// Custom rendering of the tool result
-		renderResult(result, { expanded, isPartial }, theme) {
-			const details = result.details as WebFetchDetails | undefined;
+		renderResult(result: AgentToolResult<WebFetchDetails>, { expanded, isPartial }: ToolRenderResultOptions, theme: Theme): Component {
+			const details = result.details;
 
 			// Handle streaming/partial results
 			if (isPartial) {

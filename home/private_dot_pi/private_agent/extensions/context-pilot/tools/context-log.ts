@@ -1,4 +1,4 @@
-import type { ExtensionAPI, SessionEntry } from "@mariozechner/pi-coding-agent";
+import type { ExtensionAPI, SessionEntry, SessionTreeNode } from "@mariozechner/pi-coding-agent";
 import { Type, type Static } from "@sinclair/typebox";
 import {
   formatTokens,
@@ -50,9 +50,7 @@ export function registerContextLog(pi: ExtensionAPI) {
 
       // Build a parent→children map from the tree for off-path summary detection
       const childMap = new Map<string, SessionEntry[]>();
-      const buildChildMap = (
-        nodes: { entry: SessionEntry; children: { entry: SessionEntry; children: any[] }[] }[]
-      ) => {
+      const buildChildMap = (nodes: SessionTreeNode[]) => {
         for (const node of nodes) {
           const kids = node.children.map((c) => c.entry);
           childMap.set(node.entry.id, kids);

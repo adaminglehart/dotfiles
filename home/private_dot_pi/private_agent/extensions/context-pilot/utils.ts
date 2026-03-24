@@ -1,15 +1,9 @@
 import type {
   SessionEntry,
   ExtensionCommandContext,
+  SessionTreeNode,
 } from "@mariozechner/pi-coding-agent";
 import type { TextContent, ImageContent, ToolCall } from "@mariozechner/pi-ai";
-
-// SessionTreeNode is not re-exported from the main entry point
-interface SessionTreeNode {
-  entry: SessionEntry;
-  children: SessionTreeNode[];
-  label?: string;
-}
 
 // --- Shared mutable state for checkout flow ---
 // CommandCtx captures ExtensionCommandContext from /acm (only source of navigateTree).
