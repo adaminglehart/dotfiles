@@ -211,6 +211,23 @@ home/private_dot_pi/private_agent/
   - API keys for multiple providers
   - Subscription tokens
 
+### Context Management
+
+Use the `context-pilot` skill proactively to prevent session drift:
+
+**Tag at decision boundaries:**
+- Before explaining constraints or architecture
+- Before structural changes (directory moves, refactors)
+- Before implementing after planning
+- When switching approaches
+
+**Squash noisy history:**
+- After backtracking or failed attempts
+- After research/data gathering (process is noise, results matter)
+- When context window fills with debugging
+
+**Pattern:** `context_tag({ name: "<task>-<phase>" })` → work → `context_checkout({ target: "<task>-<phase>", message: "..." })`
+
 ### Best Practices
 
 #### Creating/Editing Extensions & Skills
@@ -236,7 +253,7 @@ home/private_dot_pi/private_agent/
    - Can be standalone or integrate with existing tools
    - Reference Pi tools by name (`read`, `write`, `edit`, `bash`, etc.)
 
-- **Context Management** — Always use context-pilot skill; read at task start
+- **Context Management** — Always use context-pilot skill; read at task start and tag at decision boundaries
 
 ### Skills
 
