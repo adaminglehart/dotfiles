@@ -223,11 +223,6 @@ export default function (pi: ExtensionAPI) {
 				return new Text(theme.fg("warning", "Searching..."), 0, 0);
 			}
 
-			if (result.isError) {
-				const errorText = result.content[0]?.type === "text" ? result.content[0].text : "Error";
-				return new Text(theme.fg("error", errorText), 0, 0);
-			}
-
 			let text = "";
 
 			if (details?.noResults) {

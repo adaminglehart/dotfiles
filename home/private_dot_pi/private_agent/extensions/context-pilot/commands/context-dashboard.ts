@@ -65,8 +65,8 @@ export function registerContextDashboard(pi: ExtensionAPI) {
 
       const systemTokensRaw = estimateTokens(systemPrompt);
       const toolDefTokensRaw = estimateTokens(JSON.stringify(activeToolDefs));
-      const totalActual = usage.tokens;
-      const limit = usage.contextWindow;
+      const totalActual = usage.tokens ?? 0;
+      const limit = usage.contextWindow ?? 0;
 
       const totalRaw =
         systemTokensRaw +
@@ -148,7 +148,8 @@ export function registerContextDashboard(pi: ExtensionAPI) {
           gridLines.push(rowStr.trimEnd());
         }
 
-        const totalUsageTitle = `${theme.fg("text", theme.bold("Total Usage".padEnd(16)))} ${theme.fg("text", theme.bold(formatTokens(totalActual).padStart(7)))} ${theme.fg("text", theme.bold(`(${usage.percent.toFixed(1).padStart(5)}%)`))}`;
+        const percent = limit > 0 ? ((totalActual / limit) * 100).toFixed(1) : "0.0";
+        const totalUsageTitle = `${theme.fg("text", theme.bold("Total Usage".padEnd(16)))} ${theme.fg("text", theme.bold(formatTokens(totalActual).padStart(7)))} ${theme.fg("text", theme.bold(`(${percent.padStart(5)}%)`))}`;
 
         const catDetailLines = categories.map((cat) => {
           const labelStr = cat.label.padEnd(14);

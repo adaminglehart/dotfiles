@@ -5,7 +5,7 @@
 // from the command palette or from `Zed` application menu.
 {
   "search": {
-    "include_ignored": false
+    "include_ignored": false,
   },
   "agent_servers": {
     "claude": {
@@ -155,6 +155,9 @@
   "seed_search_query_from_cursor": "selection",
   "experimental.theme_overrides": {
     "predictive": "#908caa",
+  },
+  "file_types": {
+    "JSON": ["*.json.tmpl"],
   },
   "lsp": {
     "jdtls": {

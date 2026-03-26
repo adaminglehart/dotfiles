@@ -225,7 +225,7 @@ export default function librarianExtension(pi: ExtensionAPI) {
           run.error = undefined;
           run.summaryText = undefined;
 
-          let session: ReturnType<typeof createAgentSession> extends Promise<infer R> ? R["session"] : never;
+          let session: Awaited<ReturnType<typeof createAgentSession>>["session"] | undefined;
           let unsubscribe: (() => void) | undefined;
 
           try {

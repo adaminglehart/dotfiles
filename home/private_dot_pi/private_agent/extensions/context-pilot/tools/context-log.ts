@@ -1,4 +1,5 @@
-import type { ExtensionAPI, SessionEntry, SessionTreeNode } from "@mariozechner/pi-coding-agent";
+import type { ExtensionAPI, SessionEntry } from "@mariozechner/pi-coding-agent";
+import type { SessionTreeNode } from "../utils.js";
 import { Type, type Static } from "@sinclair/typebox";
 import {
   formatTokens,
@@ -158,7 +159,7 @@ export function registerContextLog(pi: ExtensionAPI) {
       // Context Dashboard (HUD)
       const usage = await ctx.getContextUsage();
       let usageStr = "Unknown";
-      if (usage) {
+      if (usage && usage.percent !== null && usage.tokens !== null && usage.contextWindow !== null) {
         usageStr = `${usage.percent.toFixed(1)}% (${formatTokens(usage.tokens)}/${formatTokens(usage.contextWindow)})`;
       }
 

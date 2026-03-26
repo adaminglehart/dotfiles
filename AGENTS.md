@@ -1,6 +1,3 @@
-# AGENTS.md
-# CLAUDE.md
-
 This file provides guidance to coding agents on my personal preferences for workflows and coding style.
 
 ## Repository Overview
@@ -239,9 +236,12 @@ home/private_dot_pi/private_agent/
    - Can be standalone or integrate with existing tools
    - Reference Pi tools by name (`read`, `write`, `edit`, `bash`, etc.)
 
-- **No Auto-Commits** — Never auto-commit to git; user handles via Graphite
-
 - **Context Management** — Always use context-pilot skill; read at task start
+
+### Skills
+
+- most skills are managed in ~/.agents/skills (dotfiles/dot_agents/skills)
+- skills that only apply to the pi agent (e.g. skills with scripts that interact with the pi sdk, pi sessions, etc) are managed under dotfiles/private_dot_pi/dot_agent/skills
 
 ### Tool Capabilities
 
@@ -250,15 +250,6 @@ home/private_dot_pi/private_agent/
 - `write` — Create or overwrite files
 - `edit` — Surgical edits (old text must match exactly)
 - `bash` — Execute shell commands
-
-#### Extended Tools (via skills/extensions)
-- `analyze_project` — Understand codebase architecture
-- `find_related` — Locate related files
-- `summarize_file` — Quick summaries without full reads
-- `librarian` — GitHub code search with reconnaissance
-- `webfetch` — Fetch web content (markdown/text/HTML)
-- `websearch` — Web search using Exa AI
-- `glimpse` — Native UI (dialogs, forms, visualizations, widgets)
 
 ### Debugging Pi Configuration
 

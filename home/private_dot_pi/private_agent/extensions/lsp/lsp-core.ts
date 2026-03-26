@@ -13,6 +13,11 @@ import {
   StreamMessageReader,
   StreamMessageWriter,
   type MessageConnection,
+} from "vscode-jsonrpc/node";
+import {
+  type TextDocumentContentChangeEvent,
+  type InitializeResult,
+  type ServerCapabilities,
   InitializeRequest,
   InitializedNotification,
   DidOpenTextDocumentNotification,
@@ -109,7 +114,7 @@ interface LSPClient {
   diagnostics: Map<string, Diagnostic[]>;
   openFiles: Map<string, OpenFile>;
   listeners: Map<string, Array<() => void>>;
-  capabilities?: Record<string, unknown>;
+  capabilities?: ServerCapabilities<unknown>;
   root: string;
   closed: boolean;
 }
@@ -269,7 +274,7 @@ export class LSPManager {
     if (client.closed) return;
     try {
       client.connection
-        .sendNotification(DidCloseTextDocumentNotification.type, {
+        .sendNotification(DidCloseTextDocumentNotification.method, {
           textDocument: { uri: pathToFileURL(absPath).href },
         })
         .catch(() => {});
@@ -354,7 +359,7 @@ export class LSPManager {
 
       // Handle published diagnostics
       conn.onNotification(
-        PublishDiagnosticsNotification.type,
+        PublishDiagnosticsNotification.method,
         (params) => {
           const fpRaw = decodeURIComponent(new URL(params.uri).pathname);
           const fp = normalizeFsPath(fpRaw);
@@ -433,7 +438,7 @@ export class LSPManager {
       client.capabilities = (initResult as Record<string, unknown>)
         ?.capabilities as Record<string, unknown>;
 
-      conn.sendNotification(InitializedNotification.type, {});
+      conn.sendNotification(InitializedNotification.method, {});
       if (handle.initOptions) {
         conn.sendNotification("workspace/didChangeConfiguration", {
           settings: handle.initOptions,
@@ -508,7 +513,7 @@ export class LSPManager {
           const v = state.version + 1;
           client.openFiles.set(absPath, { version: v, lastAccess: now });
           client.connection
-            .sendNotification(DidChangeTextDocumentNotification.type, {
+            .sendNotification(DidChangeTextDocumentNotification.method, {
               textDocument: { uri, version: v },
               contentChanges: [{ text: content }],
             })
@@ -516,13 +521,13 @@ export class LSPManager {
         } else {
           client.openFiles.set(absPath, { version: 1, lastAccess: now });
           client.connection
-            .sendNotification(DidOpenTextDocumentNotification.type, {
+            .sendNotification(DidOpenTextDocumentNotification.method, {
               textDocument: { uri, languageId: langId, version: 0, text: content },
             })
             .catch(() => {});
           // Immediately send didChange to trigger analysis
           client.connection
-            .sendNotification(DidChangeTextDocumentNotification.type, {
+            .sendNotification(DidChangeTextDocumentNotification.method, {
               textDocument: { uri, version: 1 },
               contentChanges: [{ text: content }],
             })
@@ -531,7 +536,7 @@ export class LSPManager {
         }
         // didSave triggers analysis in some servers (e.g. TypeScript)
         client.connection
-          .sendNotification(DidSaveTextDocumentNotification.type, {
+          .sendNotification(DidSaveTextDocumentNotification.method, {
             textDocument: { uri },
             text: content,
           })
@@ -900,7 +905,7 @@ export class LSPManager {
         if (c.closed) return [];
         try {
           return this.normalizeLocs(
-            await c.connection.sendRequest(DefinitionRequest.type, {
+            await c.connection.sendRequest(DefinitionRequest.method, {
               textDocument: { uri: l.uri },
               position: pos,
             }),
@@ -927,7 +932,7 @@ export class LSPManager {
         if (c.closed) return [];
         try {
           return this.normalizeLocs(
-            await c.connection.sendRequest(ReferencesRequest.type, {
+            await c.connection.sendRequest(ReferencesRequest.method, {
               textDocument: { uri: l.uri },
               position: pos,
               context: { includeDeclaration: true },
@@ -953,10 +958,10 @@ export class LSPManager {
     for (const c of l.clients) {
       if (c.closed) continue;
       try {
-        const r = await c.connection.sendRequest(HoverRequest.type, {
+        const r = (await c.connection.sendRequest(HoverRequest.method, {
           textDocument: { uri: l.uri },
           position: pos,
-        });
+        })) as Hover | null;
         if (r) return r;
       } catch {
         // ignore
@@ -977,10 +982,10 @@ export class LSPManager {
     for (const c of l.clients) {
       if (c.closed) continue;
       try {
-        const r = await c.connection.sendRequest(SignatureHelpRequest.type, {
+        const r = (await c.connection.sendRequest(SignatureHelpRequest.method, {
           textDocument: { uri: l.uri },
           position: pos,
-        });
+        })) as SignatureHelp | null;
         if (r) return r;
       } catch {
         // ignore
@@ -998,7 +1003,7 @@ export class LSPManager {
         if (c.closed) return [];
         try {
           return this.normalizeSymbols(
-            await c.connection.sendRequest(DocumentSymbolRequest.type, {
+            await c.connection.sendRequest(DocumentSymbolRequest.method, {
               textDocument: { uri: l.uri },
             }),
           );
@@ -1023,7 +1028,7 @@ export class LSPManager {
     for (const c of l.clients) {
       if (c.closed) continue;
       try {
-        const r = await c.connection.sendRequest(RenameRequest.type, {
+        const r = await c.connection.sendRequest(RenameRequest.method, {
           textDocument: { uri: l.uri },
           position: pos,
           newName,
@@ -1063,7 +1068,7 @@ export class LSPManager {
       l.clients.map(async (c) => {
         if (c.closed) return [];
         try {
-          const r = await c.connection.sendRequest(CodeActionRequest.type, {
+          const r = await c.connection.sendRequest(CodeActionRequest.method, {
             textDocument: { uri: l.uri },
             range,
             context: {
@@ -1074,7 +1079,7 @@ export class LSPManager {
                 CodeActionKind.Source,
               ],
             },
-          });
+          }) as (CodeAction | Command)[] | null;
           return r ?? [];
         } catch {
           return [];

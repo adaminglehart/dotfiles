@@ -235,12 +235,14 @@ function buildFooter(ctx: FooterContext, width: number): string[] {
   // Line 2 Content: model, thinking, ACM, tokens, cost, extension statuses
   const line2Segments: string[] = [];
   const modelSeg = renderModelSegment(ctx);
+  const pricingSeg = renderPricingSegment(ctx);
   const thinkingSeg = renderThinkingSegment(ctx);
   const tokensSeg = renderTokensSegment(ctx);
   const costSeg = renderSessionCostSegment(ctx);
   const acmSeg = renderAcmSegment(ctx);
   const extStatusSeg = renderExtensionStatuses(ctx);
   if (modelSeg) line2Segments.push(modelSeg);
+  if (pricingSeg) line2Segments.push(pricingSeg);
   if (thinkingSeg) line2Segments.push(thinkingSeg);
   if (tokensSeg) line2Segments.push(tokensSeg);
   if (costSeg) line2Segments.push(costSeg);

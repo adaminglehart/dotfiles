@@ -18,7 +18,7 @@ Recall context from previous sessions, project notes, and saved memories.
 ### Light Recall (no arguments)
 
 1. Derive a project slug from the current working directory (e.g., `/Users/adam/stripe/dev/pay-server` → `pay-server`)
-2. Check for a matching file in `~/Documents/obsidian/agents/projects/` — try `<slug>.md` and partial matches
+2. Check for a matching file in `~/.obsidian/vaults/agents/projects/` — try `<slug>.md` and partial matches
 3. If found, read it and present a brief summary of the project context
 4. If not found, say so and suggest using `/remember project` to create one
 
@@ -36,7 +36,7 @@ Recognizes patterns like: `yesterday`, `today`, `last week`, `last N days`, `las
    **2026-03-04 14:58** — dotfiles — "I'd like to improve our system for collaborating..."
    **2026-03-04 10:30** — pay-server — "Fix the webhook retry logic for..."
    ```
-5. Offer to expand any session by reading the full exported markdown from `~/Documents/obsidian/agents/sessions/` or the raw JSONL
+5. Offer to expand any session by reading the full exported markdown from `~/.obsidian/vaults/agents/sessions/` or the raw JSONL
 
 ### Topic Recall (keyword arguments)
 
@@ -55,7 +55,7 @@ This should be concrete and actionable — not vague advice. If nothing actionab
 
 ## Paths
 
-- Vault: `~/Documents/obsidian/agents/`
-- Session exports: `~/Documents/obsidian/agents/sessions/`
+- Vault: `~/.obsidian/vaults/agents/`
+- Session exports: `~/.obsidian/vaults/agents/sessions/`
 - Native JSONL: `~/.claude/projects/`
 - QMD CLI: `qmd`

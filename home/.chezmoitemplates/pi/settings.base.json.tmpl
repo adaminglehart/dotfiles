@@ -3,10 +3,12 @@
   "packages": [
     "npm:@plannotator/pi-extension",
     "npm:pi-self-learning",
-    "npm:glimpseui"
+    "npm:glimpseui",
+    "git:github.com/HazAT/pi-interactive-subagents"
   ],
   "extensions": [
-    "~/.config/pi/bake/pi-extension/status-writer.ts"
+    "~/.config/pi/bake/pi-extension/status-writer.ts",
+    "~/.pi/agent/extensions/custom-compaction/index.ts"
   ],
   "selfLearning": {
     "enabled": true,
@@ -25,7 +27,7 @@
     },
     "storage": {
       "mode": "global",
-      "globalPath": "~/Documents/obsidian/agents/learnings"
+      "globalPath": "~/.obsidian/vaults/agents/learnings"
     }
   },
   "hideThinkingBlock": true,

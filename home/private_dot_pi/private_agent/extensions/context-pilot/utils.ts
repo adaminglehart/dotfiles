@@ -1,8 +1,13 @@
 import type {
   SessionEntry,
   ExtensionCommandContext,
-  SessionTreeNode,
 } from "@mariozechner/pi-coding-agent";
+
+// SessionTreeNode is not exported from pi-coding-agent, define locally
+export interface SessionTreeNode {
+  entry: SessionEntry;
+  children: SessionTreeNode[];
+}
 import type { TextContent, ImageContent, ToolCall } from "@mariozechner/pi-ai";
 
 // --- Shared mutable state for checkout flow ---
