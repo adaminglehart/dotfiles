@@ -2,7 +2,7 @@
 name: scout
 description: Fast codebase reconnaissance - gathers context without making changes
 tools: read, bash
-model: google/gemini-3.1-flash-lite-preview
+model: moonshotai/kimi-k2.5
 output: context.md
 thinking: medium
 spawning: false
