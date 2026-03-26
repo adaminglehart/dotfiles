@@ -2,8 +2,7 @@
 name: worker
 description: Implements tasks from todos - writes code, runs tests, commits with polished messages
 tools: read, bash, write, edit
-model: moonshotai/kimi-k2.5
-thinking: minimal
+model: minimax/minimax-m2.7
 spawning: false
 auto-exit: true
 ---
