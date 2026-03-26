@@ -1,7 +1,6 @@
 ---
 name: self-improve
 description: End-of-session retrospective that identifies improvements to agent config, tests, docs, and code. Use when asked to "self-improve", "reflect on session", "what can we improve", "session retrospective", "end of session review". Creates actionable todos from findings.
-disable-model-invocation: true
 ---
 
 # Self-Improve
