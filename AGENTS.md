@@ -170,129 +170,42 @@ chezmoi apply ~/.config/myapp/config.yaml
 
 ## Pi Configuration
 
-**Location:** `home/private_dot_pi/private_agent/` (maps to `~/.pi/agent/` via Chezmoi)
+**Pi agent configuration has been moved to a separate repository.**
 
-### Directory Structure
+**Location:** `~/dev/pi-config` (separate Chezmoi-managed repo)  
+**Installed to:** `~/.pi/agent/`
 
-Pi configuration is managed in this dotfiles repo at:
-```
-home/private_dot_pi/private_agent/
-  ├── AGENTS.md                    # Workflow rules (plan mode, extensions, context mgmt)
-  ├── settings.json                # Runtime settings (model, theme, API endpoints)
-  ├── models.json                  # Provider & model registration
-  ├── auth.json                    # Authentication tokens (private, mode 0600)
-  ├── extensions/                  # Custom TypeScript/JavaScript extensions
-  ├── skills/                      # Reusable task-specific instruction packages
-  └── sessions/                    # Conversation history & branching (auto-generated)
-```
+See `~/.pi/PI_CONFIG_MOVED.md` for migration details.
 
-### Key Paths
+### Quick Reference
 
-- **Config root:** `~/.pi/agent/` (managed by Chezmoi, synced from `home/private_dot_pi/private_agent/`)
-- **Extensions:** `~/.pi/agent/extensions/` — TypeScript/JavaScript loaded at startup
-- **Skills:** `~/.pi/agent/skills/` — Self-contained task instruction packages with tools
-- **Sessions:** `~/.pi/agent/sessions/` — Conversation history, branching, compaction data
-- **Status:** `~/.pi/agent/status/` — Session metadata and context markers
-- **Dotfiles source:** Always edit in `~/dev/dotfiles/home/private_dot_pi/private_agent/`
-
-### Configuration Files
-
-- **settings.json** — Pi runtime settings
-  - Current model selection
-  - Theme configuration
-  - API endpoints and provider defaults
-  - Prompt templates
-  
-- **models.json** — Provider and model registration
-  - Lists available models per provider
-  - Tool capability mappings
-  
-- **auth.json** — Authentication credentials (⚠️ restricted mode 0600)
-  - API keys for multiple providers
-  - Subscription tokens
-
-### Context Management
-
-Use the `context-pilot` skill proactively to prevent session drift:
-
-**Tag at decision boundaries:**
-- Before explaining constraints or architecture
-- Before structural changes (directory moves, refactors)
-- Before implementing after planning
-- When switching approaches
-
-**Squash noisy history:**
-- After backtracking or failed attempts
-- After research/data gathering (process is noise, results matter)
-- When context window fills with debugging
-
-**Pattern:** `context_tag({ name: "<task>-<phase>" })` → work → `context_checkout({ target: "<task>-<phase>", message: "..." })`
-
-### Best Practices
-
-#### Creating/Editing Extensions & Skills
-
-1. **Always edit in dotfiles source first:**
-   ```bash
-   # Source location
-   ~/dev/dotfiles/home/private_dot_pi/private_agent/extensions/my-tool.ts
-   
-   # Then sync to installed location
-   chezmoi apply ~/.pi/agent/extensions/my-tool.ts
-   ```
-
-2. **Use TypeScript** for extensions
-   - Leverage Pi's SDK types for type safety
-   - Export default function that receives Pi's extension context
-   - Register custom tools, commands, or TUI components
-   - See examples: `/path/to/pi/docs/examples/extensions/`
-   - always put extensions inside their own directory, rather than just a single named file
-
-3. **Skills as task packages**
-   - Include `SKILL.md` describing purpose and usage
-   - Can be standalone or integrate with existing tools
-   - Reference Pi tools by name (`read`, `write`, `edit`, `bash`, etc.)
-
-- **Context Management** — Always use context-pilot skill; read at task start and tag at decision boundaries
-
-### Skills
-
-- most skills are managed in ~/.agents/skills (dotfiles/dot_agents/skills)
-- skills that only apply to the pi agent (e.g. skills with scripts that interact with the pi sdk, pi sessions, etc) are managed under dotfiles/private_dot_pi/dot_agent/skills
-
-### Tool Capabilities
-
-#### Built-in Tools
-- `read` — Read files and images
-- `write` — Create or overwrite files
-- `edit` — Surgical edits (old text must match exactly)
-- `bash` — Execute shell commands
-
-### Debugging Pi Configuration
-
-**Check current settings:**
 ```bash
-cat ~/.pi/agent/settings.json
+# Edit Pi config
+cd ~/dev/pi-config
+vim agents/worker.md
+vim extensions/custom-footer/index.ts
+
+# Edit environment-specific settings
+vim .chezmoitemplates/pi/settings.work.json
+vim .chezmoitemplates/pi/models.home.json
+
+# Apply changes
+chezmoi apply --source ~/dev/pi-config
+# Or
+~/dev/pi-config/apply.sh
 ```
 
-**View session history structure:**
-Use `context_log` to visualize the conversation DAG and identify divergence points.
+### Structure
 
-**Inspect extension errors:**
-- Extensions compile at Pi startup; check console for TypeScript errors
-- Verify exports match Pi's extension context schema
-- Test incrementally before deploying
-
-**Verify files are synced:**
-```bash
-cd ~/dev/dotfiles
-git ls-files | grep private_dot_pi/private_agent  # See what's tracked
-chezmoi status                                      # Show all changes
-chezmoi diff ~/.pi/agent/AGENTS.md                 # Preview specific file
+```
+~/dev/pi-config/           # Source repo
+  ├── agents/              # Agent definitions
+  ├── extensions/          # Custom Pi extensions  
+  ├── skills/              # Task instruction packages
+  ├── AGENTS.md            # Pi-specific workflow rules
+  └── .chezmoitemplates/pi/
+      ├── settings.{base,work,home}.json
+      └── models.{base,work,home}.json
 ```
 
-### Related Documents
-
-- **Pi docs:** See `home/private_dot_pi/private_agent/AGENTS.md` (workflow rules)
-- **Home agent guidelines:** See `home/AGENTS.md` (general coding principles)
-- **Pi upstream:** `/Users/adaminglehart/.local/share/mise/installs/node/25.8.1/lib/node_modules/@mariozechner/pi-coding-agent/docs/`
+For detailed documentation, see `~/dev/pi-config/README.md`.

@@ -15,7 +15,8 @@ ALWAYS use subagents where possible, prefer to parallelize work when it does not
 
 - Shell: Fish
 - Dotfiles managed by Chezmoi — always edit source files in ~/dev/dotfiles, not the installed copies
-- any time you're going to edit a file in ~ (the home directory), first check if it's managed by our dotfiles. If it is, edit the file in the dotfiles repo instead, so it can be managed by chezmoi
+- **Pi agent config** managed separately in ~/dev/pi-config (also Chezmoi) — edit there, not in ~/.pi/agent/
+- any time you're going to edit a file in ~ (the home directory), first check if it's managed by our dotfiles or pi-config. If it is, edit the file in the source repo instead, so it can be managed by chezmoi
 - Git workflow uses Graphite (`gt create`, `gt submit`, etc.), not raw git branching
 - Commit messages: imperative mood ("Add X" not "Added X"), small and focused
 
@@ -49,3 +50,5 @@ ALWAYS use subagents where possible, prefer to parallelize work when it does not
 
 ### Pi
 - When adding Pi shortcuts, check for conflicts with built-in bindings before choosing keys.
+- Pi config lives in ~/dev/pi-config (separate repo, also managed by Chezmoi)
+- Always edit Pi config in ~/dev/pi-config, then apply with `chezmoi apply --source ~/dev/pi-config`

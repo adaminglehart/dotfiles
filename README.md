@@ -76,4 +76,5 @@ brew bundle --global       # Install from ~/.Brewfile
 ## Notes
 
 - SSH authentication and commit signing use 1Password
+- Pi agent configuration moved to separate repo: `~/dev/pi-config`
 - See `AGENTS.md` for AI assistant guidance
