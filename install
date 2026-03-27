@@ -15,6 +15,12 @@ if test $(which fisher); then
     fisher install
 fi
 
+# Initialize dotfiles chezmoi config (separate from pi-config's chezmoi)
+chezmoi init --config-path ~/.config/chezmoi-dotfiles/chezmoi.yaml --source ~/dev/dotfiles/home --apply=false
+
+# Apply dotfiles
+chezmoi --config ~/.config/chezmoi-dotfiles/chezmoi.yaml apply
+
 # Set macOS preferences
 # We will run this last because this will reload the shell
 source .macos

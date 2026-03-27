@@ -4,12 +4,13 @@
 {{ end }}
 
 # Don't copy node_modules or dev tooling from pi extension source dirs
-.pi/agent/extensions/node_modules
-.pi/agent/extensions/bun.lock
-.pi/agent/extensions/package.json
-.pi/agent/extensions/tsconfig.json
-.pi/agent/extensions/*/node_modules
-.pi/agent/extensions/*/bun.lock
+agent/extensions/node_modules
+agent/extensions/**/*/node_modules
+agent/extensions/bun.lock
+agent/extensions/package.json
+agent/extensions/tsconfig.json
+agent/extensions/*/node_modules
+agent/extensions/*/bun.lock
 
 # Don't copy bake's generated deps
 .config/pi/bake/node_modules

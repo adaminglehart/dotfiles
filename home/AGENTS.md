@@ -39,7 +39,7 @@ ALWAYS use subagents where possible, prefer to parallelize work when it does not
 - minimal comments, only for non-obvious code
 - prioritize clean and maintanable over quick and hacky
 - if you install a dependency to a project, make sure you are installing the latest version, unless you specifically need an older version.
-- for typed languages, always prefer strong typing, never use any or unknown unless there's no other option.
+- **important** for typed languages, always prefer strong typing, never use `any` or `unknown`.
 - When asked to implement something, start writing code immediately. Do not spend more than 2-3 minutes exploring the codebase before making changes. If you need more context, ask the user rather than exploring endlessly.
 - Keep implementations simple and concrete. Do not introduce unnecessary abstractions, generic types, callback patterns, or over-engineered options objects. If a value is directly available (e.g., a timestamp on a record), use it directly rather than creating indirection layers.
 - Avoid general utils files (e.g. utils.ts) - prefer specifically broken-out and named files for shared code
