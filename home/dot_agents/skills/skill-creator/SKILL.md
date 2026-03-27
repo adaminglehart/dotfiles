@@ -247,12 +247,13 @@ skills-ref validate <path/to/skill-directory>
 
 ## Step 7: Register the Skill
 
-Registration steps vary by repository. Check the repository's `CLAUDE.md` or `README.md` for specific instructions.
+Registration steps vary by repository. Check the repository's `CLAUDE.md`, `AGENTS.md` or `README.md` for specific instructions.
 
 1. **Verify directory-name match** — confirm the directory name matches the `name` field in SKILL.md frontmatter exactly
 2. **Update documentation** — add the skill to any skills index or table in README.md
 3. **Update permissions** — if the repo has `.claude/settings.json`, add `Skill(<plugin>:<name>)` to the `permissions.allow` array
-4. **Check CLAUDE.md** — read the repository's `CLAUDE.md` for any additional registration steps specific to that project
+4. **Copy to dotfiles** — copy the skill to the dotfiles source repo to keep it synced across machines. For chezmoi-managed setups: `cp -r ~/.agents/skills/<name> ~/dev/dotfiles/home/dot_agents/skills/`
+5. **Check CLAUDE.md** — read the repository's `CLAUDE.md` or `AGENTS.md` for any additional registration steps specific to that project
 
 ## Step 8: Verify
 
