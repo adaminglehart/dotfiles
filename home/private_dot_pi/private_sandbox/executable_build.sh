@@ -4,13 +4,11 @@ set -euo pipefail
 image_tag="${1:-pi-sandbox:latest}"
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 
-agent_dir=""
-if [[ -d "${script_dir}/../agent" ]]; then
-  agent_dir="${script_dir}/../agent"
-elif [[ -d "${script_dir}/../private_agent" ]]; then
-  agent_dir="${script_dir}/../private_agent"
-else
-  printf 'Could not locate the Pi agent directory next to %s\n' "$script_dir" >&2
+# Pi agent config moved to ~/dev/pi-config
+agent_dir="${HOME}/dev/pi-config"
+if [[ ! -d "$agent_dir" ]]; then
+  printf 'Pi agent config not found at %s\n' "$agent_dir" >&2
+  printf 'Expected location: ~/dev/pi-config (managed separately from dotfiles)\n' >&2
   exit 1
 fi
 

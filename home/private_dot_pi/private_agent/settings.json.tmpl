@@ -1,4 +1,0 @@
-{{- $baseConfig := includeTemplate ".chezmoitemplates/pi/settings.base.json.tmpl" | fromJson -}}
-{{- $environmentConfigPath := ternary ".chezmoitemplates/pi/settings.work.json.tmpl" ".chezmoitemplates/pi/settings.home.json.tmpl" (eq .environment "work") -}}
-{{- $environmentConfig := includeTemplate $environmentConfigPath | fromJson -}}
-{{- mergeOverwrite $baseConfig $environmentConfig | toPrettyJson -}}
