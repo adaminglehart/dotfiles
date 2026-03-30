@@ -14,3 +14,4 @@ ANTHROPIC_API_KEY = { provider = "op", value = "op://dotenv/ANTHROPIC_API_KEY/va
 GEMINI_API_KEY = { provider = "op", value = "op://dotenv/GEMINI_API_KEY/value" }
 OPENAI_API_KEY = { provider = "op", value = "op://dotenv/OPENAI_API_KEY/value" }
 OPENROUTER_API_KEY = { provider = "op", value = "op://dotenv/OPENROUTER_API_KEY/value" }
+FIREWORKS_API_KEY = { provider = "op", value = "op://dotenv/FIREWORKS_API_KEY/value" }

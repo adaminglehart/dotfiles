@@ -100,7 +100,6 @@ Chezmoi uses filename prefixes to encode special behaviors. The source directory
 | `home/AGENTS.md` | `~/AGENTS.md` | Regular file |
 | `home/dot_config/nvim/init.lua` | `~/.config/nvim/init.lua` | Hidden directory |
 | `home/private_dot_ssh/config` | `~/.ssh/config` | Mode 0600, hidden |
-| `home/private_dot_pi/private_agent/auth.json` | `~/.pi/agent/auth.json` | Deeply nested, restricted |
 | `home/dot_config/fish/user_conf_d/alias.fish` | `~/.config/fish/user_conf.d/alias.fish` | Nested config |
 | `home/symlink_config_nvim_init_lua` | `~/.config/nvim/init.lua` (symlink) | Points back to source |
 
@@ -117,8 +116,6 @@ Chezmoi uses filename prefixes to encode special behaviors. The source directory
 ```
 home/AGENTS.md                                    → ~/AGENTS.md
 home/dot_config/fish/...                          → ~/.config/fish/...
-home/private_dot_pi/private_agent/AGENTS.md       → ~/.pi/agent/AGENTS.md
-home/private_dot_pi/private_agent/extensions/     → ~/.pi/agent/extensions/
 home/dot_config/opencode/symlink_AGENTS.md        → ~/.config/opencode/AGENTS.md (symlink)
 ```
 

@@ -10,7 +10,7 @@ if test (which fnox) && test -z "$FNOX_AGE_KEY"
   end
 
   if test -f $age_file
-    set -g FNOX_AGE_KEY (grep "AGE-SECRET-KEY" $age_file)
+    set -x FNOX_AGE_KEY (grep "AGE-SECRET-KEY" $age_file)
   end
 end
 

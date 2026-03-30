@@ -7,7 +7,7 @@ See also:
 
 # Instructions
 
-Whenever corrected, after making a mistake or misinterpreting, add a section in here (~/AGENTS.md) to instruct future sessions, avoiding the mistake again. Only do this if it's a generalizable mistake, don't add one-offs.
+Whenever corrected, after making a mistake or misinterpreting, add a section in here (~/dev/dotfiles/home/AGENTS.md) to instruct future sessions, avoiding the mistake again. Only do this if it's a generalizable mistake, don't add one-offs.
 
 ALWAYS use subagents where possible, prefer to parallelize work when it does not create conflicts.
 
@@ -36,7 +36,6 @@ ALWAYS use subagents where possible, prefer to parallelize work when it does not
 ## Coding best practices
 
 - preferred languages: typescript, golang
-- minimal comments, only for non-obvious code
 - prioritize clean and maintanable over quick and hacky
 - if you install a dependency to a project, make sure you are installing the latest version, unless you specifically need an older version.
 - **important** for typed languages, always prefer strong typing, never use `any` or `unknown`.
@@ -51,4 +50,6 @@ ALWAYS use subagents where possible, prefer to parallelize work when it does not
 ### Pi
 - When adding Pi shortcuts, check for conflicts with built-in bindings before choosing keys.
 - Pi config lives in ~/dev/pi-config (separate repo, also managed by Chezmoi)
+- Never edit `~/.pi/agent/*` directly when the file is managed by `~/dev/pi-config`; update the source repo first.
+- For Pi config changes, prefer the repo's own apply flow (`cd ~/dev/pi-config && just apply`) instead of writing rendered files by hand.
 - Always edit Pi config in ~/dev/pi-config, then apply with `chezmoi apply --source ~/dev/pi-config`
