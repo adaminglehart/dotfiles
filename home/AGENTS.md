@@ -27,6 +27,7 @@ ALWAYS use subagents where possible, prefer to parallelize work when it does not
 - Push back if I'm approaching something wrong — don't just agree
 - When requesting permanent tool permissions, scope them tightly (e.g. `kubectl get pods *` not `kubectl *`)
 - **Destructive Operations** — NEVER run `terraform apply`, `kubectl delete`, etc. without explicit approval
+- if I ask you to do something involving an external library or tool, you should always look up the documentation to ensure your information is up to date
 
 ## Tool Usage
 - prefer ripgrep (rg) over regular grep

@@ -1,3 +1,6 @@
 [remote]
 url = "https://msgvault.inglehart.io"
 api_key = "4a73c7237aef7e800d4838d433f738ec9408d72491756c8dc0ea95af817896bb"
+
+[oauth]
+client_secrets = "/Users/adaminglehart/.msgvault/oauth/client_secret.json"
