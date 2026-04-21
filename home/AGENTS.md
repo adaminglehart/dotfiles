@@ -47,6 +47,7 @@ ALWAYS use subagents where possible, prefer to parallelize work when it does not
 ## Corrections
 
 - When adding `mise` tool versions, prefer the latest stable version unless the repo explicitly requires a pinned older release.
+- Before debugging a service, confirm the active deployment target (e.g. Docker vs Kubernetes) instead of inferring it from past project context.
 
 ### Pi
 - When adding Pi shortcuts, check for conflicts with built-in bindings before choosing keys.
