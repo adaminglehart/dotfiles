@@ -11,7 +11,10 @@ macos-option-as-alt = true
 
 unfocused-split-opacity = .4
 
-#keybind = shift+enter=text:\n
+# Shift+Enter: no custom keybind needed when running pi directly in Zellij.
+# When running through tmux, tmux's extended-keys always + csi-u handles it.
+# If issues persist, uncomment to force modifyOtherKeys format through all layers:
+#keybind = shift+enter=text:\x1b[27;2;13~
 
 shell-integration = fish
 command = /opt/homebrew/bin/fish

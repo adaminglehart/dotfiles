@@ -5,7 +5,7 @@ complete -c gwt -f
 
 complete -c gwt -n "__fish_use_subcommand" -a "create" -d "Create a new worktree"
 complete -c gwt -n "__fish_use_subcommand" -a "list" -d "List all worktrees"
-complete -c gwt -n "__fish_use_subcommand" -a "switch" -d "Switch to a worktree using fzf"
+complete -c gwt -n "__fish_use_subcommand" -a "switch" -d "Switch to a worktree"
 complete -c gwt -n "__fish_use_subcommand" -a "goto" -d "Switch to a worktree"
 complete -c gwt -n "__fish_use_subcommand" -a "remove" -d "Remove a worktree"
 complete -c gwt -n "__fish_use_subcommand" -a "path" -d "Show worktree path for a branch"

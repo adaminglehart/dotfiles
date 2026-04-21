@@ -1,8 +1,12 @@
 # Git Worktree Utility
 # Manages git worktrees in ~/worktrees/
+# Requires: gum (https://github.com/charmbracelet/gum)
 
 function gwt -a cmd --description "Git worktree utility"
-    set -l worktree_base ~/worktrees
+    if not type -q gum
+        echo "Error: gum is required (brew install gum)"
+        return 1
+    end
 
     switch "$cmd"
         case create c
@@ -21,29 +25,29 @@ function gwt -a cmd --description "Git worktree utility"
             # Default to list if no command given
             _gwt_list
         case '*'
-            echo "Unknown command: $cmd"
+            gum log --level error "Unknown command: $cmd"
             _gwt_help
             return 1
     end
 end
 
 function _gwt_help
-    echo "Usage: gwt <command> [options]"
+    gum style --bold "Usage: gwt <command> [options]"
     echo ""
     echo "Commands:"
-    echo "  create, c [branch]     Create a new worktree (uses current branch name if not specified)"
-    echo "  list, ls, l            List all worktrees with their branches"
-    echo "  switch, sw, s, goto, g  Interactive switch to a worktree using fzf"
-    echo "  remove, rm, r <path>   Remove a worktree (path can be relative to ~/worktrees/)"
-    echo "  path, p [branch]       Show the path for a worktree (current branch if not specified)"
-    echo "  help, h                Show this help message"
+    echo "  create, c [branch]      Create a new worktree (prompts for branch if not specified)"
+    echo "  list, ls, l             List all worktrees with their branches"
+    echo "  switch, sw, s, goto, g  Interactive switch to a worktree"
+    echo "  remove, rm, r <path>    Remove a worktree (path can be relative to ~/worktrees/)"
+    echo "  path, p [branch]        Show the path for a worktree (current branch if not specified)"
+    echo "  help, h                 Show this help message"
     echo ""
-    echo "Worktrees are stored in: ~/worktrees/<repo-name>/<branch>/"
+    gum style --faint "Worktrees are stored in: ~/worktrees/<repo-name>/<branch>/"
 end
 
 function _gwt_ensure_in_git_repo
-    if not git rev-parse --git-dir > /dev/null 2>&1
-        echo "Error: Not in a git repository"
+    if not git rev-parse --git-dir >/dev/null 2>&1
+        gum log --level error "Not in a git repository"
         return 1
     end
 end
@@ -56,19 +60,51 @@ function _gwt_get_current_branch
     git branch --show-current
 end
 
-function _gwt_create -a branch_name
-    _gwt_ensure_in_git_repo
-    if test $status -ne 0
-        return 1
+# Parse git worktree list --porcelain into parallel arrays.
+# Sets caller variables: _wt_paths, _wt_branches
+function _gwt_parse_worktrees
+    set -l worktree_output (git worktree list --porcelain 2>/dev/null)
+
+    set -g _wt_paths
+    set -g _wt_branches
+
+    set -l wt_path ""
+    set -l wt_branch ""
+
+    for line in $worktree_output
+        switch "$line"
+            case 'worktree *'
+                set wt_path (string replace 'worktree ' '' $line)
+            case 'branch *'
+                set -l branch_ref (string replace 'branch ' '' $line)
+                set wt_branch (string replace 'refs/heads/' '' $branch_ref)
+            case ''
+                if test -n "$wt_path"
+                    set -a _wt_paths $wt_path
+                    set -a _wt_branches $wt_branch
+                end
+                set wt_path ""
+                set wt_branch ""
+        end
     end
+end
+
+function _gwt_create -a branch_name
+    _gwt_ensure_in_git_repo; or return 1
 
     set -l repo_name (_gwt_get_repo_name)
 
-    # Use provided branch name or current branch
+    # Prompt for branch name if not provided
     if test -z "$branch_name"
-        set branch_name (_gwt_get_current_branch)
+        set -l default_branch (_gwt_get_current_branch)
+        if test -z "$default_branch"
+            set branch_name (gum input --placeholder "branch-name" --header "Branch name:")
+        else
+            set branch_name (gum input --placeholder "$default_branch" --value "$default_branch" --header "Branch name:")
+        end
+
         if test -z "$branch_name"
-            echo "Error: No branch name provided and not on a branch (detached HEAD)"
+            gum log --level warn "No branch name provided"
             return 1
         end
     end
@@ -79,154 +115,120 @@ function _gwt_create -a branch_name
 
     # Check if worktree already exists
     if test -d "$worktree_path"
-        echo "Worktree already exists at: $worktree_path"
-        echo "Run 'gwt switch' to navigate to it"
+        gum log --level warn "Worktree already exists at: $worktree_path"
+        gum log --level info "Run 'gwt switch' to navigate to it"
         return 1
     end
 
-    # Create the worktree
-    echo "Creating worktree for branch '$branch_name' at $worktree_path"
     mkdir -p (dirname $worktree_path)
 
     # Check if branch exists, create if not
     if not git show-ref --quiet refs/heads/$branch_name
-        echo "Branch '$branch_name' does not exist, creating..."
+        gum log --level info "Branch '$branch_name' does not exist, creating..."
         git branch $branch_name
     end
 
-    git worktree add $worktree_path $branch_name
+    gum spin --spinner dot --title "Creating worktree for '$branch_name'..." -- git worktree add $worktree_path $branch_name
     if test $status -eq 0
-        echo "Worktree created successfully!"
-        echo "Path: $worktree_path"
-        echo ""
-        echo "To switch to it, run: gwt switch"
+        gum log --level info "Worktree created at $worktree_path"
+        gum log --level info "Run 'gwt switch' to navigate to it"
     else
-        echo "Error: Failed to create worktree"
+        gum log --level error "Failed to create worktree"
         return 1
     end
 end
 
 function _gwt_list
-    _gwt_ensure_in_git_repo
-    if test $status -ne 0
-        return 1
-    end
+    _gwt_ensure_in_git_repo; or return 1
 
     set -l repo_name (_gwt_get_repo_name)
     set -l main_toplevel (git rev-parse --show-toplevel)
 
-    echo "Worktrees for $repo_name:"
-    echo ""
+    _gwt_parse_worktrees
 
-    # Read all output first to avoid subshell issues with the pipe
-    set -l worktree_output (git worktree list --porcelain 2>/dev/null)
-
-    set -l wt_path ""
-    set -l wt_branch ""
-
-    for line in $worktree_output
-        switch "$line"
-            case 'worktree *'
-                set wt_path (string replace 'worktree ' '' $line)
-            case 'branch *'
-                set -l branch_ref (string replace 'branch ' '' $line)
-                set wt_branch (string replace 'refs/heads/' '' $branch_ref)
-            case ''
-                # End of worktree entry, print it
-                if test -n "$wt_path"
-                    set -l marker "  "
-
-                    # Check if this is a managed worktree (under ~/worktrees)
-                    if string match -q "$HOME/worktrees/*" $wt_path
-                        set marker "* "
-                    end
-
-                    # Check if it's the main worktree
-                    if test "$wt_path" = "$main_toplevel"
-                        set marker "@ "
-                        set wt_branch "$wt_branch (main)"
-                    end
-
-                    printf "%s%-30s %s\n" $marker $wt_branch $wt_path
-                end
-                set wt_path ""
-                set wt_branch ""
-        end
+    if test (count $_wt_paths) -eq 0
+        gum log --level info "No worktrees found for $repo_name"
+        return 0
     end
 
+    # Build CSV rows for gum table
+    set -l rows
+    for i in (seq (count $_wt_paths))
+        set -l wt_path $_wt_paths[$i]
+        set -l wt_branch $_wt_branches[$i]
+        set -l marker ""
+
+        if test "$wt_path" = "$main_toplevel"
+            set marker "@"
+            set wt_branch "$wt_branch (main)"
+        else if string match -q "$HOME/worktrees/*" $wt_path
+            set marker "*"
+        end
+
+        set -a rows "$marker,$wt_branch,$wt_path"
+    end
+
+    gum style --bold "Worktrees for $repo_name"
+    printf "%s\n" "Type,Branch,Path" $rows | gum table --separator "," --print
     echo ""
-    echo "Legend: @ = main worktree, * = managed worktree (~/worktrees/)"
+    gum style --faint "@ = main worktree  * = managed worktree (~/worktrees/)"
 end
 
 function _gwt_switch
-    _gwt_ensure_in_git_repo
-    if test $status -ne 0
-        return 1
-    end
+    _gwt_ensure_in_git_repo; or return 1
 
     set -l repo_name (_gwt_get_repo_name)
     set -l main_toplevel (git rev-parse --show-toplevel)
 
-    # Check if fzf is available
-    if not type -q fzf
-        echo "Error: fzf is required for interactive switching"
-        echo "Install it with: brew install fzf"
-        return 1
-    end
+    _gwt_parse_worktrees
 
-    # Build list of worktrees for fzf - read output first to avoid subshell issues
-    set -l worktree_output (git worktree list --porcelain 2>/dev/null)
-    set -l fzf_list
+    # Build display labels and matching paths
+    set -l labels
+    set -l paths
 
-    set -l wt_path ""
-    set -l wt_branch ""
+    for i in (seq (count $_wt_paths))
+        set -l wt_path $_wt_paths[$i]
+        set -l wt_branch $_wt_branches[$i]
 
-    for line in $worktree_output
-        switch "$line"
-            case 'worktree *'
-                set wt_path (string replace 'worktree ' '' $line)
-            case 'branch *'
-                set -l branch_ref (string replace 'branch ' '' $line)
-                set wt_branch (string replace 'refs/heads/' '' $branch_ref)
-            case ''
-                if test -n "$wt_path"
-                    # Only include managed worktrees from ~/worktrees or the main repo
-                    if string match -q "$HOME/worktrees/*" $wt_path; or test "$wt_path" = "$main_toplevel"
-                        if test -n "$wt_branch"
-                            set -a fzf_list "$wt_branch|$wt_path"
-                        end
-                    end
+        # Only include managed worktrees and the main repo
+        if string match -q "$HOME/worktrees/*" $wt_path; or test "$wt_path" = "$main_toplevel"
+            if test -n "$wt_branch"
+                set -l label $wt_branch
+                if test "$wt_path" = "$main_toplevel"
+                    set label "$wt_branch (main)"
                 end
-                set wt_path ""
-                set wt_branch ""
+                set -a labels $label
+                set -a paths $wt_path
+            end
         end
     end
 
-    if test (count $fzf_list) -eq 0
-        echo "No worktrees found"
+    if test (count $labels) -eq 0
+        gum log --level warn "No worktrees found"
         return 1
     end
 
-    # Pipe the list to fzf
-    printf "%s\n" $fzf_list | fzf --prompt "Select worktree: " --preview "echo 'Branch: {1}'; echo 'Path: {2}'" --delimiter '|' | read -l selection
+    set -l selection (printf "%s\n" $labels | gum choose --header "Switch to worktree:")
 
-    if test -n "$selection"
-        set -l selected_path (echo $selection | cut -d'|' -f2)
-        echo "Changing to: $selected_path"
-        cd $selected_path
-    else
-        echo "No worktree selected"
+    if test -z "$selection"
+        return 0
+    end
+
+    # Find the matching path
+    for i in (seq (count $labels))
+        if test "$labels[$i]" = "$selection"
+            gum log --level info "Switching to $paths[$i]"
+            cd $paths[$i]
+            return 0
+        end
     end
 end
 
 function _gwt_remove -a worktree_path
-    _gwt_ensure_in_git_repo
-    if test $status -ne 0
-        return 1
-    end
+    _gwt_ensure_in_git_repo; or return 1
 
     if test -z "$worktree_path"
-        echo "Error: No worktree path specified"
+        gum log --level error "No worktree path specified"
         echo "Usage: gwt remove <path>"
         return 1
     end
@@ -241,19 +243,21 @@ function _gwt_remove -a worktree_path
         set full_path $worktree_path
     end
 
-    # Confirm removal
-    echo "This will remove the worktree at: $full_path"
-    read -l -P "Are you sure? [y/N] " confirm
+    if not test -d "$full_path"
+        gum log --level error "Worktree not found: $full_path"
+        return 1
+    end
 
-    if test "$confirm" != "y" -a "$confirm" != "Y"
-        echo "Cancelled"
+    # Confirm removal
+    if not gum confirm "Remove worktree at $full_path?"
+        gum log --level info "Cancelled"
         return 0
     end
 
     # Remove the worktree
     git worktree remove $full_path 2>/dev/null
     if test $status -ne 0
-        echo "Failed to remove cleanly, trying force removal..."
+        gum log --level warn "Failed to remove cleanly, trying force removal..."
         git worktree remove --force $full_path
     end
 
@@ -263,14 +267,11 @@ function _gwt_remove -a worktree_path
         rmdir $parent_dir 2>/dev/null
     end
 
-    echo "Worktree removed"
+    gum log --level info "Worktree removed"
 end
 
 function _gwt_path -a branch_name
-    _gwt_ensure_in_git_repo
-    if test $status -ne 0
-        return 1
-    end
+    _gwt_ensure_in_git_repo; or return 1
 
     set -l repo_name (_gwt_get_repo_name)
 

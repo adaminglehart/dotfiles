@@ -2,7 +2,7 @@
 age = "latest"
 bun = "latest"
 fnox = "latest"
-node = "latest"
+# node = "latest"
 
 [env]
 
