@@ -38,7 +38,7 @@ function _gwt_help
     echo "  create, c [branch]      Create a new worktree (prompts for branch if not specified)"
     echo "  list, ls, l             List all worktrees with their branches"
     echo "  switch, sw, s, goto, g  Interactive switch to a worktree"
-    echo "  remove, rm, r <path>    Remove a worktree (path can be relative to ~/worktrees/)"
+    echo "  remove, rm, r [path]    Remove a worktree (interactive picker if no path given)"
     echo "  path, p [branch]        Show the path for a worktree (current branch if not specified)"
     echo "  help, h                 Show this help message"
     echo ""
@@ -151,27 +151,20 @@ function _gwt_list
         return 0
     end
 
-    # Build CSV rows for gum table
-    set -l rows
+    gum style --bold "Worktrees for $repo_name"
     for i in (seq (count $_wt_paths))
         set -l wt_path $_wt_paths[$i]
         set -l wt_branch $_wt_branches[$i]
-        set -l marker ""
+        set -l short_path (string replace "$HOME" "~" $wt_path)
 
         if test "$wt_path" = "$main_toplevel"
-            set marker "@"
-            set wt_branch "$wt_branch (main)"
+            echo "  @ $wt_branch  $short_path"
         else if string match -q "$HOME/worktrees/*" $wt_path
-            set marker "*"
+            echo "  * $wt_branch  $short_path"
+        else
+            echo "    $wt_branch  $short_path"
         end
-
-        set -a rows "$marker,$wt_branch,$wt_path"
     end
-
-    gum style --bold "Worktrees for $repo_name"
-    printf "%s\n" "Type,Branch,Path" $rows | gum table --separator "," --print
-    echo ""
-    gum style --faint "@ = main worktree  * = managed worktree (~/worktrees/)"
 end
 
 function _gwt_switch
@@ -227,25 +220,71 @@ end
 function _gwt_remove -a worktree_path
     _gwt_ensure_in_git_repo; or return 1
 
-    if test -z "$worktree_path"
-        gum log --level error "No worktree path specified"
-        echo "Usage: gwt remove <path>"
-        return 1
-    end
-
     set -l repo_name (_gwt_get_repo_name)
+    set -l main_toplevel (git rev-parse --show-toplevel)
     set -l full_path
 
-    # If path doesn't start with /, assume it's relative to worktrees dir
-    if not string match -q '/*' $worktree_path
-        set full_path ~/worktrees/$repo_name/$worktree_path
+    if test -z "$worktree_path"
+        # Interactive picker (same as switch, but excludes main worktree)
+        _gwt_parse_worktrees
+
+        set -l labels
+        set -l paths
+
+        for i in (seq (count $_wt_paths))
+            set -l wt_path $_wt_paths[$i]
+            set -l wt_branch $_wt_branches[$i]
+
+            # Only include managed worktrees, exclude main repo
+            if string match -q "$HOME/worktrees/*" $wt_path
+                if test -n "$wt_branch"
+                    set -a labels $wt_branch
+                    set -a paths $wt_path
+                end
+            end
+        end
+
+        if test (count $labels) -eq 0
+            gum log --level warn "No removable worktrees found"
+            return 1
+        end
+
+        set -l selection (printf "%s\n" $labels | gum choose --header "Remove worktree:")
+
+        if test -z "$selection"
+            return 0
+        end
+
+        # Find the matching path
+        for i in (seq (count $labels))
+            if test "$labels[$i]" = "$selection"
+                set full_path $paths[$i]
+                break
+            end
+        end
     else
-        set full_path $worktree_path
+        # If path doesn't start with /, assume it's relative to worktrees dir
+        if not string match -q '/*' $worktree_path
+            set full_path ~/worktrees/$repo_name/$worktree_path
+        else
+            set full_path $worktree_path
+        end
+
+        if not test -d "$full_path"
+            gum log --level error "Worktree not found: $full_path"
+            return 1
+        end
     end
 
-    if not test -d "$full_path"
-        gum log --level error "Worktree not found: $full_path"
-        return 1
+    # Check for uncommitted changes
+    set -l dirty (git -C $full_path status --porcelain 2>/dev/null)
+    if test -n "$dirty"
+        gum log --level warn "Worktree has uncommitted changes:"
+        git -C $full_path status --short
+        if not gum confirm --default=false "Discard these changes and remove anyway?"
+            gum log --level info "Cancelled"
+            return 0
+        end
     end
 
     # Confirm removal
