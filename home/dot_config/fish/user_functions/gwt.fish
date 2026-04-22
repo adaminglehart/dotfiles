@@ -1,5 +1,5 @@
 # Git Worktree Utility
-# Manages git worktrees in ~/worktrees/
+# Manages git worktrees in ~/dev/worktrees/
 # Requires: gum (https://github.com/charmbracelet/gum)
 
 function gwt -a cmd --description "Git worktree utility"
@@ -42,7 +42,7 @@ function _gwt_help
     echo "  path, p [branch]        Show the path for a worktree (current branch if not specified)"
     echo "  help, h                 Show this help message"
     echo ""
-    gum style --faint "Worktrees are stored in: ~/worktrees/<repo-name>/<branch>/"
+    gum style --faint "Worktrees are stored in: ~/dev/worktrees/<repo-name>/<branch>/"
 end
 
 function _gwt_ensure_in_git_repo
@@ -111,7 +111,7 @@ function _gwt_create -a branch_name
 
     # Sanitize branch name for directory name (replace / with -)
     set -l dir_name (string replace -a '/' '-' "$branch_name")
-    set -l worktree_path ~/worktrees/$repo_name/$dir_name
+    set -l worktree_path ~/dev/worktrees/$repo_name/$dir_name
 
     # Check if worktree already exists
     if test -d "$worktree_path"
@@ -159,7 +159,7 @@ function _gwt_list
 
         if test "$wt_path" = "$main_toplevel"
             echo "  @ $wt_branch  $short_path"
-        else if string match -q "$HOME/worktrees/*" $wt_path
+        else if string match -q "$HOME/dev/worktrees/*" $wt_path
             echo "  * $wt_branch  $short_path"
         else
             echo "    $wt_branch  $short_path"
@@ -184,7 +184,7 @@ function _gwt_switch
         set -l wt_branch $_wt_branches[$i]
 
         # Only include managed worktrees and the main repo
-        if string match -q "$HOME/worktrees/*" $wt_path; or test "$wt_path" = "$main_toplevel"
+        if string match -q "$HOME/dev/worktrees/*" $wt_path; or test "$wt_path" = "$main_toplevel"
             if test -n "$wt_branch"
                 set -l label $wt_branch
                 if test "$wt_path" = "$main_toplevel"
@@ -236,7 +236,7 @@ function _gwt_remove -a worktree_path
             set -l wt_branch $_wt_branches[$i]
 
             # Only include managed worktrees, exclude main repo
-            if string match -q "$HOME/worktrees/*" $wt_path
+            if string match -q "$HOME/dev/worktrees/*" $wt_path
                 if test -n "$wt_branch"
                     set -a labels $wt_branch
                     set -a paths $wt_path
@@ -265,7 +265,7 @@ function _gwt_remove -a worktree_path
     else
         # If path doesn't start with /, assume it's relative to worktrees dir
         if not string match -q '/*' $worktree_path
-            set full_path ~/worktrees/$repo_name/$worktree_path
+            set full_path ~/dev/worktrees/$repo_name/$worktree_path
         else
             set full_path $worktree_path
         end
@@ -319,5 +319,5 @@ function _gwt_path -a branch_name
     end
 
     set -l dir_name (string replace -a '/' '-' "$branch_name")
-    echo ~/worktrees/$repo_name/$dir_name
+    echo ~/dev/worktrees/$repo_name/$dir_name
 end

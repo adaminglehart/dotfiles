@@ -15,11 +15,11 @@ complete -c gwt -n "__fish_use_subcommand" -a "help" -d "Show help"
 complete -c gwt -n "__fish_seen_subcommand_from create c path p" -a "(git branch --format='%(refname:short)' 2>/dev/null)"
 
 # Worktree path completion for 'remove' command
-# Lists managed worktrees under ~/worktrees for the current repo
+# Lists managed worktrees under ~/dev/worktrees for the current repo
 function __gwt_complete_worktrees
     set -l repo_name (git rev-parse --show-toplevel 2>/dev/null | xargs basename)
     if test -n "$repo_name"
-        for dir in ~/worktrees/$repo_name/*/
+        for dir in ~/dev/worktrees/$repo_name/*/
             if test -d "$dir"
                 echo (basename "$dir")
             end
