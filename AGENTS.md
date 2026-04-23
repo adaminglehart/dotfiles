@@ -167,42 +167,6 @@ chezmoi apply ~/.config/myapp/config.yaml
 
 ## Pi Configuration
 
-**Pi agent configuration has been moved to a separate repository.**
+**Pi agent configuration lives in a separate repository.**
 
-**Location:** `~/dev/pi-config` (separate Chezmoi-managed repo)  
-**Installed to:** `~/.pi/agent/`
-
-See `~/.pi/PI_CONFIG_MOVED.md` for migration details.
-
-### Quick Reference
-
-```bash
-# Edit Pi config
-cd ~/dev/pi-config
-vim agents/worker.md
-vim extensions/custom-footer/index.ts
-
-# Edit environment-specific settings
-vim .chezmoitemplates/pi/settings.work.json
-vim .chezmoitemplates/pi/models.home.json
-
-# Apply changes
-chezmoi apply --source ~/dev/pi-config
-# Or
-~/dev/pi-config/apply.sh
-```
-
-### Structure
-
-```
-~/dev/pi-config/           # Source repo
-  ├── agents/              # Agent definitions
-  ├── extensions/          # Custom Pi extensions  
-  ├── skills/              # Task instruction packages
-  ├── AGENTS.md            # Pi-specific workflow rules
-  └── .chezmoitemplates/pi/
-      ├── settings.{base,work,home}.json
-      └── models.{base,work,home}.json
-```
-
-For detailed documentation, see `~/dev/pi-config/README.md`.
+**Location:** `~/dev/pi-config` (separate repo, all pi agent configuration should be done there)

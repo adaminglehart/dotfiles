@@ -112,10 +112,6 @@ set -gx PRISMA_SKIP_POSTINSTALL_GENERATE true
 
 # NodeJS
 set -gx PATH node_modules/.bin $PATH
-{{- if eq .environment "home" }}
-set -gx NVM_DIR (brew --prefix nvm)
-set --universal nvm_default_version latest
-{{- end }}
 
 # Go
 set -g GOPATH $HOME/go
@@ -164,6 +160,10 @@ end
 
 if test $(which direnv)
     direnv hook fish | source
+end
+
+if test $(which mise)
+    mise completion fish | source
 end
 
 debug done
