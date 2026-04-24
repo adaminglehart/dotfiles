@@ -12,6 +12,15 @@ function pi --description "Launch pi inside tmux"
         return $status
     end
 
+    # If running 'pi update', update npm package first, then run pi update directly (no tmux)
+    if test "$argv[1]" = "update"
+        echo "Updating @mariozechner/pi-coding-agent via npm..."
+        npm update -g @mariozechner/pi-coding-agent
+        echo "Running pi update..."
+        command pi $argv
+        return $status
+    end
+
     # If not in tmux, launch pi in a NEW tmux session every time
     # Generate unique session name with timestamp
     set -l timestamp (date +%s)
