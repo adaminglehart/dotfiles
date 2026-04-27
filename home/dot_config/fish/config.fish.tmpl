@@ -164,8 +164,12 @@ end
 
 if test $(which mise)
     mise completion fish | source
+    mise activate fish | source
+end
+
+if test $(which fnox)
+    fnox completion fish | source
+    fnox activate fish | source
 end
 
 debug done
-
-mise activate fish | source

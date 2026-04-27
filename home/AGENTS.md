@@ -47,6 +47,7 @@ ALWAYS use subagents where possible, prefer to parallelize work when it does not
 
 - When adding `mise` tool versions, prefer the latest stable version unless the repo explicitly requires a pinned older release.
 - Before debugging a service, confirm the active deployment target (e.g. Docker vs Kubernetes) instead of inferring it from past project context.
+- Never use broad wildcard cleanup commands like `rm -rf * .*` while restructuring or repairing a repository. Move the specific checkout aside and reclone, or delete only verified paths.
 
 ### Pi agent
 - Pi config lives in ~/dev/pi-config (separate repo, all pi agent configuration should be done there)
