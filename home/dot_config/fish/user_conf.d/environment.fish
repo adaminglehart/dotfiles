@@ -4,7 +4,7 @@ if test (which fnox) && test -z "$FNOX_AGE_KEY"
 
   if not test -f $age_file
     if test (which op)
-      op read "op://homelab/age key/secretkey" > $age_file
+      op read "op://dotenv/AGE_KEY/secretkey" > $age_file
       chmod 600 $age_file
     end
   end

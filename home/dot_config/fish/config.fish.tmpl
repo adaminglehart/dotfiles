@@ -32,7 +32,7 @@ fish_add_path /usr/local/opt/libpq/bin
 fish_add_path ~/.orbstack/bin
 
 # NodeJS
-fish_add_path node_modules/.bin
+# fish_add_path node_modules/.bin
 fish_add_path ~/.bun/bin
 
 if test $(which brew)
@@ -101,7 +101,9 @@ set --export FZF_DEFAULT_OPTS '--cycle --layout=reverse --border --height=90% --
 # set -gx EDITOR nvim
 set -gx EDITOR code
 
-set -gx SSH_AUTH_SOCK ~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
+# Use the macOS default ssh-agent; 1Password keys are handled per-host
+# via IdentityAgent in ~/.ssh/config
+# set -gx SSH_AUTH_SOCK ~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
 set -gx KUBECONFIG ~/dev/homelab/kubernetes/kubeconfig
 
 if test -f "$HOME/.cargo/env.fish"
@@ -109,9 +111,6 @@ if test -f "$HOME/.cargo/env.fish"
 end
 
 set -gx PRISMA_SKIP_POSTINSTALL_GENERATE true
-
-# NodeJS
-set -gx PATH node_modules/.bin $PATH
 
 # Go
 set -g GOPATH $HOME/go

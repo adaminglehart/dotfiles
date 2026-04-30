@@ -5,8 +5,17 @@ function pi --description "Launch pi with fnox secrets"
         set -gx PI_CODING_AGENT_DIR /Users/adaminglehart/.pi/agent
     end
 
-    # Set up base command
+    # Run pi using the explicit node binary from the global mise 'latest' install.
+    # We can't just invoke the pi script directly because its shebang is `#!/usr/bin/env node`,
+    # which would resolve `node` from PATH — and project-local .nvmrc/.node-version pins
+    # (e.g. privy pinning node 22) would cause pi to run under the wrong node version.
+    # By invoking `<node-bin> <pi-script>` directly we bypass env lookup entirely.
+    set -l _node_bin ~/.local/share/mise/installs/node/latest/bin/node
+    set -l _pi_script ~/.local/share/mise/installs/node/latest/bin/pi
     set -l pi_cmd "command pi"
+    if test -x "$_node_bin"; and test -x "$_pi_script"
+        set pi_cmd "$_node_bin $_pi_script"
+    end
 
     # If fnox.toml exists, wrap with fnox exec
     # PI_CODING_AGENT_DIR needs to be visible to fnox exec
@@ -41,5 +50,5 @@ function pi --description "Launch pi with fnox secrets"
     set -l session_name "pi-$timestamp"
 
     echo "Creating new tmux session: $session_name"
-    tmux new-session -s $session_name -c (pwd) "exec pi $argv"
+    tmux new-session -s $session_name -c (pwd) "exec $pi_cmd $argv"
 end
