@@ -48,8 +48,14 @@ ALWAYS use subagents where possible, prefer to parallelize work when it does not
 - When adding `mise` tool versions, prefer the latest stable version unless the repo explicitly requires a pinned older release.
 - Before debugging a service, confirm the active deployment target (e.g. Docker vs Kubernetes) instead of inferring it from past project context.
 - Never use broad wildcard cleanup commands like `rm -rf * .*` while restructuring or repairing a repository. Move the specific checkout aside and reclone, or delete only verified paths.
+- Never revert, remove, or “clean up” unrelated working-tree changes just because they appear in `git diff`/`git status`. Treat unexpected changes as user-owned unless you can prove you created them; ask before modifying them.
+- Never delete newly appearing or unfamiliar files while working; the user often edits or adds files manually in parallel. If such a file causes a problem, inspect it and preserve it where possible, or ask before deleting/moving it.
+- Do not add project-specific prefixes to all environment variables by default; for external services, prefer the service's conventional names (e.g. `HOME_ASSISTANT_URL`) unless the project explicitly uses a different convention.
+- When the user scopes cleanup to a deployment/platform (for example Kubernetes), do not remove or modify similarly named resources in other platforms (Nomad, Ansible, Terraform, etc.) unless explicitly requested.
+- When applying Talos machine config to multiple control-plane nodes, apply and verify one node at a time; never trigger simultaneous control-plane reboots unless explicitly planned and approved.
 
 ### Pi agent
 - Pi config lives in ~/dev/pi-config (separate repo, all pi agent configuration should be done there)
 - Never edit `~/.pi/agent/*` directly when the file is managed by `~/dev/pi-config`; update the source repo first.
 - For Pi config changes, prefer the repo's own apply flow (`cd ~/dev/pi-config && just apply`) instead of writing rendered files by hand.
+- In Pi `models.json`, custom providers with models require a non-empty `apiKey`; for local OpenAI-compatible servers, use a dummy value like `"ollama"`/`"llama-server"`, not an empty string.
