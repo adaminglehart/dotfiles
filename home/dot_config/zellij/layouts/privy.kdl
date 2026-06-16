@@ -74,4 +74,24 @@ layout {
       }
     }
 
+    tab name="pi-config" cwd="~/dev/pi-config" hide_floating_panes=true {
+      pane command="pi"
+      pane
+      floating_panes {
+          pane {
+              x "25%"
+              y "5%"
+              width "50%"
+              height "50%"
+          }
+          pane {
+              command "gitui"
+              x "10%"
+              y "10%"
+              width "80%"
+              height "80%"
+          }
+      }
+    }
+
 }

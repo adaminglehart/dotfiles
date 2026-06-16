@@ -1,5 +1,4 @@
-theme = "light:Flexoki Light,dark:Rose Pine Moon"
-theme = ""
+#theme = "light:Flexoki Light,dark:Rose Pine Moon"
 theme = "Rose Pine Moon"
 cursor-color = "#ffffff"
 

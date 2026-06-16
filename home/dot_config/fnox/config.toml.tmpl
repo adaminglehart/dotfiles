@@ -6,6 +6,7 @@
 type = "age"
 recipients = ["age1q6el4a8vtj0uyzt7447m43mp887z28eqvhmfs3a5nl383wxhpf9szjj9jc"]
 
+{{ if ne .environment "work" }}
 [providers.op]
 type = "1password"
 
@@ -15,3 +16,4 @@ GEMINI_API_KEY = { provider = "op", value = "op://dotenv/GEMINI_API_KEY/value" }
 OPENAI_API_KEY = { provider = "op", value = "op://dotenv/OPENAI_API_KEY/value" }
 OPENROUTER_API_KEY = { provider = "op", value = "op://dotenv/OPENROUTER_API_KEY/value" }
 FIREWORKS_API_KEY = { provider = "op", value = "op://dotenv/FIREWORKS_API_KEY/value" }
+{{ end }}

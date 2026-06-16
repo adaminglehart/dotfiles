@@ -53,9 +53,12 @@ ALWAYS use subagents where possible, prefer to parallelize work when it does not
 - Do not add project-specific prefixes to all environment variables by default; for external services, prefer the service's conventional names (e.g. `HOME_ASSISTANT_URL`) unless the project explicitly uses a different convention.
 - When the user scopes cleanup to a deployment/platform (for example Kubernetes), do not remove or modify similarly named resources in other platforms (Nomad, Ansible, Terraform, etc.) unless explicitly requested.
 - When applying Talos machine config to multiple control-plane nodes, apply and verify one node at a time; never trigger simultaneous control-plane reboots unless explicitly planned and approved.
+- Before confirming a user's hypothesis about where behavior lives or how code works, verify it against the repository and cite the evidence; do not blindly agree.
 
 ### Pi agent
 - Pi config lives in ~/dev/pi-config (separate repo, all pi agent configuration should be done there)
 - Never edit `~/.pi/agent/*` directly when the file is managed by `~/dev/pi-config`; update the source repo first.
 - For Pi config changes, prefer the repo's own apply flow (`cd ~/dev/pi-config && just apply`) instead of writing rendered files by hand.
 - In Pi `models.json`, custom providers with models require a non-empty `apiKey`; for local OpenAI-compatible servers, use a dummy value like `"ollama"`/`"llama-server"`, not an empty string.
+- When detecting whether a Pi process is a child spawned by `pi-subagents`, use the current `pi-subagents` runtime contract (`PI_SUBAGENT_CHILD=1`) rather than older environment names like `PI_SUBAGENT_NAME`.
+- In pi-config code, prefer the shared `isSubagent()` helper over checking `PI_SUBAGENT_CHILD` directly.
