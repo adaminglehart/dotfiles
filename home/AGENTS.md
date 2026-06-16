@@ -54,7 +54,6 @@ ALWAYS use subagents where possible, prefer to parallelize work when it does not
 - When the user scopes cleanup to a deployment/platform (for example Kubernetes), do not remove or modify similarly named resources in other platforms (Nomad, Ansible, Terraform, etc.) unless explicitly requested.
 - When applying Talos machine config to multiple control-plane nodes, apply and verify one node at a time; never trigger simultaneous control-plane reboots unless explicitly planned and approved.
 - Before confirming a user's hypothesis about where behavior lives or how code works, verify it against the repository and cite the evidence; do not blindly agree.
-- When asked to reconcile local changes with `main` and push them, push the reconciled commit directly to `main`; do not create a PR unless explicitly requested.
 
 ### Pi agent
 - Pi config lives in ~/dev/pi-config (separate repo, all pi agent configuration should be done there)

@@ -35,7 +35,8 @@ just onepassword::set <name> <value>  # Store credential in 1Password
 
 ## Git Workflow
 
-This repo uses **Graphite** for PR stack management instead of direct git commands:
+This repo uses **Graphite** for PR stack management instead of direct git commands.
+When asked to reconcile local changes with `main` and push them in this repo, push the reconciled commit directly to `main`; do not create a PR unless explicitly requested.
 
 ```bash
 gt create -m "<message>"   # Create feature branch with commit
