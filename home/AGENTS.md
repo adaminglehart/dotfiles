@@ -57,6 +57,10 @@ ALWAYS use subagents where possible, prefer to parallelize work when it does not
 - Before confirming a user's hypothesis about where behavior lives or how code works, verify it against the repository and cite the evidence; do not blindly agree.
 - When the user is debugging why a specific command or tool fails, stay on that tool path; do not substitute an equivalent workaround command unless explicitly asked.
 - Do not rely on `$SHELL` to detect the user's current interactive shell; it may report the login shell (for example zsh) even when the active shell is Fish. Prefer the parent process or another current-session signal.
+- Always bound potentially long-running commands with reasonable timeouts. For Kubernetes and network checks, use options like `kubectl --request-timeout`, `kubectl wait --timeout`, `curl --max-time`, Flux/Helm timeout flags, and tool-level timeouts; avoid interactive flags such as `kubectl run -i` unless explicitly needed.
+- Run Helm OCI chart inspection/rendering commands from a temporary directory or otherwise isolate chart output/cache; do not run commands that may unpack chart dependencies into the repository root.
+- For personal homelab planning, do not add formal change-announcement/planned-maintenance ceremony unless requested; prioritize no data loss and minimal downtime, while recognizing some downtime is acceptable.
+- When generating or transferring credentials and password digests, parse the tool's exact machine-readable/raw value (not decorated CLI output), use protocol-safe character sets, verify the values as consumed by the target services, and never print secret-derived values during validation.
 
 ### Pi agent
 - Pi config lives in ~/dev/pi-config (separate repo, all pi agent configuration should be done there)

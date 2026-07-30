@@ -23,3 +23,4 @@ home/dot_codex/skills/*
 home/private_dot_pi/**/node_modules
 home/dot_config/pi/**/node_modules
 bun.lock
+.pi-subagents
