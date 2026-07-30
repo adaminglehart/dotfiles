@@ -31,6 +31,7 @@ ALWAYS use subagents where possible, prefer to parallelize work when it does not
 ## Tool Usage
 - prefer ripgrep (rg) over regular grep
 - when you're waiting for some action to complete or state to change, use a polling approach rather than a long sleep, as long as it's safe to do so
+- keep searches tightly scoped to the relevant repo/subdirectory; never run broad greps/finds across `~/dev` when a more specific path is available, because it is too slow
 - If you ever need to do some work in another panel, use tmux rather than zellij, even though I use zellij for my main workflow. 
 
 ## Coding best practices
@@ -54,6 +55,8 @@ ALWAYS use subagents where possible, prefer to parallelize work when it does not
 - When the user scopes cleanup to a deployment/platform (for example Kubernetes), do not remove or modify similarly named resources in other platforms (Nomad, Ansible, Terraform, etc.) unless explicitly requested.
 - When applying Talos machine config to multiple control-plane nodes, apply and verify one node at a time; never trigger simultaneous control-plane reboots unless explicitly planned and approved.
 - Before confirming a user's hypothesis about where behavior lives or how code works, verify it against the repository and cite the evidence; do not blindly agree.
+- When the user is debugging why a specific command or tool fails, stay on that tool path; do not substitute an equivalent workaround command unless explicitly asked.
+- Do not rely on `$SHELL` to detect the user's current interactive shell; it may report the login shell (for example zsh) even when the active shell is Fish. Prefer the parent process or another current-session signal.
 
 ### Pi agent
 - Pi config lives in ~/dev/pi-config (separate repo, all pi agent configuration should be done there)
