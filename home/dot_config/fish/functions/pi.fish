@@ -5,6 +5,12 @@ function pi --description "Launch pi with fnox secrets"
         set -gx PI_CODING_AGENT_DIR /Users/adaminglehart/.pi/agent
     end
 
+    # Herdr renders Pi's fake inverse-video cursor with poor contrast. Expose the
+    # hardware cursor so Ghostty supplies its configured white cursor instead.
+    if set -q HERDR_PANE_ID; and not set -q PI_HARDWARE_CURSOR
+        set -fx PI_HARDWARE_CURSOR 1
+    end
+
     # Run pi using the explicit node binary from the global mise 'latest' install.
     # We can't just invoke the pi script directly because its shebang is `#!/usr/bin/env node`,
     # which would resolve `node` from PATH — and project-local .nvmrc/.node-version pins
@@ -12,9 +18,16 @@ function pi --description "Launch pi with fnox secrets"
     # By invoking `<node-bin> <pi-script>` directly we bypass env lookup entirely.
     set -l _node_bin ~/.local/share/mise/installs/node/latest/bin/node
     set -l _pi_script ~/.local/share/mise/installs/node/latest/bin/pi
+    set -l _subagent_pi ~/.local/bin/pi-subagent
     set -l pi_cmd "command pi"
     if test -x "$_node_bin"; and test -x "$_pi_script"
         set pi_cmd "$_node_bin $_pi_script"
+    end
+
+    # Keep subagents on the same Pi installation even when project-local mise
+    # configuration puts a different `pi` binary earlier in PATH.
+    if not set -q PI_SUBAGENT_PI_BINARY; and test -x "$_subagent_pi"
+        set -fx PI_SUBAGENT_PI_BINARY "$_subagent_pi"
     end
 
     # If fnox.toml exists, wrap with fnox exec

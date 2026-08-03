@@ -1,0 +1,12 @@
+#!/bin/sh
+set -eu
+
+node_bin="$HOME/.local/share/mise/installs/node/latest/bin/node"
+pi_script="$HOME/.local/share/mise/installs/node/latest/bin/pi"
+
+if [ ! -x "$node_bin" ] || [ ! -x "$pi_script" ]; then
+    echo "pi-subagent: global Pi installation is unavailable" >&2
+    exit 1
+fi
+
+exec "$node_bin" "$pi_script" "$@"

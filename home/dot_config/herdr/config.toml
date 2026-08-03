@@ -6,8 +6,9 @@
 onboarding = false
 
 [theme]
-# Match the Rose Pine terminal theme configured in Ghostty.
+# Keep Herdr dark regardless of the host system appearance.
 name = "rose-pine"
+auto_switch = false
 
 [theme.custom]
 # High-contrast text and status colors for Herdr's dark Rose Pine UI.
