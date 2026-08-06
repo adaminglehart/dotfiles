@@ -9,22 +9,21 @@ See also:
 
 Whenever corrected, after making a mistake or misinterpreting, add a section in here (~/dev/dotfiles/home/AGENTS.md) to instruct future sessions, avoiding the mistake again. Only do this if it's a generalizable mistake, don't add one-offs.
 
-ALWAYS use subagents where possible, prefer to parallelize work when it does not create conflicts.
+# Communication
+
+- Only report to me in ASD-STE100 Simplified Technical English.
 
 ## System Facts
 
 - Shell: Fish
 - Dotfiles managed by Chezmoi — always edit source files in ~/dev/dotfiles, not the installed copies
 - any time you're going to edit a file in ~ (the home directory), first check if it's managed by our dotfiles or pi-config. If it is, edit the file in the source repo instead
-- Git workflow uses Graphite (`gt create`, `gt submit`, etc.), not raw git
-- Commit messages: imperative mood ("Add X" not "Added X"), small and focused
 
 ## Preferences
 
 - Re-read files before editing — I often make manual changes between your edits
 - Only do what I asked. Don't add features, refactor surrounding code, or "improve" things unprompted. Do call out opportunities for improvements when you see them, just don't make them without discussion.
 - Push back if I'm approaching something wrong — don't just agree
-- When requesting permanent tool permissions, scope them tightly (e.g. `kubectl get pods *` not `kubectl *`)
 - **Destructive Operations** — NEVER run `terraform apply`, `kubectl delete`, etc. without explicit approval
 - if I ask you to do something involving an external library, SDK, API, tool, etc you should always look up the documentation to ensure your information is up to date
 
@@ -40,32 +39,22 @@ ALWAYS use subagents where possible, prefer to parallelize work when it does not
 - prioritize clean and maintainable over quick and hacky
 - **important** if you install a dependency to a project, make sure you are installing the latest version, unless you specifically need an older version.
 - **important** for typed languages, always prefer strong typing, never use `any` or `unknown`.
-- When asked to implement something, start writing code immediately. Do not spend more than 2-3 minutes exploring the codebase before making changes. If you need more context, ask the user rather than exploring endlessly.
 - Keep implementations simple and concrete. Do not introduce unnecessary abstractions, generic types, callback patterns, or over-engineered options objects. If a value is directly available (e.g., a timestamp on a record), use it directly rather than creating indirection layers.
 - Avoid general utils files (e.g. utils.ts) - prefer specifically broken-out and named files for shared code
 
 ## Corrections
 
-- When adding `mise` tool versions, prefer the latest stable version unless the repo explicitly requires a pinned older release.
-- Before debugging a service, confirm the active deployment target (e.g. Docker vs Kubernetes) instead of inferring it from past project context.
 - Never use broad wildcard cleanup commands like `rm -rf * .*` while restructuring or repairing a repository. Move the specific checkout aside and reclone, or delete only verified paths.
 - Never revert, remove, or “clean up” unrelated working-tree changes just because they appear in `git diff`/`git status`. Treat unexpected changes as user-owned unless you can prove you created them; ask before modifying them.
 - Never delete newly appearing or unfamiliar files while working; the user often edits or adds files manually in parallel. If such a file causes a problem, inspect it and preserve it where possible, or ask before deleting/moving it.
-- Do not add project-specific prefixes to all environment variables by default; for external services, prefer the service's conventional names (e.g. `HOME_ASSISTANT_URL`) unless the project explicitly uses a different convention.
 - When the user scopes cleanup to a deployment/platform (for example Kubernetes), do not remove or modify similarly named resources in other platforms (Nomad, Ansible, Terraform, etc.) unless explicitly requested.
-- When applying Talos machine config to multiple control-plane nodes, apply and verify one node at a time; never trigger simultaneous control-plane reboots unless explicitly planned and approved.
 - Before confirming a user's hypothesis about where behavior lives or how code works, verify it against the repository and cite the evidence; do not blindly agree.
 - When the user is debugging why a specific command or tool fails, stay on that tool path; do not substitute an equivalent workaround command unless explicitly asked.
 - Do not rely on `$SHELL` to detect the user's current interactive shell; it may report the login shell (for example zsh) even when the active shell is Fish. Prefer the parent process or another current-session signal.
 - Always bound potentially long-running commands with reasonable timeouts. For Kubernetes and network checks, use options like `kubectl --request-timeout`, `kubectl wait --timeout`, `curl --max-time`, Flux/Helm timeout flags, and tool-level timeouts; avoid interactive flags such as `kubectl run -i` unless explicitly needed.
-- Run Helm OCI chart inspection/rendering commands from a temporary directory or otherwise isolate chart output/cache; do not run commands that may unpack chart dependencies into the repository root.
-- For personal homelab planning, do not add formal change-announcement/planned-maintenance ceremony unless requested; prioritize no data loss and minimal downtime, while recognizing some downtime is acceptable.
 - When generating or transferring credentials and password digests, parse the tool's exact machine-readable/raw value (not decorated CLI output), use protocol-safe character sets, verify the values as consumed by the target services, and never print secret-derived values during validation.
 
 ### Pi agent
 - Pi config lives in ~/dev/pi-config (separate repo, all pi agent configuration should be done there)
 - Never edit `~/.pi/agent/*` directly when the file is managed by `~/dev/pi-config`; update the source repo first.
 - For Pi config changes, prefer the repo's own apply flow (`cd ~/dev/pi-config && just apply`) instead of writing rendered files by hand.
-- In Pi `models.json`, custom providers with models require a non-empty `apiKey`; for local OpenAI-compatible servers, use a dummy value like `"ollama"`/`"llama-server"`, not an empty string.
-- When detecting whether a Pi process is a child spawned by `pi-subagents`, use the current `pi-subagents` runtime contract (`PI_SUBAGENT_CHILD=1`) rather than older environment names like `PI_SUBAGENT_NAME`.
-- In pi-config code, prefer the shared `isSubagent()` helper over checking `PI_SUBAGENT_CHILD` directly.
