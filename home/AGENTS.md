@@ -44,6 +44,7 @@ Whenever corrected, after making a mistake or misinterpreting, add a section in 
 
 ## Corrections
 
+- In Terragrunt repositories, keep reusable Terraform modules generic. Put environment-specific and resource-instance-specific values in leaf Terragrunt configurations and pass them to modules as typed inputs.
 - Never use broad wildcard cleanup commands like `rm -rf * .*` while restructuring or repairing a repository. Move the specific checkout aside and reclone, or delete only verified paths.
 - Never revert, remove, or “clean up” unrelated working-tree changes just because they appear in `git diff`/`git status`. Treat unexpected changes as user-owned unless you can prove you created them; ask before modifying them.
 - Never delete newly appearing or unfamiliar files while working; the user often edits or adds files manually in parallel. If such a file causes a problem, inspect it and preserve it where possible, or ask before deleting/moving it.

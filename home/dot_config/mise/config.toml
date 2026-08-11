@@ -2,6 +2,7 @@
 age = "latest"
 bun = "latest"
 fnox = "latest"
+go = "1.25.5"
 node = "latest"
 
 [env]

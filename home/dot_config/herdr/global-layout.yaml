@@ -1,0 +1,23 @@
+# Global default layout for fresh Herdr spaces.
+#
+# `size` is the share assigned to the pane being added to its immediate split.
+# Use either a fraction (0 < size < 1) or a percentage string such as "30%".
+# `command`, when present, is an argv list; it is not passed through a shell.
+# Omit it to launch Herdr's normal interactive Fish shell.
+#
+# Pane entries after the first split the preceding pane. `right` places panes
+# side by side; `down` stacks them. The initial one-pane layout is deliberate:
+# edit this file to experiment without changing the plugin code.
+version: 1
+
+directory_picker:
+  # Every directory below these roots is offered by the F12+Shift+N picker.
+  # Add or replace roots to match the places where you keep projects.
+  roots:
+    - ~/dev
+
+layout:
+  tabs:
+    - label: main
+      panes:
+        - label: shell

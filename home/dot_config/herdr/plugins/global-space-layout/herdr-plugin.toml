@@ -1,0 +1,17 @@
+id = "local.global-space-layout"
+name = "Global Space Layout"
+version = "0.1.0"
+min_herdr_version = "0.8.0"
+description = "Apply one YAML-defined layout to fresh spaces and create spaces from a directory picker."
+platforms = ["macos"]
+
+[[startup]]
+command = ["fish", "run.fish"]
+
+[[events]]
+on = "workspace.created"
+command = ["fish", "run.fish"]
+
+[[events]]
+on = "workspace.focused"
+command = ["fish", "run.fish"]

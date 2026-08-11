@@ -137,6 +137,17 @@ keybinds clear-defaults=true {
         bind "Alt +" { Resize "Increase"; }
         bind "Alt -" { Resize "Decrease"; }
         bind "Alt =" { Resize "Increase"; }
+        bind "Alt d" {
+            Run "gitui-switcher" {
+                floating true
+                close_on_exit true
+                name "Git UI Switcher"
+                x "10%"
+                y "10%"
+                width "80%"
+                height "80%"
+            }
+        }
         bind "Alt [" { PreviousSwapLayout; }
         bind "Alt ]" { NextSwapLayout; }
         bind "Alt Shift f" { ToggleFloatingPanes; }

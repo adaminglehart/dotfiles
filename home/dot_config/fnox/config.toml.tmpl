@@ -6,7 +6,15 @@
 type = "age"
 recipients = ["age1q6el4a8vtj0uyzt7447m43mp887z28eqvhmfs3a5nl383wxhpf9szjj9jc"]
 
-{{ if ne .environment "work" }}
+{{ if eq .environment "work" }}
+[providers.op-work]
+type = "1password"
+account = "stripeinc.1password.com"
+
+[secrets]
+# PUP_CLI_TOKEN_RO from the work account, exposed under Pup's expected name.
+DD_ACCESS_TOKEN = { provider = "op-work", value = "op://Employee/PUP_CLI_TOKEN_RO/value" }
+{{ else }}
 [providers.op]
 type = "1password"
 
