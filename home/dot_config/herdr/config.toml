@@ -39,7 +39,7 @@ manifest_check = true
 
 [keys]
 # Avoid conflicting with Zellij/tmux's ctrl+b prefix.
-prefix = "f12"
+prefix = "ctrl+backtick"
 
 # Useful when running multiple Pi panes and jumping by attention/index.
 focus_agent = "prefix+alt+1..9"
@@ -48,16 +48,14 @@ next_agent = "prefix+shift+down"
 switch_workspace = "prefix+shift+1..9"
 open_worktree = "prefix+alt+w"
 remove_worktree = "prefix+alt+d"
-# The custom popup below owns the normal New Space key so it can select a CWD.
+# The Projects plugin owns the normal New Space key.
 new_workspace = ""
 
 [[keys.command]]
 key = "prefix+shift+n"
-type = "popup"
-command = "exec \"$HOME/.config/herdr/plugins/global-space-layout/select-directory.fish\""
-description = "create a space in a selected directory"
-width = "80%"
-height = "80%"
+type = "plugin_action"
+command = "local.projects.open"
+description = "create a space from a project"
 
 [worktrees]
 directory = "~/.herdr/worktrees"

@@ -15,7 +15,7 @@ Whenever corrected, after making a mistake or misinterpreting, add a section in 
 
 ## Communication
 
-- Only report to me in ASD-STE100 Simplified Technical English.
+- Only speak to me in ASD-STE100 Simplified Technical English.
 
 ## System Facts
 
@@ -80,3 +80,7 @@ Whenever corrected, after making a mistake or misinterpreting, add a section in 
 ### Secrets
 
 - When generating or transferring credentials and password digests, parse the tool's exact machine-readable/raw value (not decorated CLI output), use protocol-safe character sets, verify the values as consumed by the target services, and never print secret-derived values during validation.
+
+### Keep standing reminders separate from the current task
+
+- Do not inject a standing reminder as a new user message after the user's task. The agent can mistake the reminder for the current task. Put standing reminders in the system prompt so the user's message remains the current task.

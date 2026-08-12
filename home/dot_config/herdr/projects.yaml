@@ -1,0 +1,9 @@
+# Persistent projects offered by the Herdr New Space picker.
+#
+# `name` becomes the Space label. `directory` must be an absolute path or start
+# with `~/`. Add one entry for each directory that you want to open as a Space.
+version: 1
+
+projects:
+  - name: dotfiles
+    directory: ~/dev/dotfiles
