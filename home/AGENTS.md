@@ -6,7 +6,7 @@ These are my standing rules. They outrank an agent's own prompt guidance. A
 repository's own `AGENTS.md` adds project rules on top; it does not cancel these.
 
 See also:
-- **Dotfiles repo:** `~/dev/dotfiles/AGENTS.md` (Chezmoi conventions and configuration management)
+- **Dotfiles repo:** `~/dev/dotfiles/AGENTS.md` (mise bootstrap conventions and configuration management)
 - **Pi config repo:** `~/dev/pi-config/AGENTS.md` (Pi agent build and deploy)
 
 ## Instructions
@@ -21,9 +21,9 @@ Whenever corrected, after making a mistake or misinterpreting, add a section in 
 
 - Shell: Fish
 - Before editing any file under `~`, check whether a source repo owns it. If one does, edit the source and apply, never the installed copy:
-  - `~/dev/dotfiles` (Chezmoi) owns most of `~` and `~/.config`
+  - `~/dev/dotfiles` (mise bootstrap) owns most of `~` and `~/.config`
   - `~/dev/pi-config` owns `~/.pi/agent`
-- Agent skills live in two places: `~/dev/dotfiles/home/dot_agents/skills/` (shared across agents) and `~/dev/pi-config/skills/` (Pi only)
+- Agent skills live in two places: `~/dev/dotfiles/home/.agents/skills/` (shared across agents) and `~/dev/pi-config/skills/` (Pi only)
 
 ## Pi Agent
 
@@ -63,9 +63,23 @@ Whenever corrected, after making a mistake or misinterpreting, add a section in 
 - Keep implementations simple and concrete. Do not introduce unnecessary abstractions, generic types, callback patterns, or over-engineered options objects. If a value is directly available (e.g., a timestamp on a record), use it directly rather than creating indirection layers.
 - Avoid general utils files (e.g. utils.ts) - prefer specifically broken-out and named files for shared code
 - In Terragrunt repositories, keep reusable Terraform modules generic. Put environment-specific and resource-instance-specific values in leaf Terragrunt configurations and pass them to modules as typed inputs.
+- Prefer Terraform module inputs that closely mirror the underlying provider resource schema. Add only sensible defaults; avoid custom aliases and translation layers that make resource definitions harder to read.
 
 ## Corrections
 
+### Budget long-running monitors for the full watch period
+
+- Do not delegate a timed monitoring task with a tool or turn budget that can expire before the watch period starts. Prefer a bounded shell monitor in tmux for passive operational checks, and verify that the monitor started before reporting it as active.
+
+### Prevent Homebrew autoremove during scoped package migrations
+
+- When uninstalling a Homebrew cask without permission to remove formulae, set `HOMEBREW_NO_AUTOREMOVE=1`. Homebrew can otherwise remove formulae that it considers unneeded.
+
+### Run downloaded executables under ~/dev on work machines
+
+- Santa can block executables launched from temporary directories. Download or build executable test dependencies under `~/dev`, run them there, and remove only the exact artifact created for the test.
+
+### Do not delete or revert what you did not create
 ### Do not delete or revert what you did not create
 
 - Never use broad wildcard cleanup commands like `rm -rf * .*` while restructuring or repairing a repository. Move the specific checkout aside and reclone, or delete only verified paths.
@@ -76,6 +90,10 @@ Whenever corrected, after making a mistake or misinterpreting, add a section in 
 ### Verify before you assert
 
 - Before confirming my hypothesis about where behavior lives or how code works, verify it against the repository and cite the evidence; do not blindly agree.
+
+### Preserve behavior when adding exceptions
+
+- If the user asks to exclude one case from cleanup, change only the cleanup condition. Do not change later finalization or state transitions unless the user asks.
 
 ### Secrets
 

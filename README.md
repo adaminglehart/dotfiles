@@ -1,51 +1,40 @@
 # Dotfiles
 
-Personal dotfiles managed with [chezmoi](https://www.chezmoi.io/).
+Personal dotfiles managed with [`mise bootstrap`](https://mise.jdx.dev/bootstrap.html).
 
 ## Environment-Based Configuration
 
-This repo uses chezmoi's templating to manage different configurations for `home` vs `work` environments. Templates (`.tmpl` files) conditionally include settings based on the `.environment` variable:
+This repo uses mise configuration environments for `home` and `work` machines. Select an environment with `--env` or `MISE_ENV`:
 
-```
-{{- if eq .environment "home" }}
-# Home-specific config
-{{- else }}
-# Work-specific config
-{{- end }}
+```bash
+mise --env home bootstrap --dry-run
+mise --env work bootstrap --dry-run
 ```
 
-The environment is set in `~/.config/chezmoi/chezmoi.yaml` or prompted during `chezmoi init`.
+The shared configuration is in `mise/config.toml`. Home and work additions are in `mise/config.home.toml` and `mise/config.work.toml`.
 
 ## Quick Start
 
 ```bash
-# Install chezmoi and apply dotfiles
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply $GITHUB_USERNAME
+# Preview all changes first
+mise --env home bootstrap --dry-run
 
-# Or if chezmoi is already installed
-chezmoi init --apply $GITHUB_USERNAME
-```
-
-### Fresh Mac Setup
-
-```bash
-./install   # Bootstrap Homebrew, Fisher, shell, and macOS preferences
+# Set up a machine after you review the preview
+MISE_ENV=home just setup
 ```
 
 ## Structure
 
 ```
-├── home/                    # Chezmoi source (maps to ~)
-│   ├── dot_config/          # → ~/.config/
-│   │   ├── fish/            # Shell config
-│   │   ├── zed/             # Zed editor
-│   │   ├── ghostty/         # Terminal
-│   │   ├── zellij/          # Multiplexer
-│   │   ├── starship.toml    # Prompt
-│   │   └── ...
-│   ├── dot_claude/          # Claude Code settings
-│   └── dot_Brewfile.tmpl    # Templated Brewfile (→ ~/.Brewfile)
-└── .macos                   # macOS system preferences
+├── mise/                    # Shared and environment-specific bootstrap config
+├── home/                    # Symlinked sources; mirrors paths under ~
+│   ├── .config/             # → ~/.config/
+│   ├── .local/              # → ~/.local/
+│   └── ...
+├── templates/               # Rendered environment-specific dotfiles
+├── private/                 # Copy-mode private dotfiles
+├── profiles/work/           # Work-only dotfile sources
+└── Justfile                 # Bootstrap and focused management commands
 ```
 
 ## Stack
@@ -63,18 +52,28 @@ chezmoi init --apply $GITHUB_USERNAME
 ## Common Commands
 
 ```bash
-# Chezmoi
-chezmoi apply              # Apply changes to home directory
-chezmoi diff               # Preview pending changes
-chezmoi add <file>         # Track a new file
-chezmoi manage <file>      # Add an existing file to chezmoi-managed files
+# Set MISE_ENV=work on a work machine. It defaults to home in Just recipes.
+just status                # Inspect bootstrap state
+just plan                  # Show the resource plan
+just dry-run               # Preview without changing the machine
+just apply                 # Apply packages, dotfiles, tools, and the final task
 
-# Packages (uses templated ~/.Brewfile)
-brew bundle --global       # Install from ~/.Brewfile
+# Manage only dotfiles
+mise --env home bootstrap dotfiles status
+mise --env home bootstrap dotfiles apply --dry-run --verbose
+
+# Inspect packages without installing them
+mise --env home bootstrap packages status
+mise --env work bootstrap packages status
 ```
 
 ## Notes
 
+- `mise bootstrap` requires mise 2026.8.5 or newer.
+- The `setup` recipe runs mise bootstrap, applies the declared macOS defaults, and sets Fish as the login shell.
+- Mise does not support host-scoped defaults. The bootstrap task applies the two retained host-scoped Image Capture and battery-percentage settings.
+- `mise/config.toml` replaces the old Brewfile and manages Homebrew formulae and casks through mise.
+- The first package changeover on an existing machine requires a separate review: mise cannot take ownership of casks that Homebrew already owns.
 - SSH authentication and commit signing use 1Password
 - Pi agent configuration moved to separate repo: `~/dev/pi-config`
 - See `AGENTS.md` for AI assistant guidance

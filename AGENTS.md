@@ -2,22 +2,22 @@ This file provides guidance to coding agents on my personal preferences for work
 
 ## Repository Overview
 
-This is a personal dotfiles repository managed by **chezmoi**. The source directory is `home/` which maps to `~/.config` via chezmoi's naming convention (e.g., `dot_config` → `.config`).
+This is a personal dotfiles repository managed by **mise bootstrap**. Shared configuration is in `mise/config.toml`; `mise/config.home.toml` and `mise/config.work.toml` add environment-specific state.
 
 ## Common Commands
 
-### Chezmoi Operations
+### Mise Bootstrap Operations
 ```bash
-chezmoi apply              # Apply changes from source to home directory
-chezmoi diff               # Preview changes before applying
-chezmoi edit <file>        # Edit a managed file
-chezmoi add <file>         # Add a new file to source state
+mise --env home bootstrap status
+mise --env home bootstrap plan
+mise --env home bootstrap --dry-run
+mise --env home bootstrap dotfiles apply --dry-run --verbose
 ```
 
 ### Package Management
 ```bash
-brew bundle --file=brewfiles/Brewfile.home   # Install home packages
-brew bundle --file=brewfiles/Brewfile.core   # Install core packages only
+mise --env home bootstrap packages status
+mise --env work bootstrap packages status
 ```
 
 ### Just Commands (from ~/.config/just/)
@@ -25,12 +25,6 @@ brew bundle --file=brewfiles/Brewfile.core   # Install core packages only
 just                       # List available submodules
 just onepassword::get <name>    # Retrieve credential from 1Password
 just onepassword::set <name> <value>  # Store credential in 1Password
-```
-
-### Initial Setup
-```bash
-./install                  # Bootstrap Homebrew
-./initial.sh              # Full Mac setup (Homebrew, Fisher, shell, .macos)
 ```
 
 ## Git Workflow
@@ -49,13 +43,14 @@ gt co <branch>            # Checkout branch
 ## Architecture
 
 ### Directory Structure
-- `home/` - Chezmoi source directory (maps to `~`)
-  - `dot_config/` - Application configs (→ `~/.config/`)
-- `brewfiles/` - Homebrew bundle files
-  - `Brewfile.core` - Language-agnostic core tools
-  - `Brewfile.home` - Personal/home-specific packages
-  - `Brewfile.stripe` - Work-specific packages
-- `.macos` - macOS system preferences script
+- `mise/config.toml` - Shared packages, tools, bootstrap task, and dotfile mappings
+- `mise/config.home.toml` - Home-only packages and tools
+- `mise/config.work.toml` - Work-only packages and dotfiles
+- `home/` - Symlinked dotfile sources that mirror paths under `~`
+- `templates/` - Rendered environment-specific dotfiles
+- `private/` - Copy-mode private dotfiles
+- `profiles/work/` - Work-only dotfile sources
+- macOS preferences are declared under `[bootstrap.macos.*]` in `mise/config.toml`.
 
 ### Key Configurations
 - **Shell**: Fish with extensive aliases (gs=git status, g=git, kub=kubectl, tf=terraform)
@@ -70,101 +65,25 @@ SSH authentication and signing keys are managed via 1Password:
 - SSH socket: `~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock`
 - Age encryption keys retrieved via `op inject`
 
-### Chezmoi Naming Convention
+### Dotfile Management
 
-Chezmoi uses filename prefixes to encode special behaviors. The source directory is `home/`, which maps to `~`.
+The `home/` tree mirrors `$HOME` and uses a small set of top-level `symlink-each` entries. Keep templates, private copies, and profile-specific sources in their dedicated top-level directories.
 
-**Prefix Rules:**
-- `dot_` → converted to `.` (hidden files/dirs)
-  - `dot_config` → `.config/`
-  - `dot_bashrc` → `.bashrc`
-- `private_` → sets file mode 0600 (user read/write only)
-  - `private_dot_ssh` → `.ssh/` (mode 0700)
-  - `private_dot_pi/private_agent/auth.json` → `~/.pi/agent/auth.json` (mode 0600)
-- `symlink_` → creates symlink instead of copying
-  - `symlink_config_nvim_init.lua` → `~/.config/nvim/init.lua` (symlink)
+Use `symlink-each` for shared directories, `template` for Tera templates, and `copy` for private files that must not be symlinks. The `bootstrap` task sets private target modes to `0600`.
+Mise manages formulae and casks through `[bootstrap.packages]`. Do not add a Brewfile. Home-only packages belong in `mise/config.home.toml`, and work-only packages belong in `mise/config.work.toml`.
 
-**Directory Nesting:**
-- Underscores separate path components
-- `dot_config_fish_user_conf_d` → `~/.config/fish/user_conf.d/`
-- `private_dot_pi_private_agent_extensions` → `~/.pi/agent/extensions/`
+Before a change, inspect `mise/config.toml` to find the source mapping. Edit the source in this repository, not the installed file under `~`.
 
-**Special Files:**
-- `.chezmoiroot` in `home/` marks it as the source root (points to `~`)
-- `.chezmoiignore` excludes files from applying
-- `.chezmoitemplates/` holds Handlebars templates for config generation
-
-### File Structure Examples
-
-| Source Path | Installed Path | Notes |
-|---|---|---|
-| `home/AGENTS.md` | `~/AGENTS.md` | Regular file |
-| `home/dot_config/nvim/init.lua` | `~/.config/nvim/init.lua` | Hidden directory |
-| `home/private_dot_ssh/config` | `~/.ssh/config` | Mode 0600, hidden |
-| `home/dot_config/fish/user_conf_d/alias.fish` | `~/.config/fish/user_conf.d/alias.fish` | Nested config |
-| `home/symlink_config_nvim_init_lua` | `~/.config/nvim/init.lua` (symlink) | Points back to source |
-
-### Common Patterns
-
-**When to use each prefix:**
-
-- **No prefix** — Regular config files to copy as-is
-- **`dot_`** — Any file/directory that should be hidden (start with `.`)
-- **`private_`** — Secrets, keys, auth tokens that should be read-only by user
-- **`symlink_`** — Config files you want to edit in dotfiles and keep in sync (e.g., Neovim init.lua)
-
-**Real examples from this repo:**
-```
-home/AGENTS.md                                    → ~/AGENTS.md
-home/dot_config/fish/...                          → ~/.config/fish/...
-home/dot_config/opencode/symlink_AGENTS.md        → ~/.config/opencode/AGENTS.md (symlink)
-```
-
-### How to Verify What's Managed
-
-Check if a file is Chezmoi-managed:
-```bash
-cd ~/dev/dotfiles
-git ls-files | grep <filename>          # See if it's in source tree
-chezmoi status                            # Show all managed files with changes
-chezmoi diff                              # Preview what would change on apply
-```
-
-Check what a source path maps to:
-```bash
-chezmoi execute-template --init=false '{{ .chezmoi.homeDir }}' # Confirm home dir
-ls -la ~/.pi/agent/AGENTS.md            # Check installed file
-cat ~/dev/dotfiles/home/private_dot_pi/private_agent/AGENTS.md  # Check source
-```
-
-### Editing Chezmoi-Managed Files
-
-**DO:** Edit source files in `~/dev/dotfiles/home/`
-```bash
-# Edit the source
-vim ~/dev/dotfiles/home/AGENTS.md
-# Then sync to home directory
-chezmoi apply ~/AGENTS.md
-```
-
-**DON'T:** Edit the installed copy directly
-```bash
-# This will be lost on next chezmoi apply
-vim ~/AGENTS.md  # ❌ Edit in dotfiles instead!
-```
-
-- if you rename a file that's managed by chezmoi, you must delete the old file with the old name to avoid a dangling duplicate
-
-### Adding New Files to Chezmoi
+Do not apply changes unless the user asks. Verify configuration changes with:
 
 ```bash
-# Option 1: Add existing file from home directory
-chezmoi add ~/.config/myapp/config.yaml
-
-# Option 2: Create in source directly
-vim ~/dev/dotfiles/home/dot_config/myapp/config.yaml
-chezmoi apply ~/.config/myapp/config.yaml
+mise --env home bootstrap status
+mise --env home bootstrap plan
+mise --env home bootstrap --dry-run
+mise --env home bootstrap dotfiles apply --dry-run --verbose
 ```
+
+For a normal file under a mapped directory, add the same home-relative path under `home/`; no new mapping is needed. Add one mapping for a new top-level home file. Use `templates/`, `private/`, or `profiles/work/` only for their specific modes.
 
 ## Pi Configuration
 

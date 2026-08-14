@@ -1,0 +1,22 @@
+[bootstrap.brew.taps]
+"siderolabs/tap" = "https://github.com/siderolabs/homebrew-tap.git"
+
+[bootstrap.packages]
+"brew:cloudflared" = "latest"
+"brew:ghq" = "latest"
+"brew:fisher" = "latest"
+"brew:rustup" = "latest"
+"brew:television" = "latest"
+"brew:direnv" = "latest"
+"brew:siderolabs/tap/talosctl" = "latest"
+"brew:helm" = "latest"
+"brew:hashicorp/tap/nomad" = "latest"
+"brew:jj" = "latest"
+"brew:ansible" = "latest"
+"brew-cask:ghostty" = { version = "latest", os = "macos" }
+"brew-cask:dropbox" = { version = "latest", os = "macos" }
+"brew-cask:orbstack" = { version = "latest", os = "macos" }
+"brew-cask:rectangle-pro" = { version = "latest", os = "macos" }
+"brew-cask:zed" = { version = "latest", os = "macos" }
+"brew-cask:obsidian" = { version = "latest", os = "macos" }
+"brew-cask:handy" = { version = "latest", os = "macos" }
