@@ -1,0 +1,27 @@
+# Fnox global config
+# Sync to local cache: fnox sync --provider age --global --force
+# This stores encrypted copies of 1Password secrets for offline/fast access
+
+[providers.age]
+type = "age"
+recipients = ["age1q6el4a8vtj0uyzt7447m43mp887z28eqvhmfs3a5nl383wxhpf9szjj9jc"]
+
+{% if mise_env is defined and "work" in mise_env %}
+[providers.op-work]
+type = "1password"
+account = "stripeinc.1password.com"
+
+[secrets]
+# PUP_CLI_TOKEN_RO from the work account, exposed under Pup's expected name.
+DD_ACCESS_TOKEN = { provider = "op-work", value = "op://Employee/PUP_CLI_TOKEN_RO/value", sync = { provider = "age", value = "YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBvVXdGVlRJaEFkWHY3Nm1ySTlLK20rdDV5eHM1RkllYkV5aW1QTW9HUmhrCkRZWW93MExvRHFxY2hQL2xFOG9ZWWN3VlJtb2hjZXB0dUtBNGpjUk1jN1kKLT4gTjtSdSxeLiMtZ3JlYXNlIHBCLzQ4WGoKTGFiRll5cwotLS0gRVVZQnB0dHcxemVYajVLYjA1a05CUGcrcTFyOWw1SHgyQWFkbElYbzd1OAprTSngQWy27Atcq9HUvh3LMsyV9mNNSdEox9fMK4jAUAjJjNJ+ZEa1DlUYmJoAekNG/5bUCumFh3MmpGQs3pIf5//P9dwYoieePGqaJIs8wVs2SBt4dxsyC+EBeYOkjm9p" } }
+{% else %}
+[providers.op]
+type = "1password"
+
+[secrets]
+ANTHROPIC_API_KEY = { provider = "op", value = "op://dotenv/ANTHROPIC_API_KEY/value" }
+GEMINI_API_KEY = { provider = "op", value = "op://dotenv/GEMINI_API_KEY/value" }
+OPENAI_API_KEY = { provider = "op", value = "op://dotenv/OPENAI_API_KEY/value" }
+OPENROUTER_API_KEY = { provider = "op", value = "op://dotenv/OPENROUTER_API_KEY/value" }
+FIREWORKS_API_KEY = { provider = "op", value = "op://dotenv/FIREWORKS_API_KEY/value" }
+{% endif %}

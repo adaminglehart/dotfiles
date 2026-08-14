@@ -1,2 +1,0 @@
-#!/usr/bin/env bash
-exec bun run "${HOME}/.config/pi/bake/index.ts" "$@"

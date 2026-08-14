@@ -1,0 +1,130 @@
+# Herdr configuration
+# Managed by mise bootstrap from ~/dev/dotfiles/home/.config/herdr/config.toml
+# Reference: https://herdr.dev/docs/config-reference/
+
+# Skip first-run setup; notification/sound choices are encoded below.
+onboarding = false
+
+[theme]
+# Keep Herdr dark regardless of the host system appearance.
+name = "rose-pine"
+auto_switch = false
+
+[theme.custom]
+# High-contrast selection, text, and status colors for Herdr's dark Rose Pine UI.
+surface0 = "#403d52"
+surface_dim = "#403d52"
+text = "#ffffff"
+subtext0 = "#f4efff"
+overlay0 = "#e6def2"
+overlay1 = "#fff8ff"
+mauve = "#f0c8ff"
+blue = "#b8d4ff"
+teal = "#a8fff0"
+green = "#c6f6c8"
+yellow = "#ffe8a8"
+peach = "#ffc9a8"
+red = "#ffb0bc"
+
+[terminal]
+# Use Fish for newly-created Herdr panes without hardcoding a Homebrew path.
+default_shell = "fish"
+shell_mode = "auto"
+new_cwd = "follow"
+
+[update]
+channel = "stable"
+version_check = true
+manifest_check = true
+
+[keys]
+# Avoid conflicting with Zellij/tmux's ctrl+b prefix.
+prefix = "ctrl+backtick"
+
+# Useful when running multiple Pi panes and jumping by attention/index.
+focus_agent = "prefix+alt+1..9"
+previous_agent = "prefix+shift+up"
+next_agent = "prefix+shift+down"
+switch_workspace = "prefix+shift+1..9"
+open_worktree = "prefix+alt+w"
+remove_worktree = "prefix+alt+d"
+# The Projects plugin owns the normal New Space key.
+new_workspace = ""
+
+[[keys.command]]
+key = "prefix+shift+n"
+type = "plugin_action"
+command = "local.projects.open"
+description = "create a space from a project"
+
+[worktrees]
+directory = "~/.herdr/worktrees"
+
+[ui]
+sidebar_width = 32
+sidebar_min_width = 20
+sidebar_max_width = 44
+sidebar_start_collapsed = false
+sidebar_collapsed_mode = "compact"
+copy_on_select = true
+confirm_close = true
+prompt_new_tab_name = false
+prompt_new_workspace_name = false
+pane_borders = true
+pane_gaps = true
+show_agent_labels_on_pane_borders = true
+hide_tab_bar_when_single_tab = true
+agent_panel_sort = "priority"
+accent = "magenta"
+
+[ui.sidebar.agents]
+row_gap = 1
+rows = [
+  [{ token = "state_icon", dim = false }, { token = "agent", fg = "#ffffff", bold = true, dim = false }, "state_text"],
+  ["workspace", "tab"],
+]
+
+[ui.sidebar.agents.rows_by_agent]
+pi = [
+  [{ token = "state_icon", dim = false }, { token = "agent", fg = "#ffffff", bold = true, dim = false }, "state_text"],
+  [{ token = "terminal_title_stripped", dim = false }],
+  ["workspace", "tab", "pane"],
+]
+
+[ui.sidebar.spaces]
+row_gap = 0
+rows = [
+  ["state_icon", "workspace"],
+  [ "git_status"],
+]
+
+[ui.toast]
+# In-app notifications surface background agent state without requiring OS notification permissions.
+delivery = "herdr"
+delay_seconds = 2
+
+[ui.toast.herdr]
+position = "bottom-right"
+
+[ui.toast.clipboard]
+enabled = true
+position = "bottom-center"
+
+[ui.sound]
+# Keep the first pass quiet; toasts and the sidebar still show agent state changes.
+enabled = false
+
+[session]
+resume_agents_on_restore = true
+
+[remote]
+manage_ssh_config = true
+
+[experimental]
+# Avoid persisting pane contents by default; agent transcripts may contain sensitive data.
+pane_history = false
+allow_nested = false
+
+[advanced]
+# Keep more scrollback for long Pi sessions than Herdr's 10MB default.
+scrollback_limit_bytes = 50000000
