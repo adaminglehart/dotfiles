@@ -104,7 +104,6 @@ set -gx EDITOR code
 # Use the macOS default ssh-agent; 1Password keys are handled per-host
 # via IdentityAgent in ~/.ssh/config
 # set -gx SSH_AUTH_SOCK ~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
-set -gx KUBECONFIG ~/dev/homelab/kubernetes/kubeconfig
 
 if test -f "$HOME/.cargo/env.fish"
     source "$HOME/.cargo/env.fish"
