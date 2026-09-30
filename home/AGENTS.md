@@ -1,104 +1,108 @@
-# AGENTS.md
+# Global Agent Rules
 
-**Top-level agent guidelines for all coding sessions.**
+These rules have higher priority than agent prompt guidance. A repository
+`AGENTS.md` can add project rules, but it cannot weaken these rules.
 
-These are my standing rules. They outrank an agent's own prompt guidance. A
-repository's own `AGENTS.md` adds project rules on top; it does not cancel these.
+## Working habits
 
-See also:
-- **Dotfiles repo:** `~/dev/dotfiles/AGENTS.md` (mise bootstrap conventions and configuration management)
-- **Pi config repo:** `~/dev/pi-config/AGENTS.md` (Pi agent build and deploy)
+- Speak to me only in ASD-STE100 Simplified Technical English.
+- Re-read a file before you edit it. I often make changes during a session.
+- Do only the requested work. Do not add features, refactor nearby code, or make
+  other improvements without discussion. You can report useful opportunities.
+- Push back when my approach is wrong. Do not agree without analysis.
+- Verify repository facts before you confirm a hypothesis. Cite the evidence.
+- For an external library, SDK, API, or tool, read its current documentation
+  before you use it or give instructions about it.
+- Never run a destructive operation, such as `terraform apply` or
+  `kubectl delete`, without my direct approval.
+- Add a correction to this file only for a general mistake that is likely to
+  occur again. Merge it into an existing rule when possible. Do not add
+  one-use incident details.
+- Put standing reminders in the system prompt. Do not add a standing reminder
+  as a new user message after my task, because the agent can think that the
+  reminder is the current task.
+- If I ask to exclude one case from cleanup, change only the cleanup condition.
+  Do not change later finalization or state transitions unless I ask.
 
-## Instructions
+## System and source ownership
 
-Whenever corrected, after making a mistake or misinterpreting, add a section in here (~/dev/dotfiles/home/AGENTS.md) to instruct future sessions, avoiding the mistake again. Only do this if it's a generalizable mistake, don't add one-offs.
+- My interactive shell is Fish. Do not use `$SHELL` to identify the current
+  shell because it can show the login shell. Use the parent process or another
+  current-session signal.
+- Before you edit a file under `~`, check whether a source repository owns it.
+  Edit and apply the source instead of the installed file:
+  - `~/dev/dotfiles` owns most of `~` and `~/.config` through mise bootstrap.
+  - `~/dev/pi-config` owns `~/.pi/agent`; use `just apply` in the source repo.
+- Shared agent skills are in `~/dev/dotfiles/home/.agents/skills/`. Pi-only
+  skills are in `~/dev/pi-config/skills/`.
+- On work machines, Santa can block executables from temporary directories.
+  Put downloaded or built test executables under `~/dev`, run them there, and
+  remove only the exact artifact that you created.
 
-## Communication
+## Git and working-tree safety
 
-- Only speak to me in ASD-STE100 Simplified Technical English.
+- Never run `git commit`, `git push`, or a Graphite submit command unless I ask.
+- Follow the branch and pull-request process in the repository `AGENTS.md`. Do
+  not assume a process that is not documented.
+- Work in the current checkout unless I ask for an isolated worktree.
+- Do not remove, revert, or clean up changes or files that you did not create.
+  Treat unexpected changes as user-owned. Inspect and preserve them, or ask
+  before you modify them.
+- Never use broad cleanup commands such as `rm -rf * .*`. Delete only verified
+  paths, or move a specific checkout aside and clone it again.
+- Keep cleanup within the requested platform or deployment. Do not modify a
+  similar resource in another platform unless I ask.
 
-## System Facts
+## Tool use
 
-- Shell: Fish
-- Before editing any file under `~`, check whether a source repo owns it. If one does, edit the source and apply, never the installed copy:
-  - `~/dev/dotfiles` (mise bootstrap) owns most of `~` and `~/.config`
-  - `~/dev/pi-config` owns `~/.pi/agent`
-- Agent skills live in two places: `~/dev/dotfiles/home/.agents/skills/` (shared across agents) and `~/dev/pi-config/skills/` (Pi only)
+- For command-line searches, use `rg` instead of `grep`. Keep searches in the
+  smallest relevant repository or directory. Do not search all of `~/dev` when
+  a narrower path is available.
+- Do not infer that a CLI command exists. Check the installed help or current
+  documentation before you suggest it.
+- Use safe polling instead of a long sleep when you wait for state to change.
+- Put reasonable time limits on commands that can run for a long time. Use
+  command-specific timeout options for Kubernetes, network, Flux, and Helm
+  operations. Avoid interactive flags unless they are necessary.
+- Budget a timed monitor for its full watch period. For passive operational
+  checks, prefer a bounded shell monitor in tmux and confirm that it started.
+- Use tmux, not zellij, when work must run in another panel.
+- When I ask why one tool fails, stay on that tool path. Do not replace it with
+  an equivalent tool unless I ask.
+- Check `KUBECONFIG` before you identify or edit the active kubeconfig.
+- When you uninstall a Homebrew cask without permission to remove formulae, set
+  `HOMEBREW_NO_AUTOREMOVE=1`.
 
-## Pi Agent
+## Implementation
 
-- Pi config lives in `~/dev/pi-config` (separate repo; do all Pi agent configuration there)
-- Never edit `~/.pi/agent/*` directly when `~/dev/pi-config` manages the file; update the source repo first
-- For Pi config changes, use the repo's apply flow (`cd ~/dev/pi-config && just apply`) instead of writing rendered files by hand
+- Prefer TypeScript and Go for new code when either is suitable.
+- Prefer clean, maintainable, simple, and concrete code. Do not add unnecessary
+  abstractions, generic types, callback patterns, or option objects. Use a value
+  directly when it is already available.
+- Install the latest dependency version unless an older version is required.
+- In typed languages, use strong types. Do not use `any` or `unknown`.
+- Do not create general `utils` files. Use focused files with specific names.
+- Add correlated fields to an existing region or environment map instead of
+  creating a parallel list that can become inconsistent.
+- In Terragrunt repositories, keep reusable Terraform modules generic. Put
+  environment and resource-instance values in leaf Terragrunt configurations
+  and pass them as typed inputs.
+- Make Terraform module inputs close to the provider resource schema. Add only
+  useful defaults. Avoid aliases and translation layers.
+- In Spacelift permission boundaries, condition `iam:PassRole` with
+  `iam:PassedToService` for approved AWS services. Do not add an unconditioned
+  role exception unless I ask.
+- For credentials and password digests, parse the exact raw value, use a
+  protocol-safe character set, and verify the value as the service consumes it.
+  Never print secret-derived values during verification.
 
-## Preferences
+## Incident investigation
 
-- Re-read files before editing — I often make manual changes between your edits
-- Only do what I asked. Don't add features, refactor surrounding code, or "improve" things unprompted. Do call out opportunities for improvements when you see them, just don't make them without discussion.
-- Push back if I'm approaching something wrong — don't just agree
-- **Destructive Operations** — NEVER run `terraform apply`, `kubectl delete`, etc. without explicit approval
-- if I ask you to do something involving an external library, SDK, API, tool, etc you should always look up the documentation to ensure your information is up to date
-
-## Git
-
-- Never run `git commit`, `git push`, or a Graphite submit command unless I explicitly ask. Ask first, or leave it to me.
-- Each repo's own `AGENTS.md` states its branching and PR flow. Follow that, and don't assume a flow that isn't written down.
-
-## Tool Usage
-
-- prefer ripgrep (rg) over regular grep
-- when you're waiting for some action to complete or state to change, use a polling approach rather than a long sleep, as long as it's safe to do so
-- keep searches tightly scoped to the relevant repo/subdirectory; never run broad greps/finds across `~/dev` when a more specific path is available, because it is too slow
-- If you ever need to do some work in another panel, use tmux rather than zellij, even though I use zellij for my main workflow.
-- Always bound potentially long-running commands with reasonable timeouts. For Kubernetes and network checks use `kubectl --request-timeout`, `kubectl wait --timeout`, `curl --max-time`, Flux/Helm timeout flags, and tool-level timeouts. Avoid interactive flags such as `kubectl run -i` unless explicitly needed.
-- Do not rely on `$SHELL` to detect my current interactive shell; it may report the login shell (for example zsh) even when the active shell is Fish. Prefer the parent process or another current-session signal.
-- When I'm debugging why a specific command or tool fails, stay on that tool path; do not substitute an equivalent workaround command unless I ask.
-
-## Coding best practices
-
-- preferred languages: typescript, golang
-- prioritize clean and maintainable over quick and hacky
-- **important** if you install a dependency to a project, make sure you are installing the latest version, unless you specifically need an older version.
-- **important** for typed languages, always prefer strong typing, never use `any` or `unknown`.
-- Keep implementations simple and concrete. Do not introduce unnecessary abstractions, generic types, callback patterns, or over-engineered options objects. If a value is directly available (e.g., a timestamp on a record), use it directly rather than creating indirection layers.
-- Avoid general utils files (e.g. utils.ts) - prefer specifically broken-out and named files for shared code
-- In Terragrunt repositories, keep reusable Terraform modules generic. Put environment-specific and resource-instance-specific values in leaf Terragrunt configurations and pass them to modules as typed inputs.
-- Prefer Terraform module inputs that closely mirror the underlying provider resource schema. Add only sensible defaults; avoid custom aliases and translation layers that make resource definitions harder to read.
-
-## Corrections
-
-### Budget long-running monitors for the full watch period
-
-- Do not delegate a timed monitoring task with a tool or turn budget that can expire before the watch period starts. Prefer a bounded shell monitor in tmux for passive operational checks, and verify that the monitor started before reporting it as active.
-
-### Prevent Homebrew autoremove during scoped package migrations
-
-- When uninstalling a Homebrew cask without permission to remove formulae, set `HOMEBREW_NO_AUTOREMOVE=1`. Homebrew can otherwise remove formulae that it considers unneeded.
-
-### Run downloaded executables under ~/dev on work machines
-
-- Santa can block executables launched from temporary directories. Download or build executable test dependencies under `~/dev`, run them there, and remove only the exact artifact created for the test.
-
-### Do not delete or revert what you did not create
-### Do not delete or revert what you did not create
-
-- Never use broad wildcard cleanup commands like `rm -rf * .*` while restructuring or repairing a repository. Move the specific checkout aside and reclone, or delete only verified paths.
-- Never revert, remove, or "clean up" unrelated working-tree changes just because they appear in `git diff`/`git status`. Treat unexpected changes as user-owned unless you can prove you created them; ask before modifying them.
-- Never delete newly appearing or unfamiliar files while working; I often edit or add files manually in parallel. If such a file causes a problem, inspect it and preserve it where possible, or ask before deleting/moving it.
-- When I scope cleanup to a deployment/platform (for example Kubernetes), do not remove or modify similarly named resources in other platforms (Nomad, Ansible, Terraform, etc.) unless I explicitly request it.
-
-### Verify before you assert
-
-- Before confirming my hypothesis about where behavior lives or how code works, verify it against the repository and cite the evidence; do not blindly agree.
-
-### Preserve behavior when adding exceptions
-
-- If the user asks to exclude one case from cleanup, change only the cleanup condition. Do not change later finalization or state transitions unless the user asks.
-
-### Secrets
-
-- When generating or transferring credentials and password digests, parse the tool's exact machine-readable/raw value (not decorated CLI output), use protocol-safe character sets, verify the values as consumed by the target services, and never print secret-derived values during validation.
-
-### Keep standing reminders separate from the current task
-
-- Do not inject a standing reminder as a new user message after the user's task. The agent can mistake the reminder for the current task. Put standing reminders in the system prompt so the user's message remains the current task.
+- Confirm the date, time zone, environment, region, and deployment before you
+  query or compare observability data.
+- Inspect every relevant database and connection pool before you name the
+  failing database.
+- Support an incident theory with named metrics, values, and relevant times.
+  Separate confirmed evidence from inference.
+- Compare logs, traces, and metrics only within the same relevant environment,
+  region, and deployment.
