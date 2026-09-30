@@ -1,0 +1,224 @@
+{% if mise_env is defined and "work" in mise_env -%}
+{
+  "$schema": "https://opencode.ai/config.json",
+  "autoupdate": false,
+  "enabled_providers": [
+    "stripe-anthropic",
+    "stripe-openai",
+    "stripe-google"
+  ],
+  "instructions": [
+    "CLAUDE.md",
+    "AGENTS.md",
+    ".cursor/rules/*.md"
+  ],
+  "model": "stripe-anthropic/claude-opus-4.6",
+  "plugin": [
+    "@plannotator/opencode@latest"
+  ],
+  "provider": {
+    "stripe-anthropic": {
+      "models": {
+        "claude-4.5-haiku": {
+          "name": "Claude Haiku 4.5"
+        },
+        "claude-opus-4.6": {
+          "name": "Claude Opus 4.6",
+          "variants": {
+            "high": {
+              "effort": "high",
+              "thinking": {
+                "type": "adaptive"
+              }
+            },
+            "low": {
+              "effort": "low",
+              "thinking": {
+                "type": "adaptive"
+              }
+            },
+            "max": {
+              "effort": "max",
+              "thinking": {
+                "type": "adaptive"
+              }
+            },
+            "medium": {
+              "effort": "medium",
+              "thinking": {
+                "type": "adaptive"
+              }
+            }
+          }
+        },
+        "claude-opus-4.6-1m": {
+          "name": "Claude Opus 4.6 1M",
+          "variants": {
+            "high": {
+              "effort": "high",
+              "thinking": {
+                "type": "adaptive"
+              }
+            },
+            "low": {
+              "effort": "low",
+              "thinking": {
+                "type": "adaptive"
+              }
+            },
+            "max": {
+              "effort": "max",
+              "thinking": {
+                "type": "adaptive"
+              }
+            },
+            "medium": {
+              "effort": "medium",
+              "thinking": {
+                "type": "adaptive"
+              }
+            }
+          }
+        },
+        "claude-sonnet-4.5": {
+          "name": "Claude Sonnet 4.5",
+          "variants": {
+            "high": {
+              "thinking": {
+                "budgetTokens": 16000,
+                "type": "enabled"
+              }
+            },
+            "low": {
+              "thinking": {
+                "budgetTokens": 5000,
+                "type": "enabled"
+              }
+            },
+            "max": {
+              "thinking": {
+                "budgetTokens": 32000,
+                "type": "enabled"
+              }
+            },
+            "medium": {
+              "thinking": {
+                "budgetTokens": 10000,
+                "type": "enabled"
+              }
+            }
+          }
+        }
+      },
+      "name": "Stripe Anthropic",
+      "npm": "@ai-sdk/anthropic",
+      "options": {
+        "apiKey": "use_case=development&team=privy-infra-data",
+        "baseURL": "http://litellm.qa.corp.stripe.com.certproxy.localhost:7891/v1"
+      }
+    },
+    "stripe-google": {
+      "models": {
+        "gemini-2.5-flash": {
+          "name": "Gemini 2.5 Flash"
+        },
+        "gemini-2.5-pro": {
+          "name": "Gemini 2.5 Pro"
+        },
+        "gemini-3-pro": {
+          "name": "Gemini 3 Pro"
+        }
+      },
+      "name": "Stripe Google",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "apiKey": "use_case=development&team=privy-a",
+        "baseURL": "http://litellm.qa.corp.stripe.com.certproxy.localhost:7891/v1"
+      }
+    },
+    "stripe-openai": {
+      "models": {
+        "gpt-5.3-codex": {
+          "name": "GPT-5.3 Codex",
+          "variants": {
+            "high": {
+              "reasoningEffort": "high"
+            },
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "max": {
+              "reasoningEffort": "high",
+              "reasoningSummary": "auto"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            }
+          }
+        },
+        "gpt-5.4": {
+          "name": "GPT-5.4",
+          "variants": {
+            "high": {
+              "reasoningEffort": "high"
+            },
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "max": {
+              "reasoningEffort": "high",
+              "reasoningSummary": "auto"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            }
+          }
+        }
+      },
+      "name": "Stripe OpenAI",
+      "npm": "@ai-sdk/openai",
+      "options": {
+        "apiKey": "use_case=development&team=privy-infra-data",
+        "baseURL": "http://litellm.qa.corp.stripe.com.certproxy.localhost:7891/v1"
+      }
+    }
+  },
+  "share": "disabled",
+  "theme": "flexoki"
+}
+{% else -%}
+{
+  "$schema": "https://opencode.ai/config.json",
+  "theme": "flexoki",
+  "autoupdate": false,
+  "share": "disabled",
+  "instructions": [
+    "CLAUDE.md",
+    "AGENTS.md",
+    ".cursor/rules/*.md"
+  ],
+  "plugin": [
+    "@plannotator/opencode@latest"
+  ],
+  "model": "anthropic/claude-opus-4.6",
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "http://10.0.10.35:11434/v1"
+      },
+      "models": {
+        "qwen3:8b": {
+          "tools": true
+        },
+        "gemma3:4b": {
+          "limit": {
+            "context": 32768,
+            "output": 65536
+          }
+        }
+      }
+    }
+  }
+}
+{% endif -%}

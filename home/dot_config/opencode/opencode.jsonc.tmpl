@@ -1,4 +1,0 @@
-{{- $baseConfig := includeTemplate ".chezmoitemplates/opencode/base.json.tmpl" | fromJson -}}
-{{- $environmentConfigPath := ternary ".chezmoitemplates/opencode/work.json.tmpl" ".chezmoitemplates/opencode/home.json.tmpl" (eq .environment "work") -}}
-{{- $environmentConfig := includeTemplate $environmentConfigPath | fromJson -}}
-{{- mergeOverwrite $baseConfig $environmentConfig | toPrettyJson -}}

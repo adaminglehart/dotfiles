@@ -1,0 +1,117 @@
+min_version = "2026.8.5"
+
+[tools]
+age = "latest"
+bun = "latest"
+fnox = "latest"
+go = "1.25.5"
+node = "latest"
+
+[settings]
+experimental = true
+dotfiles.root = "~/dev/dotfiles/home"
+
+[bootstrap.brew.taps]
+"withgraphite/tap" = "https://github.com/withgraphite/homebrew-tap.git"
+
+[bootstrap.packages]
+"brew:tree" = "latest"
+"brew:fish" = "latest"
+"brew:eza" = "latest"
+"brew:starship" = "latest"
+"brew:fzf" = "latest"
+"brew:ripgrep" = "latest"
+"brew:fd" = "latest"
+"brew:bat" = "latest"
+"brew:neofetch" = "latest"
+"brew:graphviz" = "latest"
+"brew:gh" = "latest"
+"brew:jq" = "latest"
+"brew:git-delta" = "latest"
+"brew:zellij" = "latest"
+"brew:tmux" = "latest"
+"brew:herdr" = "latest"
+"brew:just" = "latest"
+"brew:mise" = "latest"
+"brew:sqlite" = "latest"
+"brew:zoxide" = "latest"
+"brew:neovim" = "latest"
+"brew:gitui" = "latest"
+"brew:withgraphite/tap/graphite" = "latest"
+"brew-cask:slack" = { version = "latest", os = "macos" }
+"brew-cask:sourcetree" = { version = "latest", os = "macos" }
+"brew-cask:postman" = { version = "latest", os = "macos" }
+"brew-cask:spotify" = { version = "latest", os = "macos" }
+"brew-cask:visual-studio-code" = { version = "latest", os = "macos" }
+"brew-cask:raycast" = { version = "latest", os = "macos" }
+"brew-cask:1password-cli" = { version = "latest", os = "macos" }
+
+[bootstrap.macos.finder]
+show_all_files = true
+
+[bootstrap.macos.defaults."NSGlobalDomain"]
+"com.apple.swipescrolldirection" = false
+
+[bootstrap.macos.defaults."com.apple.dock"]
+wvous-bl-corner = 0
+wvous-bl-modifier = 0
+wvous-tl-corner = 0
+wvous-tl-modifier = 0
+wvous-tr-corner = 0
+wvous-tr-modifier = 0
+
+[bootstrap.macos.defaults."com.apple.mouse"]
+tapBehavior = 1
+
+[bootstrap.macos.defaults."com.apple.SoftwareUpdate"]
+AutomaticCheckEnabled = true
+ScheduleFrequency = 1
+AutomaticDownload = 1
+
+[bootstrap.macos.defaults."com.apple.commerce"]
+AutoUpdate = true
+
+[bootstrap.macos.defaults."com.apple.controlcenter"]
+"NSStatusItem Visible Bluetooth" = true
+"NSStatusItem Visible Battery" = true
+"NSStatusItem Visible Weather" = true
+"NSStatusItem Visible TextInput" = false
+
+[bootstrap.macos.defaults."com.apple.Siri"]
+StatusMenuVisible = false
+
+[bootstrap.macos.defaults."com.apple.menuextra.clock"]
+ShowSeconds = true
+
+[tasks.bootstrap]
+run = [
+  # Git does not preserve 0600 modes, so restore it on the private copy-mode target.
+  '''chmod 600 "$HOME/.msgvault/config.toml"''',
+  '''if [ "${MISE_ENV:-home}" = "home" ]; then
+    fisher install
+  fi''',
+  '''if [ "$(uname -s)" = "Darwin" ]; then
+    defaults -currentHost write com.apple.ImageCapture disableHotPlug -bool true
+    defaults write "$HOME/Library/Preferences/ByHost/com.apple.controlcenter.plist" BatteryShowPercentage -bool true
+  fi''',
+  '''if command -v herdr >/dev/null 2>&1; then
+    for plugin in global-space-layout projects; do
+      herdr plugin link "$HOME/.config/herdr/plugins/$plugin" >/dev/null
+    done
+  fi''',
+]
+
+[dotfiles]
+"~/AGENTS.md" = "~/dev/dotfiles/home/AGENTS.md"
+"~/.bash_profile" = "~/dev/dotfiles/home/.bash_profile"
+"~/.bashrc" = "~/dev/dotfiles/home/.bashrc"
+"~/.agents" = { source = "~/dev/dotfiles/home/.agents", mode = "symlink-each" }
+"~/.claude" = { source = "~/dev/dotfiles/home/.claude", mode = "symlink-each" }
+"~/.codex" = { source = "~/dev/dotfiles/home/.codex", mode = "symlink-each" }
+"~/.config" = { source = "~/dev/dotfiles/home/.config", mode = "symlink-each" }
+"~/.local" = { source = "~/dev/dotfiles/home/.local", mode = "symlink-each" }
+"~/.config/fnox/config.toml" = { source = "~/dev/dotfiles/templates/.config/fnox/config.toml", mode = "template" }
+"~/.config/opencode/opencode.jsonc" = { source = "~/dev/dotfiles/templates/.config/opencode/opencode.jsonc", mode = "template" }
+"~/.config/pi/bake/environment-config.ts" = { source = "~/dev/dotfiles/templates/.config/pi/bake/environment-config.ts", mode = "template" }
+"~/.local/bin/pi-session" = { source = "~/dev/dotfiles/templates/.local/bin/pi-session", mode = "template" }
+"~/.msgvault/config.toml" = { source = "~/dev/dotfiles/private/.msgvault/config.toml", mode = "copy" }

@@ -1,0 +1,333 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+tmux_socket="pi-agents"
+tmux_session="agents"
+tmux_conf="${HOME}/.config/pi/tmux.conf"
+default_model="{{ "stripe-anthropic/claude-sonnet-4.5" if mise_env is defined and "work" in mise_env else "anthropic/claude-sonnet-4.6" }}"
+image_name="pi-sandbox:latest"
+build_script="${HOME}/.pi/sandbox/build.sh"
+secrets_file="${HOME}/.pi/agent-secrets.env"
+sessions_dir="${HOME}/.pi/agent/sessions"
+learnings_dir="${HOME}/Documents/obsidian/agents/learnings"
+
+usage() {
+  cat <<'EOF'
+Usage:
+  pi-session new <name> [--model <provider/model>] [--dir <path>] [--no-sandbox] [--worktree <branch>]
+  pi-session ls
+  pi-session attach
+  pi-session kill <name>
+EOF
+}
+
+tmux_cmd() {
+  tmux -L "$tmux_socket" -f "$tmux_conf" "$@"
+}
+
+require_name() {
+  if [[ -z "${1:-}" ]]; then
+    usage >&2
+    exit 1
+  fi
+
+  if [[ ! "$1" =~ ^[A-Za-z0-9._-]+$ ]]; then
+    printf 'Session names may only contain letters, numbers, dot, underscore, and dash.\n' >&2
+    exit 1
+  fi
+}
+
+resolve_dir() {
+  local path="$1"
+
+  if [[ ! -d "$path" ]]; then
+    printf 'Directory does not exist: %s\n' "$path" >&2
+    exit 1
+  fi
+
+  (
+    cd "$path"
+    pwd -P
+  )
+}
+
+window_exists() {
+  local name="$1"
+  local window_name
+
+  while IFS= read -r window_name; do
+    if [[ "$window_name" == "$name" ]]; then
+      return 0
+    fi
+  done < <(tmux_cmd list-windows -t "$tmux_session" -F '#{window_name}' 2>/dev/null || true)
+
+  return 1
+}
+
+command_string() {
+  local quoted
+  printf -v quoted '%q ' "$@"
+  printf '%s' "${quoted% }"
+}
+
+ensure_tmux_window() {
+  local name="$1"
+  local dir="$2"
+  local command="$3"
+
+  if tmux_cmd has-session -t "$tmux_session" 2>/dev/null; then
+    tmux_cmd new-window -d -t "$tmux_session" -n "$name" -c "$dir" "$command"
+  else
+    tmux_cmd new-session -d -s "$tmux_session" -n "$name" -c "$dir" "$command"
+  fi
+}
+
+ensure_sandbox_prereqs() {
+  mkdir -p "$sessions_dir" "$learnings_dir"
+
+  if [[ ! -f "$secrets_file" ]]; then
+    printf 'Missing secrets file: %s\n' "$secrets_file" >&2
+    exit 1
+  fi
+
+  if ! docker image inspect "$image_name" >/dev/null 2>&1; then
+    if [[ ! -f "$build_script" ]]; then
+      printf 'Missing Docker image %s and build script %s was not found.\n' "$image_name" "$build_script" >&2
+      exit 1
+    fi
+
+    printf 'Docker image %s is missing. Building it now...\n' "$image_name" >&2
+    bash "$build_script" "$image_name"
+  fi
+}
+
+# Resolve a single op:// reference with local disk caching.
+# Cache lives in ~/.cache/op_env/ and is valid for OP_CACHE_TTL_HOURS (default 24).
+# Only calls `op` on a cache miss or expiry, so re-auth is only needed once per TTL.
+op_cached_resolve() {
+  local ref="$1"
+  local ttl_hours="${OP_CACHE_TTL_HOURS:-24}"
+
+  local cache_dir="${HOME}/.cache/op_env"
+  local cache_file="${cache_dir}/$(printf '%s' "$ref" | tr '/' '_')"
+
+  # Return cached value if it exists and is still fresh
+  if [[ -f "$cache_file" ]]; then
+    local file_mod now age_hours
+    file_mod="$(stat -f %m "$cache_file" 2>/dev/null || stat -c %Y "$cache_file")"
+    now="$(date +%s)"
+    age_hours=$(( (now - file_mod) / 3600 ))
+    if (( age_hours < ttl_hours )); then
+      cat "$cache_file"
+      return 0
+    fi
+  fi
+
+  # Cache miss or stale — fetch from 1Password
+  mkdir -p "$cache_dir"
+  local value
+  if value="$(printf '%s' "$ref" | op inject 2>/dev/null)"; then
+    printf '%s' "$value" > "$cache_file"
+    chmod 600 "$cache_file"
+    printf '%s' "$value"
+  elif [[ -f "$cache_file" ]]; then
+    # 1Password unavailable but we have a stale cache — use it rather than failing
+    printf 'Warning: 1Password unavailable, using stale cached secret for %s\n' "$ref" >&2
+    cat "$cache_file"
+  else
+    printf 'Error: Failed to fetch secret from 1Password: %s\n' "$ref" >&2
+    return 1
+  fi
+}
+
+# Read $secrets_file (KEY=op://... lines) and emit resolved "-e KEY=value" docker args.
+# Sets the global array RESOLVED_ENV_ARGS.
+resolve_secrets_to_env_args() {
+  RESOLVED_ENV_ARGS=()
+  local key ref value
+
+  while IFS='=' read -r key ref || [[ -n "$key" ]]; do
+    # Skip blank lines and comments
+    [[ -z "$key" || "$key" == \#* ]] && continue
+    # Strip surrounding whitespace
+    key="${key// /}"
+    ref="${ref// /}"
+
+    if [[ "$ref" == op://* ]]; then
+      value="$(op_cached_resolve "$ref")"
+    else
+      value="$ref"
+    fi
+
+    RESOLVED_ENV_ARGS+=("-e" "${key}=${value}")
+  done < "$secrets_file"
+}
+
+create_worktree() {
+  local start_dir="$1"
+  local branch="$2"
+  local name="$3"
+  local repo_root
+  local worktree_dir
+
+  repo_root="$(git -C "$start_dir" rev-parse --show-toplevel 2>/dev/null || true)"
+  if [[ -z "$repo_root" ]]; then
+    printf 'Cannot create a worktree outside of a git repository.\n' >&2
+    exit 1
+  fi
+
+  mkdir -p "$repo_root/.worktrees"
+  worktree_dir="$repo_root/.worktrees/$name"
+
+  if [[ -e "$worktree_dir" ]]; then
+    printf 'Worktree path already exists: %s\n' "$worktree_dir" >&2
+    exit 1
+  fi
+
+  if git -C "$repo_root" rev-parse --verify "$branch" >/dev/null 2>&1; then
+    git -C "$repo_root" worktree add "$worktree_dir" "$branch"
+  else
+    git -C "$repo_root" worktree add -b "$branch" "$worktree_dir"
+  fi
+
+  printf '%s\n' "$worktree_dir"
+}
+
+start_qmd_refresh() {
+  if command -v qmd >/dev/null 2>&1; then
+    qmd update --collection agent-learnings >/dev/null 2>&1 &
+  fi
+}
+
+new_session() {
+  local name="$1"
+  shift
+
+  local model="$default_model"
+  local workdir
+  local sandbox=1
+  local worktree_branch=""
+  local container_name="pi-$name"
+  workdir="$(pwd -P)"
+
+  require_name "$name"
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --model)
+        model="$2"
+        shift 2
+        ;;
+      --dir)
+        workdir="$(resolve_dir "$2")"
+        shift 2
+        ;;
+      --no-sandbox)
+        sandbox=0
+        shift
+        ;;
+      --worktree)
+        worktree_branch="$2"
+        shift 2
+        ;;
+      *)
+        printf 'Unknown option: %s\n' "$1" >&2
+        usage >&2
+        exit 1
+        ;;
+    esac
+  done
+
+  if window_exists "$name"; then
+    printf 'Session already exists: %s\n' "$name" >&2
+    exit 1
+  fi
+
+  local command
+
+  if (( sandbox == 1 )); then
+    ensure_sandbox_prereqs
+    start_qmd_refresh
+
+    if [[ -n "$worktree_branch" ]]; then
+      workdir="$(create_worktree "$workdir" "$worktree_branch" "$name")"
+    fi
+
+    resolve_secrets_to_env_args
+    command=(
+      docker run --rm -it --name "$container_name"
+      -v "$workdir:/workspace"
+      -v "$sessions_dir:/home/dev/.pi/agent/sessions"
+      -v "$learnings_dir:/home/dev/.pi/agent/self-learning-memory"
+      -v "$HOME/.cache/qmd:/home/dev/.cache/qmd"
+      -v "$HOME/.gitconfig:/home/dev/.gitconfig:ro"
+      -v "$HOME/AGENTS.md:/home/dev/AGENTS.md:ro"
+      "${RESOLVED_ENV_ARGS[@]}"
+      -w /workspace
+      "$image_name"
+      --model "$model"
+    )
+  else
+    if [[ -n "$worktree_branch" ]]; then
+      workdir="$(create_worktree "$workdir" "$worktree_branch" "$name")"
+    fi
+    command=(pi --model "$model")
+  fi
+
+  ensure_tmux_window "$name" "$workdir" "$(command_string "${command[@]}")"
+}
+
+list_sessions() {
+  tmux_cmd list-windows -t "$tmux_session" -F '#{window_name}' 2>/dev/null || true
+}
+
+attach_sessions() {
+  if tmux_cmd has-session -t "$tmux_session" 2>/dev/null; then
+    exec tmux_cmd attach -t "$tmux_session"
+  else
+    printf 'No pi sessions are running.\n' >&2
+    exit 1
+  fi
+}
+
+kill_session() {
+  local name="$1"
+
+  require_name "$name"
+
+  if ! window_exists "$name"; then
+    printf 'Session not found: %s\n' "$name" >&2
+    exit 1
+  fi
+
+  tmux_cmd kill-window -t "$tmux_session:$name"
+  docker rm -f "pi-$name" >/dev/null 2>&1 || true
+}
+
+main() {
+  local cmd="${1:-}"
+
+  case "$cmd" in
+    new)
+      shift
+      require_name "${1:-}"
+      new_session "$@"
+      ;;
+    ls)
+      list_sessions
+      ;;
+    attach)
+      attach_sessions
+      ;;
+    kill)
+      shift
+      kill_session "${1:-}"
+      ;;
+    *)
+      usage >&2
+      exit 1
+      ;;
+  esac
+}
+
+main "$@"
