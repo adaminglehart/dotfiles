@@ -24,13 +24,8 @@ const claimStaleAfter = 2 * time.Minute
 var environmentName = regexp.MustCompile(`^[A-Za-z_][A-Za-z0-9_]*$`)
 
 type Config struct {
-	Version         int                   `yaml:"version"`
-	DirectoryPicker DirectoryPickerConfig `yaml:"directory_picker"`
-	Layout          LayoutConfig          `yaml:"layout"`
-}
-
-type DirectoryPickerConfig struct {
-	Roots []string `yaml:"roots"`
+	Version int          `yaml:"version"`
+	Layout  LayoutConfig `yaml:"layout"`
 }
 
 type LayoutConfig struct {
@@ -139,14 +134,6 @@ func loadConfig() (Config, error) {
 func validateConfig(config Config) error {
 	if config.Version != 1 {
 		return fmt.Errorf("version must be 1")
-	}
-	if len(config.DirectoryPicker.Roots) == 0 {
-		return fmt.Errorf("directory_picker.roots must contain at least one path")
-	}
-	for index, root := range config.DirectoryPicker.Roots {
-		if strings.TrimSpace(root) == "" || strings.ContainsRune(root, '\n') {
-			return fmt.Errorf("directory_picker.roots[%d] must be a non-empty path", index)
-		}
 	}
 	if len(config.Layout.Tabs) == 0 {
 		return fmt.Errorf("layout.tabs must contain at least one tab")
@@ -478,16 +465,6 @@ func run() error {
 	config, err := loadConfig()
 	if err != nil {
 		return err
-	}
-	if len(os.Args) == 2 && os.Args[1] == "--picker-roots" {
-		for _, root := range config.DirectoryPicker.Roots {
-			expanded, err := expandHome(root)
-			if err != nil {
-				return err
-			}
-			fmt.Println(expanded)
-		}
-		return nil
 	}
 	socketPath := os.Getenv("HERDR_SOCKET_PATH")
 	if socketPath == "" {

@@ -1,0 +1,19 @@
+id = "local.projects"
+name = "Projects"
+version = "0.1.0"
+min_herdr_version = "0.8.0"
+description = "Create spaces from a persistent list of configured project directories."
+platforms = ["macos"]
+
+[[actions]]
+id = "open"
+title = "New Space from Project"
+command = ["fish", "open.fish"]
+
+[[panes]]
+id = "picker"
+title = "Projects"
+placement = "popup"
+width = "80%"
+height = "80%"
+command = ["fish", "run.fish"]

@@ -1,4 +1,5 @@
 [bootstrap.packages]
+"brew:terraform-ls" = "latest"
 "brew-cask:font-jetbrains-mono" = { version = "latest", os = "macos" }
 "brew-cask:rectangle" = { version = "latest", os = "macos" }
 

@@ -20,3 +20,6 @@
 "brew-cask:zed" = { version = "latest", os = "macos" }
 "brew-cask:obsidian" = { version = "latest", os = "macos" }
 "brew-cask:handy" = { version = "latest", os = "macos" }
+
+[dotfiles]
+"~/.config/fish/user_conf.d/homelab.fish" = "~/dev/dotfiles/profiles/home/.config/fish/user_conf.d/homelab.fish"

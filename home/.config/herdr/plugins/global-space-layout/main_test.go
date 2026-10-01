@@ -9,7 +9,7 @@ import (
 func TestLoadConfigAndBuildRoot(t *testing.T) {
 	directory := t.TempDir()
 	path := filepath.Join(directory, "layout.yaml")
-	content := "version: 1\ndirectory_picker:\n  roots: [~/dev]\nlayout:\n  tabs:\n    - label: main\n      panes:\n        - label: shell\n        - label: logs\n          split: right\n          size: 30%\n          command: [tail, -f, /tmp/log]\n"
+	content := "version: 1\nlayout:\n  tabs:\n    - label: main\n      panes:\n        - label: shell\n        - label: logs\n          split: right\n          size: 30%\n          command: [tail, -f, /tmp/log]\n"
 	if err := os.WriteFile(path, []byte(content), 0o600); err != nil {
 		t.Fatal(err)
 	}
@@ -29,7 +29,7 @@ func TestLoadConfigAndBuildRoot(t *testing.T) {
 
 func TestLoadConfigRejectsInvalidSplit(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "layout.yaml")
-	content := "version: 1\ndirectory_picker:\n  roots: [~/dev]\nlayout:\n  tabs:\n    - label: main\n      panes:\n        - label: shell\n        - label: invalid\n          split: left\n"
+	content := "version: 1\nlayout:\n  tabs:\n    - label: main\n      panes:\n        - label: shell\n        - label: invalid\n          split: left\n"
 	if err := os.WriteFile(path, []byte(content), 0o600); err != nil {
 		t.Fatal(err)
 	}

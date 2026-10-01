@@ -10,12 +10,6 @@
 # edit this file to experiment without changing the plugin code.
 version: 1
 
-directory_picker:
-  # Every directory below these roots is offered by the F12+Shift+N picker.
-  # Add or replace roots to match the places where you keep projects.
-  roots:
-    - ~/dev
-
 layout:
   tabs:
     - label: main
