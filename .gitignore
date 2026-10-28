@@ -19,8 +19,6 @@ home/.codex/skills/*
 !home/.codex/skills/custom
 !home/.codex/tools
 
-# Machine-specific private application configuration
-private/.codex/config.*.toml
 .DS_Store
 home/.pi/**/node_modules
 home/.config/pi/**/node_modules

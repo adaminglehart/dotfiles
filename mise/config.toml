@@ -85,7 +85,7 @@ ShowSeconds = true
 
 [tasks.bootstrap]
 run = [
-  # Git does not preserve 0600 modes, so restore them on private copy-mode targets.
+  # Git does not preserve 0600 modes, so restore them on copy-mode targets.
   '''chmod 600 \
     "$HOME/.codex/config.toml" \
     "$HOME/.msgvault/config.toml"''',

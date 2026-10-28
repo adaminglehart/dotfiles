@@ -1,0 +1,33 @@
+model = "gpt-5.5"
+model_reasoning_effort = "high"
+[projects."/Users/adaminglehart/dev/agent"]
+trust_level = "trusted"
+
+[projects."/Users/adaminglehart/dev/dotfiles"]
+trust_level = "trusted"
+
+[projects."/Users/adaminglehart/stripe/dev/dotfiles"]
+trust_level = "trusted"
+
+[projects."/Users/adaminglehart/stripe/dev/privy"]
+trust_level = "trusted"
+
+[projects."/Users/adaminglehart/stripe/dev/pi-config"]
+trust_level = "trusted"
+
+[projects."/Users/adaminglehart/stripe/dev/local-docker"]
+trust_level = "trusted"
+
+[projects."/Users/adaminglehart/stripe/dev/terraform"]
+trust_level = "trusted"
+
+[marketplaces.stripe-internal-marketplace]
+last_updated = "2026-08-03T19:27:36Z"
+source_type = "git"
+source = "http://codex-marketplace--northwest.corp.stripe.com.certproxy.localhost:7891/codex-marketplace.git"
+
+[plugins."orbit@stripe-internal-marketplace"]
+enabled = true
+
+[features]
+hooks = true

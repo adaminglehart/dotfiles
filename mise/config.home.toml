@@ -25,4 +25,4 @@
 
 [dotfiles]
 "~/.config/fish/user_conf.d/homelab.fish" = "~/dev/dotfiles/profiles/home/.config/fish/user_conf.d/homelab.fish"
-"~/.codex/config.toml" = { source = "~/dev/dotfiles/private/.codex/config.home.toml", mode = "copy" }
+"~/.codex/config.toml" = { source = "~/dev/dotfiles/profiles/home/.codex/config.toml", mode = "copy" }

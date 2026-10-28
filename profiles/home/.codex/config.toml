@@ -1,0 +1,175 @@
+model = "gpt-5.6-sol"
+model_reasoning_effort = "high"
+notify = ["/Users/adaminglehart/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient", "turn-ended"]
+personality = "pragmatic"
+
+[projects."/Users/adaminglehart/dev/agent"]
+trust_level = "trusted"
+
+[projects."/Users/adaminglehart/dev/dotfiles"]
+trust_level = "trusted"
+
+[projects."/Users/adaminglehart/stripe/dev/dotfiles"]
+trust_level = "trusted"
+
+[projects."/Users/adaminglehart/stripe/dev/privy"]
+trust_level = "trusted"
+
+[projects."/Users/adaminglehart/Documents/Playground"]
+trust_level = "trusted"
+
+[projects."/Users/adaminglehart/dev/pi-config"]
+trust_level = "trusted"
+
+[projects."/Users/adaminglehart/Documents/Codex/2026-07-26/i-h"]
+trust_level = "trusted"
+
+[projects."/Users/adaminglehart/Documents/Codex/2026-07-26/on"]
+trust_level = "trusted"
+
+[projects."/Users/adaminglehart/Documents/Codex/2026-07-28/wr"]
+trust_level = "trusted"
+
+[projects."/Users/adaminglehart/Documents/Codex/2026-07-29/in-p"]
+trust_level = "trusted"
+
+[projects."/Users/adaminglehart/Documents/Codex/2026-07-29/i"]
+trust_level = "trusted"
+
+[features]
+hooks = true
+js_repl = false
+memories = true
+
+[marketplaces.openai-bundled]
+source_type = "local"
+source = "/Users/adaminglehart/.codex/.tmp/bundled-marketplaces/openai-bundled"
+
+[marketplaces.openai-primary-runtime]
+last_updated = "2026-08-14T17:16:44Z"
+source_type = "local"
+source = "/Users/adaminglehart/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
+
+[plugins."documents@openai-primary-runtime"]
+enabled = true
+
+[plugins."spreadsheets@openai-primary-runtime"]
+enabled = true
+
+[plugins."presentations@openai-primary-runtime"]
+enabled = true
+
+[plugins."visualize@openai-bundled"]
+enabled = true
+
+[plugins."pdf@openai-primary-runtime"]
+enabled = true
+
+[plugins."template-creator@openai-primary-runtime"]
+enabled = true
+
+[plugins."browser@openai-bundled"]
+enabled = true
+
+[plugins."unified-computer-use@openai-bundled"]
+enabled = true
+
+[plugins."computer-use@openai-bundled"]
+enabled = true
+
+[mcp_servers.node_repl]
+args = []
+command = "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node_repl"
+env_vars = ["BROWSER_USE_ACCESS_EXECUTOR_ID", "BROWSER_USE_ACCESS_PIPE_PATH", "BROWSER_USE_ACCESS_VERIFYING_IDENTITY"]
+startup_timeout_sec = 120
+
+[mcp_servers.node_repl.env]
+NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS = "1000"
+NODE_REPL_NODE_MODULE_DIRS = "/Applications/ChatGPT.app/Contents/Resources/cua_node/lib/node_modules"
+NODE_REPL_NODE_PATH = "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node"
+NODE_REPL_TRUSTED_CODE_PATHS = "/Users/adaminglehart/.codex:/Applications/ChatGPT.app/Contents/Resources/cua_node/lib/node_modules"
+CODEX_HOME = "/Users/adaminglehart/.codex"
+BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab,mcpapps"
+BROWSER_USE_TINYSKY_ENABLED = "1"
+NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = ""
+NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = ""
+NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE = ""
+BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
+BROWSER_USE_CODEX_APP_VERSION = "26.1021.31345"
+NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/adaminglehart/.codex/plugins/cache/openai-bundled/browser/26.1021.31345/scripts/browser-service.mjs","sky":"@oai/sky/service"}'
+SKY_CUA_SERVICE_PATH = "/Users/adaminglehart/.codex/computer-use/Codex Computer Use.app"
+CODEX_CLI_PATH = "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex"
+
+[mcp_servers.computer-use]
+command = "./Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient"
+args = ["mcp"]
+cwd = "."
+enabled = false
+
+[desktop]
+appearanceLightCodeThemeId = "catppuccin"
+appearanceDarkCodeThemeId = "rose-pine"
+appearanceTheme = "system"
+usePointerCursors = false
+selected-avatar-id = "bsod"
+followUpQueueMode = "queue"
+dock-icon-preference = "codex-system"
+conversationDetailMode = "STEPS_PROSE"
+
+[desktop.open-in-target-preferences]
+global = "zed"
+
+[desktop.appearanceLightChromeTheme]
+accent = "#8839ef"
+contrast = 45
+ink = "#4c4f69"
+opaqueWindows = false
+surface = "#eff1f5"
+
+[desktop.appearanceLightChromeTheme.fonts]
+
+[desktop.appearanceLightChromeTheme.semanticColors]
+diffAdded = "#40a02b"
+diffRemoved = "#d20f39"
+skill = "#8839ef"
+
+[desktop.appearanceDarkChromeTheme]
+accent = "#ea9a97"
+contrast = 60
+ink = "#e0def4"
+opaqueWindows = false
+surface = "#232136"
+
+[desktop.appearanceDarkChromeTheme.fonts]
+
+[desktop.appearanceDarkChromeTheme.semanticColors]
+diffAdded = "#9ccfd8"
+diffRemoved = "#908caa"
+skill = "#c4a7e7"
+
+[memories]
+generate_memories = true
+use_memories = true
+
+[tui.model_availability_nux]
+"gpt-5.6-sol" = 2
+
+[hooks.state]
+
+[hooks.state."/Users/adaminglehart/.codex/hooks.json:pre_tool_use:0:0"]
+trusted_hash = "sha256:8c03bb40f3c27fcda1de9b849db374cafa266577366654b5dfc29836f7a73ced"
+
+[hooks.state."/Users/adaminglehart/.codex/hooks.json:permission_request:0:0"]
+trusted_hash = "sha256:842ac9505781e28865a4f98f7054ba6132516b476649d1f4f66fab0db7ed898d"
+
+[hooks.state."/Users/adaminglehart/.codex/hooks.json:session_start:0:0"]
+trusted_hash = "sha256:c1db8be2ca427f104b09e7f41a4adaaea8973ee9e5cb42dba7567fb480106384"
+
+[hooks.state."/Users/adaminglehart/.codex/hooks.json:user_prompt_submit:0:0"]
+trusted_hash = "sha256:fab9715c3852e100b1f62fc609031aaf051fe38006848e0f90f5bc7f9fe3843d"
+
+[hooks.state."/Users/adaminglehart/.codex/hooks.json:stop:0:0"]
+trusted_hash = "sha256:26cc2009d3e9553902a63b6fa69ca48f520a5c446783c0335304886f2a54d0cb"
+
+[shell_environment_policy.set]
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "9230e2bd8b24b7ac7a0ba6774c64bf0d78ecdabbdd91d0ed627b02a587bae2df"
