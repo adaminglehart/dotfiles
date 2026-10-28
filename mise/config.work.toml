@@ -4,4 +4,5 @@
 "brew-cask:rectangle" = { version = "latest", os = "macos" }
 
 [dotfiles]
+"~/.codex/config.toml" = { source = "~/dev/dotfiles/private/.codex/config.work.toml", mode = "copy" }
 "~/.config/fish/user_conf.d/stripe.fish" = "~/dev/dotfiles/profiles/work/.config/fish/user_conf.d/stripe.fish"

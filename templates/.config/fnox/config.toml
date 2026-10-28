@@ -1,6 +1,7 @@
 # Fnox global config
-# Sync to local cache: fnox sync --provider age --global --force
-# This stores encrypted copies of 1Password secrets for offline/fast access
+# Sync overrides are stored in the machine-local fnox.local.toml file.
+# This keeps the managed base configuration stable after bootstrap.
+import = ["./fnox.local.toml"]
 
 [providers.age]
 type = "age"
@@ -19,9 +20,10 @@ DD_ACCESS_TOKEN = { provider = "op-work", value = "op://Employee/PUP_CLI_TOKEN_R
 type = "1password"
 
 [secrets]
-ANTHROPIC_API_KEY = { provider = "op", value = "op://dotenv/ANTHROPIC_API_KEY/value" }
+# ANTHROPIC_API_KEY = { provider = "op", value = "op://dotenv/ANTHROPIC_API_KEY/value" }
 GEMINI_API_KEY = { provider = "op", value = "op://dotenv/GEMINI_API_KEY/value" }
 OPENAI_API_KEY = { provider = "op", value = "op://dotenv/OPENAI_API_KEY/value" }
 OPENROUTER_API_KEY = { provider = "op", value = "op://dotenv/OPENROUTER_API_KEY/value" }
+LITELLM_PI_API_KEY = { provider = "op", value = "op://kubernetes/litellm/PI_HOME_API_KEY" }
 FIREWORKS_API_KEY = { provider = "op", value = "op://dotenv/FIREWORKS_API_KEY/value" }
 {% endif %}

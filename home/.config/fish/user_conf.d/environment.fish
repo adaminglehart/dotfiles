@@ -17,5 +17,5 @@ end
 # Load secrets from fnox global config
 # After first setup, run: fnox sync --provider age --global --force
 if test (which fnox) && test -n "$FNOX_AGE_KEY"
-  fnox export --format env | source
+  fnox export --config ~/.config/fnox/fnox.toml --format env | source
 end

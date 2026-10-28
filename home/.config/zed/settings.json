@@ -1,10 +1,18 @@
 // Zed settings
 //
-// To see all of Zed's default settings without changing your
-// custom settings, run the `open default settings` command
-// from the command palette or from `Zed` application menu.
+// Use the `open default settings` command to see the default settings.
 {
   "accessible_mode": false,
+  "cli_default_open_behavior": "new_window",
+  "outline_panel": {
+    "dock": "left"
+  },
+  "collaboration_panel": {
+    "dock": "left"
+  },
+  "git_panel": {
+    "dock": "left"
+  },
   "search": {
     "include_ignored": false
   },
@@ -82,7 +90,7 @@
   "theme": {
     "mode": "system",
     "light": "Flexoki Light",
-    "dark": "Flexoki Light"
+    "dark": "Flexoki Dark"
   },
   "vertical_scroll_margin": 5,
   "gutter": {

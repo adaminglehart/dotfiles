@@ -11,13 +11,16 @@ home/.claude/cache
 private_history.jsonl
 private_stats-cache.json
 home/.claude/downloads
-# Keep only explicit Codex user-config files in source control.
+home/.agents/skills/synced/
+# Keep only explicit Codex shared files in source control.
 home/.codex/*
-!home/.codex/config.toml
 !home/.codex/skills/
 home/.codex/skills/*
 !home/.codex/skills/custom
 !home/.codex/tools
+
+# Machine-specific private application configuration
+private/.codex/config.*.toml
 .DS_Store
 home/.pi/**/node_modules
 home/.config/pi/**/node_modules
@@ -30,3 +33,5 @@ mise.*.local.toml
 
 # Local planning files
 plans/
+.config/zed/prompts
+.config/fish/fish_variables

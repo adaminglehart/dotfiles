@@ -1,0 +1,31 @@
+setupVersion: 1
+
+defaultThinkingLevel: high
+
+extensions:
+  - ~/dev/plannotator/apps/pi-extension/index.ts
+
+enabledModels:
+  - openai-codex/gpt-5.6-sol
+  - openai-codex/gpt-5.6-terra
+  - openai-codex/gpt-5.6-luna
+  - openai-codex/gpt-5.3-codex-spark
+  - openrouter/deepseek/deepseek-v4-pro
+  - openrouter/deepseek/deepseek-v4-flash
+  - google/gemini-3-flash-preview
+  - google/gemini-3.1-flash-lite-preview
+  - litellm/qwen3.8-27b-q4
+  - remote/qwen
+  - llama-server/muse-glimmer-30b
+
+modelRoles:
+  default: "@standard"
+  smol: "openai-codex/gpt-5.6-luna"
+  slow: "litellm/qwen3.8-27b-q4"
+  plan: "openai-codex/gpt-5.6-sol"
+  commit: "litellm/qwen3.8-27b-q4"
+
+task:
+  agentModelOverrides:
+    reviewer: "@reviewer"
+    scout: "@fast"

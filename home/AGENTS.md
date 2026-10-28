@@ -41,7 +41,8 @@ These rules have higher priority than agent prompt guidance. A repository
 
 ## Git and working-tree safety
 
-- Never run `git commit`, `git push`, or a Graphite submit command unless I ask.
+- Never run `git commit`, `git push`, or a Graphite submit command unless I ask
+  or the repository `AGENTS.md` gives a commit and push policy.
 - Follow the branch and pull-request process in the repository `AGENTS.md`. Do
   not assume a process that is not documented.
 - Work in the current checkout unless I ask for an isolated worktree.
@@ -106,3 +107,132 @@ These rules have higher priority than agent prompt guidance. A repository
   Separate confirmed evidence from inference.
 - Compare logs, traces, and metrics only within the same relevant environment,
   region, and deployment.
+
+## Corrections
+
+Domain-specific corrections belong in the repository `AGENTS.md` or skill that
+owns the domain. For example, Kubernetes, Talos, Proxmox, Ansible, GB10, and
+network corrections are in `~/dev/homelab/AGENTS.md`.
+
+### Continue approved work
+
+- When I approve a multi-step task, do each next step that is inside the
+  approval. Do not stop after a status summary that ends with "Next: …". Stop
+  only for a real blocker, a decision that needs me, or a separate approval
+  gate, such as a destructive operation or a live external change.
+- When I approve implementation, checks, review, a commit, and then the next
+  phase, continue without asking again at each phase boundary. A commit
+  instruction does not by itself authorize a push unless the repository
+  `AGENTS.md` says so.
+
+### Keep side tasks smaller than the main task
+
+- Give minor tooling and reporting work a narrow scope. When the required
+  behavior and safety checks pass, finish the side task and return to the main
+  work.
+- If I say a side task does not need more tests or review, stop that work. Do
+  not replace it with a smaller review or keep it as a gate for the main task.
+
+### Plans
+
+- When I ask to plan in stages, keep the first plan at the requested level. Do
+  not add file layouts, task lists, or detailed test plans until I approve the
+  high-level plan and ask for the execution plan.
+
+### Verify before you assert
+
+- Before you confirm a hypothesis about where behavior lives or how code works,
+  verify it against the repository and cite the evidence.
+- When a service has configuration for multiple environments, verify the
+  endpoint and target environment before editing.
+- Before you give a command for a live hardware value, verify that it reports
+  the active output and not a stored setting.
+- Before you recommend values for a configuration table, inspect all validation
+  rules, including ordering, uniqueness, continuity, and range rules.
+- Before you tell me where to change a parameter in a visual workflow, check
+  whether it is hidden inside a subgraph.
+- When a tool update adds built-in support for an installed adapter's function,
+  read the current documentation before you recommend keeping the adapter.
+- When a custom tool needs a new operation, inspect the built-in manager's
+  extension points before you write a replacement manager.
+- A display name or CLI setting can differ from the value sent to a service.
+  For service-tier or speed-mode fields, check the active client source and
+  model metadata, and keep request-format tests separate from service
+  acceptance.
+
+### Keep inspection read-only
+
+- Do not use commands with write flags such as `--in-place`, `--set`, or
+  `config` subcommands when you only need to inspect state. Separate all
+  mutations into an explicit approved step.
+- An import can run a script's top-level code. To check syntax, use a
+  syntax-only command, such as `node --check` or `bash -n`. A restriction on
+  running a hook also applies to its check script.
+
+### Secrets
+
+- Before you run a status or config command, check whether it resolves
+  environment-variable references or secret placeholders. Filter secret fields
+  inside the target process before output reaches the transcript.
+- Do not print a raw diff of a private configuration file. Compare keys or
+  structure only, or redact secret values first.
+- A 1Password CLI "account is not signed in" error does not prove that the
+  desktop app is signed out. Check the CLI app integration and the documented
+  CLI sign-in flow first. Inspect item field names without values.
+- If automatic project secret loading causes repeated authentication, keep the
+  shell integration. Fix or refresh the local encrypted secret cache.
+
+### Commands and output
+
+- Commands sent through a Bash tool must use Bash syntax, even though my
+  interactive shell is Fish.
+- Read each tool's timeout unit. The Bash tool uses seconds; subagent fields
+  ending in `Ms` use milliseconds.
+- Do not pipe test, build, or vet output into `head` or `tail`. Save the
+  complete output and keep the exit status. Use `tee` with `set -o pipefail`.
+- A test timeout does not bound compilation. Keep an outer command limit and
+  keep partial output if it expires.
+- Use `jq` for JSON and `yq` for YAML. When Python needs a package, use
+  `uv run --with <package> python -`. System `python3` does not have PyYAML. Do
+  not call the Python inside another tool's installation, such as Ansible's.
+- For a GitHub file, find the exact path with `gh api repos/<owner>/<repo>/contents/<dir>`
+  before you fetch it. Do not guess `raw.githubusercontent.com` paths.
+
+### Test fixtures
+
+- Create test fixtures in a new directory from `mktemp`. Do not delete a fixed
+  path to prepare a test.
+- Stop immediately if fixture creation, a required tool, or `cd` fails. Use
+  `git -C "$fixture"` for fixture mutations, clear inherited Git directory
+  overrides, and verify that the target is the fixture.
+- Do not rely only on `set -e` inside functions or command substitutions.
+
+### Git
+
+- Run dependent Git mutations, such as stash, switch, merge, and stash restore,
+  in sequence. Do not run read-only Git checks in parallel with Git mutations in
+  the same working tree.
+- A no-staging instruction means do not change the index. Never use
+  `git reset` or unstage files to make the index empty. Preserve staged files
+  and report them.
+
+### Edits
+
+- `@INS.BEFORE` and `@INS.AFTER` keep the anchor rows. Do not repeat the anchor
+  in the inserted rows.
+- When one config change replaces a line and inserts an adjacent setting,
+  validate the result before the write. Assert that each required key exists
+  exactly once.
+
+### Subagents and monitors
+
+- Build long workflow prompts as escaped strings or arrays joined with `\n`.
+  Validate a generated workflow with `subagent` `action: "validate"` before
+  launch, and launch the same file.
+- Do not delegate a timed monitor with a tool or turn budget that can expire
+  before the watch period ends.
+
+### Runtimes
+
+- For a new project, select the latest stable runtime release. Record a
+  dependency's minimum version only as compatibility information.

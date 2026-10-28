@@ -38,13 +38,13 @@ dotfiles.root = "~/dev/dotfiles/home"
 "brew:neovim" = "latest"
 "brew:gitui" = "latest"
 "brew:withgraphite/tap/graphite" = "latest"
-"brew-cask:slack" = { version = "latest", os = "macos" }
-"brew-cask:sourcetree" = { version = "latest", os = "macos" }
-"brew-cask:postman" = { version = "latest", os = "macos" }
-"brew-cask:spotify" = { version = "latest", os = "macos" }
-"brew-cask:visual-studio-code" = { version = "latest", os = "macos" }
-"brew-cask:raycast" = { version = "latest", os = "macos" }
-"brew-cask:1password-cli" = { version = "latest", os = "macos" }
+# "brew-cask:slack" = { version = "latest", os = "macos" }
+# "brew-cask:sourcetree" = { version = "latest", os = "macos" }
+# "brew-cask:postman" = { version = "latest", os = "macos" }
+# "brew-cask:spotify" = { version = "latest", os = "macos" }
+# "brew-cask:visual-studio-code" = { version = "latest", os = "macos" }
+# "brew-cask:raycast" = { version = "latest", os = "macos" }
+# "brew-cask:1password-cli" = { version = "latest", os = "macos" }
 
 [bootstrap.macos.finder]
 show_all_files = true
@@ -85,10 +85,18 @@ ShowSeconds = true
 
 [tasks.bootstrap]
 run = [
-  # Git does not preserve 0600 modes, so restore it on the private copy-mode target.
-  '''chmod 600 "$HOME/.msgvault/config.toml"''',
-  '''if [ "${MISE_ENV:-home}" = "home" ]; then
-    fisher install
+  # Git does not preserve 0600 modes, so restore them on private copy-mode targets.
+  '''chmod 600 \
+    "$HOME/.codex/config.toml" \
+    "$HOME/.msgvault/config.toml"''',
+  '''ln -sfn "$HOME/.config/fnox/config.toml" "$HOME/.config/fnox/fnox.toml"
+  fnox sync \
+    --config "$HOME/.config/fnox/fnox.toml" \
+    --provider age \
+    --local-file \
+    --force''',
+  '''if [ "${MISE_ENV:-home}" = "home" ] && [ -z "$(fish -c 'fisher list')" ]; then
+    fish -c 'fisher update'
   fi''',
   '''if [ "$(uname -s)" = "Darwin" ]; then
     defaults -currentHost write com.apple.ImageCapture disableHotPlug -bool true
@@ -105,11 +113,14 @@ run = [
 "~/AGENTS.md" = "~/dev/dotfiles/home/AGENTS.md"
 "~/.bash_profile" = "~/dev/dotfiles/home/.bash_profile"
 "~/.bashrc" = "~/dev/dotfiles/home/.bashrc"
+"~/.agent-browser/config.json" = "~/dev/dotfiles/home/.agent-browser/config.json"
 "~/.agents" = { source = "~/dev/dotfiles/home/.agents", mode = "symlink-each" }
 "~/.claude" = { source = "~/dev/dotfiles/home/.claude", mode = "symlink-each" }
 "~/.codex" = { source = "~/dev/dotfiles/home/.codex", mode = "symlink-each" }
-"~/.config" = { source = "~/dev/dotfiles/home/.config", mode = "symlink-each" }
+"~/.config" = { source = "~/dev/dotfiles/home/.config", mode = "symlink-each", exclude = ["pi/bake/node_modules", "pi/bake/bun.lock"] }
 "~/.local" = { source = "~/dev/dotfiles/home/.local", mode = "symlink-each" }
+"~/.omp/agent/config.yml" = "~/dev/dotfiles/home/.omp/agent/config.yml"
+"~/.omp/agent/models.yml" = "~/dev/dotfiles/home/.omp/agent/models.yml"
 "~/.config/fnox/config.toml" = { source = "~/dev/dotfiles/templates/.config/fnox/config.toml", mode = "template" }
 "~/.config/opencode/opencode.jsonc" = { source = "~/dev/dotfiles/templates/.config/opencode/opencode.jsonc", mode = "template" }
 "~/.config/pi/bake/environment-config.ts" = { source = "~/dev/dotfiles/templates/.config/pi/bake/environment-config.ts", mode = "template" }

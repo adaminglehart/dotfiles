@@ -5,7 +5,8 @@ description: Discover project conventions and surface security concerns. Use whe
 
 # Learn Codebase Conventions
 
-Scan the current project for agent instruction files from various tools, summarize the conventions, and optionally register discovered skills in `.pi/settings.json`.
+Scan the current project for agent instruction files from various tools. Report
+the conventions and skill sources without changing skill registration.
 
 ## Step 1: Scan for Convention Files
 
@@ -75,17 +76,21 @@ Present a structured summary to the user:
 
 Focus on actionable information. Skip boilerplate and obvious conventions.
 
-## Step 3: Register External Skills
+## Step 3: Check Skill Sources
 
-If `.claude/skills/` or other skill directories exist, suggest registering them in `.pi/settings.json` so pi can use them too:
+Keep discovery read-only. Do not suggest adding another agent's entire skill
+directory to Pi. Claude's `synced/` directory contains account downloads, not
+shared project skills.
 
-```json
-{
-  "skills": ["../.claude/skills"]
-}
-```
+For each discovered skill, report its path and resolve any symbolic links.
+Identify shared source files, agent-specific files, and downloaded files
+separately. Do not execute a discovered skill or its scripts during this check.
 
-Ask the user if they want to create or update `.pi/settings.json` with the discovered skill paths. Only do this if skills were actually found.
+Change registration only when the user explicitly requests it. Use the source
+repository's registration rules and add only the approved skill file or skill
+directory. Do not register a parent directory that includes unapproved skills,
+account downloads, backups, or runtime files. Keep Claude's `synced/` directory
+outside the shared `~/.agents/skills` directory.
 
 ## Step 4: Note What to Remember
 

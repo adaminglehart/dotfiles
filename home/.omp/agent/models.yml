@@ -1,0 +1,72 @@
+providers:
+  openrouter:
+    baseUrl: https://openrouter.ai/api/v1
+    apiKey: OPENROUTER_API_KEY
+    api: openai-completions
+    models:
+      - id: minimax/minimax-m2.5
+        name: Minimax M2.5 (mara)
+        reasoning: true
+        contextWindow: 204800
+        cost:
+          input: 0.3
+          output: 1.2
+          cacheRead: 0.3
+          cacheWrite: 1.2
+        compat:
+          openRouterRouting:
+            order: [mara]
+      - id: qwen/qwen3-coder
+        name: Qwen 3 Coder
+        reasoning: true
+        contextWindow: 1000000
+        cost:
+          input: 0.22
+          output: 1.8
+          cacheRead: 0.22
+          cacheWrite: 1.8
+        compat:
+          openRouterRouting:
+            order: [google-vertex/us-south1]
+
+  litellm:
+    baseUrl: https://litellm.inglehart.io/v1
+    apiKey: LITELLM_PI_API_KEY
+    api: openai-completions
+    compat:
+      supportsStore: false
+    models:
+      - id: qwen3.8-27b-q4
+        name: Qwen3.8 27B Q4
+        reasoning: true
+        input: [text, image]
+        contextWindow: 196608
+
+  remote:
+    baseUrl: http://localhost:18000/v1
+    apiKey: llama-server
+    api: openai-completions
+    compat:
+      supportsStore: false
+      thinkingFormat: qwen-chat-template
+    models:
+      - id: qwen
+        name: qwen (remote)
+        reasoning: true
+        input: [text]
+        contextWindow: 262144
+        maxTokens: 65536
+
+  llama-server:
+    baseUrl: https://llama-server.inglehart.io/v1
+    apiKey: llama-server
+    api: openai-completions
+    models:
+      - id: gemma-4-26b-q4
+        name: Gemma 4 26B Q4
+        reasoning: true
+        contextWindow: 163840
+      - id: muse-glimmer-30b
+        name: Muse Glimmer 30B
+        reasoning: true
+        contextWindow: 131072
